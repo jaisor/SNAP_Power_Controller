@@ -116,8 +116,8 @@ Every reference label sits next to its own part, clear of pads, other parts and 
 - **Ground:** the bottom layer is a solid GND plane. The top layer has a GND fill, and every surface-mount GND pad gets its own via down to the plane.
 - **Track widths:** power paths are 0.8mm, necked to 0.4mm at small pads. Signals are 0.25mm.
 - **Kelvin sensing:** the CN3791's current-sense pins and the INA219 selector's throws connect straight to the pads of their shunt resistors (R5, R6, R7).
-- **Layer use:** about 81% of the copper length is on the top layer. The bottom-side tracks are short jumps, which keeps the ground plane mostly intact.
-- **Size:** 210 track segments and 50 vias, 11 of which are GND stitching vias.
+- **Layer use:** about 80% of the copper length is on the top layer. The bottom-side tracks are short jumps, which keeps the ground plane mostly intact.
+- **Size:** 206 track segments and 45 vias, 11 of which are GND stitching vias.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 This is auto-routing, so review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which currently returns through the ground plane) and the few bottom-layer tracks that cut the plane.
