@@ -34,7 +34,7 @@ d = ImageDraw.Draw(img)
 # Title, in the style of the SNAP component map
 d.text((70, 38), "SOLAR NODE  //  CHARGE MODULE", font=title_font, fill=INK)
 d.line((70, 112, 980, 112), fill=CYAN, width=4)
-d.text((70, 124), "v1.0 · CN3791 MPPT · INA219 · 4 × Micro JST 1.25 solar in · drop-in for SNAP v1.2",
+d.text((70, 124), "v1.1 · CN3791 MPPT · INA219 · 4 × Micro JST 1.25 solar in · drop-in for SNAP v1.2",
        font=sub_font, fill=MAGENTA)
 
 # Board render: crop to the board itself (non-transparent, non-shadow pixels)

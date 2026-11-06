@@ -72,7 +72,12 @@ FUNCTION_TEXT = 0.8  # mm
 SOLAR_LABEL = "Solar_5V"  # one label for J1-J4, with a bracket along their left side
 SOLAR_BRACKET_X = 7.75
 # Module ID, centred and mirrored on B.Silkscreen: (text, height mm)
-BACK_TEXT = [("Solar Charge Module v1.0", 1.2), ("by JaisorGadgets", 1.0), ("Oct. 2026", 1.0)]
+BACK_TEXT = [("Solar Charge Module v1.1", 1.2), ("by JaisorGadgets", 1.0), ("Nov. 5, 2026", 1.0)]
+# + and - on F.Silkscreen under each power connector, either side of its reference, on the side of
+# the matching pad: GND pad "-", the other "+".
+POLARITY_REFS = ("J1", "J2", "J3", "J4", "J5", "J6")
+POLARITY_TEXT = 1.0  # mm
+POLARITY_OFFSET = 1.75  # sign centre from the connector centre, mm
 # I2C connector J9: front label below it, pin names on B.Silkscreen beside each pad
 I2C_LABEL = "I2C"
 I2C_PINS = {"1": "VCC", "2": "SDA", "3": "SCL", "4": "GND"}
@@ -205,6 +210,15 @@ def board_silk(board, fps, boxes):
     items.append(silk_line(board, (SOLAR_BRACKET_X, top), (SOLAR_BRACKET_X + 0.3, top)))
     items.append(silk_line(board, (SOLAR_BRACKET_X, bottom), (SOLAR_BRACKET_X + 0.3, bottom)))
     items.append(silk_text(board, SOLAR_LABEL, SOLAR_BRACKET_X + 0.6, bottom, 1.0, left=True))
+    for ref in POLARITY_REFS:
+        cb = boxes[ref]
+        for pad in fps[ref].Pads():
+            side = 1 if pad.GetPosition().x > cb.Centre().x else -1
+            x = pcbnew.ToMM(cb.Centre().x) + side * POLARITY_OFFSET
+            t = silk_text(board, "-" if pad.GetNetname() == "GND" else "+", x, 0, POLARITY_TEXT)
+            ink = t.GetEffectiveTextShape().BBox()
+            t.Move(pcbnew.VECTOR2I(0, cb.GetBottom() + mm(LABEL_GAP + POLARITY_TEXT / 2) - ink.Centre().y))
+            items.append(t)
     y = H / 2 - 1.6
     for text, height in BACK_TEXT:
         silk_text(board, text, W / 2, y, height, layer=pcbnew.B_SilkS)
@@ -255,8 +269,7 @@ def main():
     board = pcbnew.NewBoard(pcb_path)
     tb = board.GetTitleBlock()
     tb.SetTitle("Solar Node Charge Controller")
-    tb.SetRevision("0.1")
-    tb.SetComment(0, "Placement draft - not routed")
+    tb.SetRevision("1.1")
 
     fps = {}
     for comp in root.iter("comp"):
