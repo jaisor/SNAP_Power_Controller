@@ -4,7 +4,7 @@ A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built fo
 
 Designed in KiCad 10.
 
-> **Status:** the schematic is complete and passes ERC. The PCB (56.5 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and auto-routed** with a clean DRC, but hasn't had a manual layout review. Nothing has been built or tested yet.
+> **Status:** the schematic is complete and passes ERC. The PCB (56.5 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and auto-routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. It hasn't been tested under sunlight yet. See [Testing](#testing).
 
 <p align="center">
   <img src="docs/images/pcb-iso.png" alt="3D render of the routed board" width="720">
@@ -52,9 +52,18 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 | J8 (SW_LOAD) | The SNAP on/off switch cap's latching button. To cut the battery entirely, use J7 (SW_BATT) as well, or instead |
 | J7 / J8 left unswitched | Both switch connectors are in series with the power path, so an unused one needs a jumper (a plug with its two wires shorted). Otherwise the battery or the node stays disconnected |
 | J6 (VOUT) | The XIAO nRF52840's BAT+ / BAT− pads, which is where SNAP powers it from the 18650 today |
-| J9 (I2C) | XIAO 3V3 → VCC, D4 → SDA, D5 → SCL, GND → GND |
+| J9 (I2C) | XIAO 3V3 → VCC, D6 → SDA, D7 → SCL, GND → GND. These pins need a Meshtastic build with I2C on D6/D7 (see the table below) |
 
 Set SW3 to BATT to see the battery's charge and discharge current, or to SOLAR to see what the panels deliver.
+
+The XIAO's I2C pins depend on the firmware build. D4 and D5 can't be used with the Wio-SX1262, because the radio uses them.
+
+| Firmware build | SDA | SCL | Status |
+|---|---|---|---|
+| Meshtastic `seeed_xiao_nrf52840_kit`, custom build with I2C on D6/D7 | D6 | D7 | Tested on this board |
+| Meshtastic `seeed_xiao_nrf52840_kit_i2c` | D6 | D7 | From the firmware source, not tested |
+| Meshtastic `seeed_xiao_nrf52840_kit`, unmodified (D6/D7 are reserved for the GNSS module) | NFC1 pad (underside) | NFC2 pad (underside) | From the firmware source, not tested |
+| MeshCore `Xiao_nrf52` | D7 | D6 | From the firmware source, not tested |
 
 The INA219 uses address 0x40, which some other I2C sensors also use (for example the SHT21/HTU21D and HDC1080). If your node already has one of those, the two will clash.
 
@@ -156,6 +165,15 @@ All connectors are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 | BATT | R6, between BATT+ and the cell | Positive while charging, negative while discharging | Cell voltage, readable even with SW_BATT off |
 
 The MCU can't sense SW3's position. Firmware has to know which position is set, or infer it from the readings.
+
+## Testing
+
+| Test | Setup | Status |
+|---|---|---|
+| First power-up | Board wired to a XIAO + Wio-SX1262, running Meshtastic built from `seeed_xiao_nrf52840_kit` with I2C on D6/D7 | Done. Everything seems to work as expected, including the INA219 over I2C |
+| Sunlight | Board wired into a 4-panel enclosure, with metrics tracked in Grafana dashboards | Next |
+
+No measured charging or power figures are recorded here yet.
 
 ## Fabrication
 
