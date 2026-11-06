@@ -141,7 +141,6 @@ function xf(p, rot, mirror) {
   let x = p.x, y = -p.y;
   for (let i = 0; i < ((rot / 90) % 4); i++) [x, y] = [y, -x];
   if (mirror === "y") x = -x;
-  if (mirror === "x") y = -y;
   return { x, y };
 }
 const PARTS = [];
@@ -282,18 +281,17 @@ const cell = P(213.36, 68.58);
 wire(R6.pin("2"), cell);
 stub(cell, "up", "BAT_CELL", 5.08);
 junction(cell);
-// J5 and J6: pin 1 = GND, pin 2 = + (mirrored so + stays on top).
-const J5 = placeByPin("J5", "Connector_Generic:Conn_01x02", "2", P(220.98, 68.58), { mirror: "x", value: "LiPo_1S_4.2V", fp: FP.pico2 });
-wire(cell, J5.pin("2"));
-gnd(wire(J5.pin("1"), P(218.44, J5.pin("1").y), P(218.44, 76.2)));
+const J5 = placeByPin("J5", "Connector_Generic:Conn_01x02", "1", P(220.98, 68.58), { value: "LiPo_1S_4.2V", fp: FP.pico2 });
+wire(cell, J5.pin("1"));
+gnd(wire(J5.pin("2"), P(218.44, J5.pin("2").y), P(218.44, 76.2)));
 
 const J8 = placeByPin("J8", "Connector_Generic:Conn_01x02", "1", P(220.98, 86.36), { value: "SW_LOAD", fp: FP.pico2 });
 stub(J8.pin("1"), "left", "VBAT", 5.08);
 stub(J8.pin("2"), "left", "VOUT", 5.08);
 
-const J6 = placeByPin("J6", "Connector_Generic:Conn_01x02", "2", P(246.38, 86.36), { mirror: "x", value: "VOUT", fp: FP.pico2 });
-stub(J6.pin("2"), "left", "VOUT", 5.08);
-gnd(wire(J6.pin("1"), P(243.84, J6.pin("1").y), P(243.84, 93.98)));
+const J6 = placeByPin("J6", "Connector_Generic:Conn_01x02", "1", P(246.38, 86.36), { value: "VOUT", fp: FP.pico2 });
+stub(J6.pin("1"), "left", "VOUT", 5.08);
+gnd(wire(J6.pin("2"), P(243.84, J6.pin("2").y), P(243.84, 93.98)));
 
 // ---------- INA219 power monitor ----------
 // SW3 (DPDT) routes the INA219 inputs to one shunt at a time:
@@ -383,7 +381,7 @@ junction(R1.pin("2"));
 stub(D3.pin("1"), "down", "~{DONE}");
 
 TEXTS.push({
-  at: P(40.64, 157.48),
+  at: P(33.782, 167.894),
   text: [
     "Design notes (CN3791 datasheet, Figure 1):",
     "- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819WS (SOD-323, 40V/1A). MPPT senses VIN after these diodes,",
@@ -396,7 +394,7 @@ TEXTS.push({
     "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input or VIN < VBAT.",
     "- All power connectors (J1-J8) are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
     "  Panel-mount SPST switches plug into J7/J8. Same connector family everywhere, so check the silkscreen before plugging in.",
-    "  Polarity: J1-J4 pin 1 = +, pin 2 = GND; J5 and J6 pin 1 = GND, pin 2 = +. The board marks + and - at each of these connectors.",
+    "  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors.",
     "  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.",
     "  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).",
     "  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.",
@@ -444,8 +442,7 @@ function emitPart(p) {
   } else if (p.libId.startsWith("Connector")) {
     // Value beside the body, on the side away from the pins.
     const dir = p.mirror === "y" ? -1 : 1;
-    const top = p.mirror === "x" ? y - 2.54 : y;  // mirrored 2-pin: the origin pin is the lower one
-    refAt = [x, top - 3.81]; valAt = [x + dir * (2.54 + w(o.value) / 2), top + 3.81];
+    refAt = [x, y - 3.81]; valAt = [x + dir * (2.54 + w(o.value) / 2), y + 3.81];
   } else if (p.libId.startsWith("Sensor_Energy")) {
     refAt = [x - 6.35, y - 11.43]; valAt = [x + 7.62, y - 11.43];
   } else if (p.libId.startsWith("Switch")) {

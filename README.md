@@ -116,8 +116,8 @@ Every reference label sits next to its own part, clear of pads, other parts and 
 - **Ground:** the bottom layer is a solid GND plane. The top layer has a GND fill, and every surface-mount GND pad gets its own via down to the plane.
 - **Track widths:** power paths are 0.8mm, necked to 0.4mm at small pads. Signals are 0.25mm.
 - **Kelvin sensing:** the CN3791's current-sense pins and the INA219 selector's throws connect straight to the pads of their shunt resistors (R5, R6, R7).
-- **Layer use:** about 80% of the copper length is on the top layer. The bottom-side tracks are short jumps, which keeps the ground plane mostly intact.
-- **Size:** 201 track segments and 46 vias, 11 of which are GND stitching vias.
+- **Layer use:** about 81% of the copper length is on the top layer. The bottom-side tracks are short jumps, which keeps the ground plane mostly intact.
+- **Size:** 210 track segments and 50 vias, 11 of which are GND stitching vias.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 This is auto-routing, so review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which currently returns through the ground plane) and the few bottom-layer tracks that cut the plane.
@@ -129,8 +129,8 @@ Still to do: a manual layout review before ordering (see Fabrication).
 | Ref | Connector | Pin 1 | Pin 2 | Notes |
 |---|---|---|---|---|
 | J1–J4 | Micro JST 1.25, 2-pin | Panel + | GND | 5V solar panels, any combination of 1–4 |
-| J5 | Micro JST 1.25, 2-pin | GND | Battery + | 1S Li-ion/LiPo, 4.2V |
-| J6 | Micro JST 1.25, 2-pin | GND | VOUT | Battery voltage out to the powered module, through SW_LOAD |
+| J5 | Micro JST 1.25, 2-pin | Battery + | GND | 1S Li-ion/LiPo, 4.2V |
+| J6 | Micro JST 1.25, 2-pin | VOUT | GND | Battery voltage out to the powered module, through SW_LOAD |
 | J7 | Micro JST 1.25, 2-pin | VBAT (charger) | BATT+ (battery) | SW_BATT: panel-mount SPST switch, rated ≥1A or the module's peak current |
 | J8 | Micro JST 1.25, 2-pin | VBAT | VOUT | SW_LOAD: panel-mount SPST switch, same rating |
 | J9 | Micro JST 1.25, 4-pin | VCC (3.3–5V) | SDA | Pin 3 = SCL, pin 4 = GND. VCC comes from the MCU and powers the INA219. |
@@ -139,8 +139,8 @@ All connectors are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 
 - **Current:** PicoBlade contacts are rated 1.0A. The charge current is set to 0.8A to stay under that on the battery (J5) and SW_BATT (J7) connectors. Keep the module's load current under 1A too, since it flows through J5 and J7 when the panels are dark.
 - **No keying between functions:** every power connector is the same 2-pin type, so a switch lead fits a solar or battery socket. Check the silkscreen before plugging in.
-- **Battery polarity:** "JST 1.25" LiPo pigtails have no standard polarity. Check that red goes to the pin marked `+` (pin 2 on J5) before connecting.
-- **Pin order:** pin 1 is `+` on the solar inputs (J1–J4) but GND on the battery and VOUT connectors (J5, J6). The solar connectors are rotated 180°, so `-` is on the left and `+` on the right on all six when the board is viewed as in the render above.
+- **Battery polarity:** "JST 1.25" LiPo pigtails have no standard polarity. Check that red goes to the pin marked `+` (pin 1 on J5) before connecting.
+- **Reading the marks:** pin 1 is `+` on J1–J6. J1–J4 are rotated 180° from J5 and J6, so the marks read `- J1 +` on the solar inputs and `+ J5 -` on the right-hand connectors.
 
 **Operating note:** if SW_BATT is off while the panels are in sun, the charger sees no battery and VBAT pulses around 4.2V. Keep SW_LOAD off in that state.
 
@@ -159,7 +159,7 @@ The MCU can't sense SW3's position. Firmware has to know which position is set, 
 
 ## Fabrication
 
-Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). Order v1.1 or later: J5 and J6 polarity is inverted on v1.0. The package is generated into `output/fab/`, which isn't tracked in git:
+Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). The package is generated into `output/fab/`, which isn't tracked in git:
 
 | File | Contents |
 |---|---|

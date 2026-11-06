@@ -243,7 +243,7 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": ""
+      "sch_revision": "1.1"
     },
     "layer_pairs": [],
     "layer_presets": [],
@@ -662,13 +662,18 @@
       {
         "filename": "SolarNodeChargeController.kicad_sch",
         "name": "SolarNodeChargeController",
-        "uuid": "00000000-0000-0000-0000-000000000000"
+        "uuid": "94501acb-e983-4695-a18c-1a4d3ecd2660"
       }
     ],
     "used_designators": "",
     "variants": []
   },
-  "sheets": [],
+  "sheets": [
+    [
+      "94501acb-e983-4695-a18c-1a4d3ecd2660",
+      "SolarNodeChargeController"
+    ]
+  ],
   "text_variables": {},
   "tuning_profiles": {
     "meta": {
