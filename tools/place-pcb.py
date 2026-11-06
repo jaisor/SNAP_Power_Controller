@@ -60,8 +60,9 @@ PLACEMENT = {
     "R9": (33.3, 24.4, 90),
     "R6": (37.95, 25.4, 0),
     # Right column: switch leads, battery, load
-    "J7": (45.14, 3.3, 0),
-    "J8": (45.14, 9.6, 0),
+    # 2.54 mm pin headers, pin 1 on the left. Both pads stay left of the BATT+ track at x = 48.
+    "J7": (43.96, 3.3, 90),
+    "J8": (43.96, 9.6, 90),
     "J5": (45.14, 15.9, 0),
     "J6": (45.14, 22.2, 0),
 }
@@ -69,6 +70,9 @@ PLACEMENT = {
 # Function labels on F.Silkscreen, vertical, just left of each right-column connector.
 FUNCTION_LABELS = {"J7": "SW_BATT", "J8": "SW_LOAD", "J5": "BATT", "J6": "VOUT"}
 FUNCTION_TEXT = 0.8  # mm
+# Right edge of a label, mm, where the default (courtyard minus 0.35 mm) would hit C3. The header
+# courtyards are wider than their silkscreen outlines, so these labels sit inside them.
+FUNCTION_LABEL_RIGHT = {"J7": 42.3, "J8": 42.3}
 SOLAR_LABEL = "Solar_5V"  # one label for J1-J4, with a bracket along their left side
 SOLAR_BRACKET_X = 7.75
 # Module ID, centred and mirrored on B.Silkscreen: (text, height mm)
@@ -202,7 +206,8 @@ def board_silk(board, fps, boxes):
         cb = boxes[ref]
         t = silk_text(board, text, 0, pcbnew.ToMM(cb.Centre().y), FUNCTION_TEXT, angle=90)
         ink = t.GetEffectiveTextShape().BBox()
-        t.Move(pcbnew.VECTOR2I(cb.GetLeft() - mm(0.35) - ink.GetRight(), 0))
+        right = mm(FUNCTION_LABEL_RIGHT[ref]) if ref in FUNCTION_LABEL_RIGHT else cb.GetLeft() - mm(0.35)
+        t.Move(pcbnew.VECTOR2I(right - ink.GetRight(), 0))
         items.append(t)
     top = pcbnew.ToMM(boxes["J1"].GetTop()) + 0.2
     bottom = pcbnew.ToMM(boxes["J4"].GetBottom()) + 2.7

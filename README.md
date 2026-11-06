@@ -4,7 +4,7 @@ A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built fo
 
 Designed in KiCad 10.
 
-> **Status:** the schematic is complete and passes ERC. The PCB (56.5 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and auto-routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. It hasn't been tested under sunlight yet. See [Testing](#testing).
+> **Status:** the schematic is complete and passes ERC. The PCB (56.5 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and auto-routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
 
 <p align="center">
   <img src="docs/images/pcb-iso.png" alt="3D render of the routed board" width="720">
@@ -39,7 +39,7 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 |---|---|
 | CN3158 MPPT module (SDBK03TA) | CN3791 MPPT buck charger, tuned for 5V panels (VIN held at 4.58V) and charging at 0.8A |
 | One 1N5819 per panel, soldered inline | A 1N5819WS per input on the board, for up to four panels |
-| Hand-soldered panel, battery and node wiring | Plug-in Micro JST 1.25 connectors for every connection |
+| Hand-soldered panel, battery and node wiring | Plug-in connectors for every connection: Micro JST 1.25, with 2.54mm pin headers for the switches |
 | Latching on/off switch wired into the battery lead | Two switch connectors: SW_BATT cuts the battery, SW_LOAD cuts only the node |
 | (none) | INA219 power monitor on I2C, switchable between the panels and the battery |
 
@@ -50,7 +50,7 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 | J1, J2 (Solar_5V) | Two [FellDen 5V 200mA 110×60mm panels](https://www.amazon.com/dp/B0BND5NYGK), the ones SNAP v1.2 uses. J3 and J4 take up to two more |
 | J5 (BATT) | An 18650 Li-ion cell (1S, 3.0–4.2V) in its holder |
 | J8 (SW_LOAD) | The SNAP on/off switch cap's latching button. To cut the battery entirely, use J7 (SW_BATT) as well, or instead |
-| J7 / J8 left unswitched | Both switch connectors are in series with the power path, so an unused one needs a jumper (a plug with its two wires shorted). Otherwise the battery or the node stays disconnected |
+| J7 / J8 left unswitched | Both switch connectors are in series with the power path, so an unused one needs a 2.54mm jumper cap, or a wire bridging its pads on the back of the board. Otherwise the battery or the node stays disconnected |
 | J6 (VOUT) | The XIAO nRF52840's BAT+ / BAT− pads, which is where SNAP powers it from the 18650 today |
 | J9 (I2C) | XIAO 3V3 → VCC, D6 → SDA, D7 → SCL, GND → GND. These pins need a Meshtastic build with I2C on D6/D7 (see the table below) |
 
@@ -126,7 +126,7 @@ Every reference label sits next to its own part, clear of pads, other parts and 
 - **Track widths:** power paths are 0.8mm, necked to 0.4mm at small pads. Signals are 0.25mm.
 - **Kelvin sensing:** the CN3791's current-sense pins and the INA219 selector's throws connect straight to the pads of their shunt resistors (R5, R6, R7).
 - **Layer use:** about 80% of the copper length is on the top layer. The bottom-side tracks are short jumps, which keeps the ground plane mostly intact.
-- **Size:** 206 track segments and 45 vias, 11 of which are GND stitching vias.
+- **Size:** 208 track segments and 45 vias, 11 of which are GND stitching vias.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 This is auto-routing, so review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which currently returns through the ground plane) and the few bottom-layer tracks that cut the plane.
@@ -140,14 +140,14 @@ Still to do: a manual layout review before ordering (see Fabrication).
 | J1–J4 | Micro JST 1.25, 2-pin | Panel + | GND | 5V solar panels, any combination of 1–4 |
 | J5 | Micro JST 1.25, 2-pin | Battery + | GND | 1S Li-ion/LiPo, 4.2V |
 | J6 | Micro JST 1.25, 2-pin | VOUT | GND | Battery voltage out to the powered module, through SW_LOAD |
-| J7 | Micro JST 1.25, 2-pin | VBAT (charger) | BATT+ (battery) | SW_BATT: panel-mount SPST switch, rated ≥1A or the module's peak current |
-| J8 | Micro JST 1.25, 2-pin | VBAT | VOUT | SW_LOAD: panel-mount SPST switch, same rating |
+| J7 | 2.54mm pin header, 2-pin | VBAT (charger) | BATT+ (battery) | SW_BATT: panel-mount SPST switch, rated ≥1A or the module's peak current |
+| J8 | 2.54mm pin header, 2-pin | VBAT | VOUT | SW_LOAD: panel-mount SPST switch, same rating |
 | J9 | Micro JST 1.25, 4-pin | VCC (3.3–5V) | SDA | Pin 3 = SCL, pin 4 = GND. VCC comes from the MCU and powers the INA219. |
 
-All connectors are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers, Molex 53047-0210 (2-pin) and 53047-0410 (4-pin). They mate with standard female cable housings (Molex 51021). Notes:
+J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers, Molex 53047-0210 (2-pin) and 53047-0410 (4-pin). They mate with standard female cable housings (Molex 51021). J7 and J8 are standard 2.54mm vertical pin headers, which take a 2.54mm female housing or a jumper cap. Notes:
 
-- **Current:** PicoBlade contacts are rated 1.0A. The charge current is set to 0.8A to stay under that on the battery (J5) and SW_BATT (J7) connectors. Keep the module's load current under 1A too, since it flows through J5 and J7 when the panels are dark.
-- **No keying between functions:** every power connector is the same 2-pin type, so a switch lead fits a solar or battery socket. Check the silkscreen before plugging in.
+- **Current:** PicoBlade contacts are rated 1.0A. The charge current is set to 0.8A to stay under that on the battery connector (J5). Keep the module's load current under 1A too, since it flows through J5 when the panels are dark.
+- **No keying between functions:** J1–J6 are the same 2-pin type, so a battery lead fits a solar socket. Check the silkscreen before plugging in. The switch headers take a different plug, so they can't be mixed up with these.
 - **Battery polarity:** "JST 1.25" LiPo pigtails have no standard polarity. Check that red goes to the pin marked `+` (pin 1 on J5) before connecting.
 - **Reading the marks:** pin 1 is `+` on J1–J6. J1–J4 are rotated 180° from J5 and J6, so the marks read `- J1 +` on the solar inputs and `+ J5 -` on the right-hand connectors.
 
@@ -172,13 +172,18 @@ The MCU can't sense SW3's position. Firmware has to know which position is set, 
 |---|---|---|
 | First power-up | Board wired to a XIAO + Wio-SX1262, running Meshtastic built from `seeed_xiao_nrf52840_kit` with I2C on D6/D7 | Done. Everything seems to work as expected, including the INA219 over I2C |
 | INA219 battery current | Same setup, battery at about 4V | Done. Discharging: about −12 to −15mA. Charging from the XIAO's USB: +100mA |
-| Sunlight | Board wired into a 4-panel enclosure, with metrics tracked in Grafana dashboards | Next |
+| Sunlight | Board wired into a real solar node with 4 × 60mA panels, with metrics tracked in Grafana dashboards | In progress. Voltage and charge current rose as expected when exposed to sunlight. One reading in the Meshtastic app: 4.56V, 110.5mA |
 
-The signs match the expected convention: positive while charging, negative while discharging. The USB reading comes from the XIAO's own charger, so it doesn't test the CN3791. No solar charging figures are recorded here yet.
+The signs match the expected convention: positive while charging, negative while discharging. The USB reading comes from the XIAO's own charger, so it doesn't test the CN3791. The sunlight reading is from SW3's SOLAR position: 4.56V is above a Li-ion cell's 4.2V and close to the 4.58V MPPT set point. It's a single reading, and longer-term results are still to come. These tests used a board with Micro JST 1.25 connectors on J7 and J8, so the pin-header version hasn't been built yet. In the sunlight test build, J7 and J8 are bridged with wire on the back of the board, so neither switch is fitted.
+
+<p align="center">
+  <img src="docs/images/testing/solar-node-build.jpg" alt="Test build: the board, a XIAO and an 18650 on a build grid, wired to four panels through the enclosure lid" width="420">
+  <img src="docs/images/testing/power-metrics.webp" alt="Meshtastic app showing power metrics from the node: 4.56V and 110.5mA on channel 3" width="240">
+</p>
 
 ## Fabrication
 
-Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). The package is generated into `output/fab/`, which isn't tracked in git:
+Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). That release is v1.0, which has Micro JST 1.25 connectors on J7 and J8 and no polarity marks. The design in this repo is v1.1, still a work in progress, and it will be released with the next fabrication batch. The package is generated into `output/fab/`, which isn't tracked in git:
 
 | File | Contents |
 |---|---|
@@ -187,7 +192,7 @@ Download the package from the [latest release](https://github.com/jaisor/SolarNo
 | `SolarChargeModule_v1.1_BOM.csv` | BOM in JLCPCB format (Comment, Designator, Footprint, LCSC Part #), plus a Manufacturer Part column for the specific parts |
 | `SolarChargeModule_v1.1_CPL.csv` | Pick-and-place file for top-side assembly, in the same coordinates as the Gerbers |
 
-LCSC part numbers are only filled in where verified (D5–D8). Pick the rest in the assembler's part search, and check rotation and polarity in their preview. The PicoBlade headers and SW3 are through-hole parts.
+LCSC part numbers are only filled in where verified (D5–D8). Pick the rest in the assembler's part search, and check rotation and polarity in their preview. The PicoBlade headers, the J7 and J8 pin headers, and SW3 are through-hole parts.
 
 Regenerating the package (after the board is final and DRC is clean):
 

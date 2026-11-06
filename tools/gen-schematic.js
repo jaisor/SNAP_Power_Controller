@@ -197,6 +197,8 @@ const FP = {
   // Micro JST 1.25 (Molex PicoBlade-compatible) headers; mate with 51021 female cable housings.
   pico2: "Connector_Molex:Molex_PicoBlade_53047-0210_1x02_P1.25mm_Vertical",
   pico4: "Connector_Molex:Molex_PicoBlade_53047-0410_1x04_P1.25mm_Vertical",
+  // 2.54 mm pin header for the switch leads.
+  hdr2: "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
 };
 
 // ---------- circuit ----------
@@ -269,7 +271,7 @@ wire(VB, C3.pin("1"));
 junction(C3.pin("1"));
 // Off-board panel switches: J7 cuts the cell off from charger and load,
 // J8 switches only the load output so charging continues with it off.
-const J7 = placeByPin("J7", "Connector_Generic:Conn_01x02", "1", P(220.98, RAIL), { value: "SW_BATT", fp: FP.pico2 });
+const J7 = placeByPin("J7", "Connector_Generic:Conn_01x02", "1", P(220.98, RAIL), { value: "SW_BATT", fp: FP.hdr2 });
 wire(C3.pin("1"), J7.pin("1"));
 stub(J7.pin("2"), "left", "BATT+", 5.08);
 
@@ -285,7 +287,7 @@ const J5 = placeByPin("J5", "Connector_Generic:Conn_01x02", "1", P(220.98, 68.58
 wire(cell, J5.pin("1"));
 gnd(wire(J5.pin("2"), P(218.44, J5.pin("2").y), P(218.44, 76.2)));
 
-const J8 = placeByPin("J8", "Connector_Generic:Conn_01x02", "1", P(220.98, 86.36), { value: "SW_LOAD", fp: FP.pico2 });
+const J8 = placeByPin("J8", "Connector_Generic:Conn_01x02", "1", P(220.98, 86.36), { value: "SW_LOAD", fp: FP.hdr2 });
 stub(J8.pin("1"), "left", "VBAT", 5.08);
 stub(J8.pin("2"), "left", "VOUT", 5.08);
 
@@ -392,8 +394,8 @@ TEXTS.push({
     "- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels; the CN3791 then draws ~21uA",
     "  from the battery via L1 and Q1's body diode when dark (datasheet p.9). Reference D1 is intentionally unused.",
     "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input or VIN < VBAT.",
-    "- All power connectors (J1-J8) are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
-    "  Panel-mount SPST switches plug into J7/J8. Same connector family everywhere, so check the silkscreen before plugging in.",
+    "- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
+    "  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.",
     "  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors.",
     "  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.",
     "  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).",

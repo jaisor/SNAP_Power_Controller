@@ -19,7 +19,7 @@ const MPN = {
   L1: "SRN6045TA-220M (Bourns)",
   SW3: "JS202011CQN (C&K)",
   J1: "53047-0210 (Molex)", J2: "53047-0210 (Molex)", J3: "53047-0210 (Molex)", J4: "53047-0210 (Molex)",
-  J5: "53047-0210 (Molex)", J6: "53047-0210 (Molex)", J7: "53047-0210 (Molex)", J8: "53047-0210 (Molex)",
+  J5: "53047-0210 (Molex)", J6: "53047-0210 (Molex)", J7: "2.54mm 1x02 vertical pin header", J8: "2.54mm 1x02 vertical pin header",
   J9: "53047-0410 (Molex)",
 };
 const LCSC = { D5: "C191023", D6: "C191023", D7: "C191023", D8: "C191023" };
@@ -59,7 +59,7 @@ PCB order settings
   Copper weight:     1 oz outer
   Min track / space: 0.25 mm / 0.2 mm
   Vias:              0.6 mm / 0.3 mm drill and 0.8 mm / 0.4 mm drill, tented
-  Plated holes:      0.5 mm (Micro JST 1.25 / PicoBlade headers), 0.9 mm (slide switch SW3)
+  Plated holes:      0.5 mm (Micro JST 1.25 / PicoBlade headers), 0.9 mm (slide switch SW3), 1.0 mm (2.54 mm pin headers J7, J8)
   Non-plated holes:  4 x 3.2 mm (M3 mounting), in NPTH.drl
   Solder mask:       both sides (any colour)
   Silkscreen:        both sides (back carries the module ID, I2C pin names, SW3 label)
@@ -72,7 +72,7 @@ Assembly (optional): top side only
     assembler's part search; the Manufacturer Part column names the specific parts.
   - Check part rotation and polarity in the assembler's preview before ordering, especially
     U1 (CN3791), U2 (INA219), Q1, D2, D5-D8 and the LEDs D3 (green) / D4 (red).
-  - Through-hole parts: J1-J9 (Molex 53047 PicoBlade headers) and SW3 (C&K JS202011CQN).
+  - Through-hole parts: J1-J6 and J9 (Molex 53047 PicoBlade headers), J7 and J8 (2.54 mm pin headers) and SW3 (C&K JS202011CQN).
     Hand-solder them, or order through-hole assembly.
   - H1-H4 are mounting holes, not parts (left out of the BOM and placement files).
 `);
