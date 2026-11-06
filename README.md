@@ -171,9 +171,10 @@ The MCU can't sense SW3's position. Firmware has to know which position is set, 
 | Test | Setup | Status |
 |---|---|---|
 | First power-up | Board wired to a XIAO + Wio-SX1262, running Meshtastic built from `seeed_xiao_nrf52840_kit` with I2C on D6/D7 | Done. Everything seems to work as expected, including the INA219 over I2C |
+| INA219 battery current | Same setup, battery at about 4V | Done. Discharging: about −12 to −15mA. Charging from the XIAO's USB: +100mA |
 | Sunlight | Board wired into a 4-panel enclosure, with metrics tracked in Grafana dashboards | Next |
 
-No measured charging or power figures are recorded here yet.
+The signs match the expected convention: positive while charging, negative while discharging. The USB reading comes from the XIAO's own charger, so it doesn't test the CN3791. No solar charging figures are recorded here yet.
 
 ## Fabrication
 
