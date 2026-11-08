@@ -34,7 +34,7 @@ d = ImageDraw.Draw(img)
 # Title, in the style of the SNAP component map
 d.text((70, 38), "SOLAR NODE  //  CHARGE MODULE", font=title_font, fill=INK)
 d.line((70, 112, 980, 112), fill=CYAN, width=4)
-d.text((70, 124), "v1.1 · CN3791 MPPT · INA219 · 4 × Micro JST 1.25 solar in · drop-in for SNAP v1.2",
+d.text((70, 124), "v1.1 · CN3791 MPPT · INA219 · 4 × Micro JST 1.25 solar in · 2.54mm switch headers · drop-in for SNAP v1.2",
        font=sub_font, fill=MAGENTA)
 
 # Board render: crop to the board itself (non-transparent, non-shadow pixels)
@@ -94,6 +94,13 @@ def switch(x, y, label):
     d.text((x + 80, y + 20), label, font=small, fill=DIM)
 
 
+def jumper_cap(x, y):
+    """2.54mm jumper cap seen from above, bridging the two header pins."""
+    d.rounded_rectangle((x, y, x + 46, y + 24), radius=4, fill=(30, 30, 34), outline=(150, 156, 166), width=2)
+    for px in (x + 12, x + 34):
+        d.rectangle((px - 4, y + 8, px + 4, y + 16), fill=(212, 175, 55))
+
+
 def cell18650(x, y):
     """18650 Li-ion cell lying on its side."""
     d.rounded_rectangle((x, y, x + 230, y + 66), radius=14, fill=(46, 160, 92), outline=(150, 230, 170), width=3)
@@ -126,15 +133,19 @@ for py in (302, 482):
 callout("SW3", (520, 820), MAGENTA, "SW3  SOLAR / BATT", "INA219 measures panel or cell", "left")
 
 # Right side: switches, battery, node
-sw_batt = callout("J7", (1480, 200), ORANGE, "SW_BATT  J7", "battery cut-off switch", "right")
-sw_load = callout("J8", (1480, 300), ORANGE, "SW_LOAD  J8", "node power switch", "right")
+sw_batt = callout("J7", (1480, 200), ORANGE, "SW_BATT  J7", "2.54mm header · battery cut-off", "right")
+sw_load = callout("J8", (1480, 300), ORANGE, "SW_LOAD  J8", "2.54mm header · node power", "right")
 batt = callout("J5", (1480, 420), GREEN, "BATT  J5", "18650 cell, 0.8 A charge", "right")
 i2c = callout("J9", (1480, 640), CYAN, "I2C  J9", "INA219 @ 0x40 → node", "right")
 vout = callout("J6", (1480, 750), RED, "VOUT  J6", "battery power to the node", "right")
-switch(1770, 201, "")
-switch(1770, 301, "")
-wire([(sw_batt[2], 233), (1770, 233)], ORANGE, 4)
-wire([(sw_load[2], 333), (1770, 333)], ORANGE, 4)
+SWX = 1850  # switch column, right of the widest callout box
+switch(SWX, 201, "")
+switch(SWX, 301, "")
+for text, ty in (("panel-mount SPST ≥1A", 172), ("or a jumper cap", 404)):
+    d.text((SWX + 32 - d.textlength(text, font=small) / 2, ty), text, font=small, fill=DIM)
+jumper_cap(SWX + 9, 374)
+wire([(sw_batt[2], 233), (SWX, 233)], ORANGE, 4)
+wire([(sw_load[2], 333), (SWX, 333)], ORANGE, 4)
 cell18650(1500, 525)
 wire([(1615, batt[3]), (1615, 525)], GREEN, 4)
 node(1480, 900)
