@@ -52,8 +52,8 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 | J8 (SW_LOAD) | The SNAP on/off switch cap's latching button. To cut the battery entirely, use J7 (SW_BATT) as well, or instead |
 | J7 / J8 left unswitched | Both switch connectors are in series with the power path, so an unused one needs a 2.54mm jumper cap, or a wire bridging its pads on the back of the board. Otherwise the battery or the node stays disconnected |
 | J6 (VOUT) | The XIAO nRF52840's BAT+ / BAT− pads, which is where SNAP powers it from the 18650 today |
-| J9 (I2C) | XIAO 3V3 → VCC, D6 → SDA, D7 → SCL, GND → GND. These pins need a Meshtastic build with I2C on D6/D7 (see the table below) |
-| JP1 (LED, back) | Nothing. Bridge it with solder if you want the status LEDs. It's open as supplied, so the LEDs stay dark |
+| J9 (I2C) | XIAO 3V3 → VCC, D6 → SDA, D7 → SCL, GND → GND, on a 4-wire cable coloured red VCC, black GND, yellow SCL, white SDA. These pins need a Meshtastic build with I2C on D6/D7 (see the table below) |
+| JP1 (LED) | Nothing. Bridge it with solder if you want the status LEDs. It's open as supplied, so the LEDs stay dark |
 
 Set SW3 to BATT to see the battery's charge and discharge current, or to SOLAR to see what the panels deliver.
 
@@ -78,7 +78,7 @@ In Meshtastic, enable power metrics in the telemetry settings so the readings ar
 - **Output:** VOUT connector (Micro JST 1.25) that powers the module from the battery.
 - **Reverse-battery protection:** Q2, a P-channel MOSFET between the battery connector and the rest of the board. A cell plugged in backwards is blocked instead of shorting through the charger. With the cell the right way round, Q2 is fully on in both directions, adding about 60mV of drop at 0.8A.
 - **Power monitoring:** [INA219](https://www.ti.com/lit/ds/symlink/ina219.pdf) at I2C address 0x40. A slide switch selects whether it measures the solar input or the battery (bidirectional current plus voltage).
-- **Status LEDs:** red while charging, green when charging is done. They're powered through JP1, an open solder jumper on the back of the board: bridge its two pads with solder to turn them on. Left open, the LEDs are disconnected and draw nothing.
+- **Status LEDs:** red while charging, green when charging is done. They're powered through JP1, an open solder jumper next to R1 on the top of the board: bridge its two pads with solder to turn them on. Left open, the LEDs are disconnected and draw nothing.
 
 ## Schematic
 
@@ -106,7 +106,7 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 | Left end | M3 mounting holes H1/H3 in the corners, with the SOLAR/BATT selector SW3 between them |
 | Left column | Solar inputs J1–J4, each with its 1N5819WS (D5–D8) |
 | Top middle | Buck power stage in current-flow order: R7, C1/C5, Q1, D2, L1, R5, C3 |
-| Middle | CN3791 (U1) with its support parts and status LEDs. JP1, the LED solder jumper, is on the back under the LEDs |
+| Middle | CN3791 (U1) with its support parts and status LEDs, and JP1, the LED solder jumper, right of R1 |
 | Right middle | INA219 (U2), I2C pull-ups, battery shunt R6, reverse-battery MOSFET Q2 |
 | Right column | SW_BATT/SW_LOAD switch leads (J7/J8), battery J5, VOUT J6 |
 | Right end | M3 mounting holes H2/H4 in the corners, with the 4-pin I2C connector J9 between them |
@@ -118,7 +118,7 @@ Every reference label sits next to its own part, clear of pads, other parts and 
 - **Connector functions:** vertical labels beside the right-hand connectors read `SW_BATT` (J7), `SW_LOAD` (J8), `BATT` (J5) and `VOUT` (J6).
 - **Solar inputs:** one `Solar_5V` label, with a bracket along the four solar inputs (J1–J4).
 - **Polarity:** `-` and `+` under the solar, battery and VOUT connectors (J1–J6), on the side of the matching pin.
-- **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `SDA`, `SCL`, `GND`) are printed beside its pads on the back, since there's no room between the pads and the connectors on the front.
+- **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed beside its pads on the back, since there's no room between the pads and the connectors on the front.
 - **SOLAR/BATT selector:** `solar/batt` / `i2c power sensor` beside SW3 on the back, with "solar" at the end of the switch that has the PV pins and "batt" at the end with the battery pins.
 - **Back:** the module ID, "Solar Charge Module v1.1 / by JaisorGadgets / Nov. 5, 2026".
 
@@ -128,7 +128,7 @@ Every reference label sits next to its own part, clear of pads, other parts and 
 - **Track widths:** power paths are 0.8mm, necked to 0.4mm at small pads. Signals are 0.25mm.
 - **Kelvin sensing:** the CN3791's current-sense pins and the INA219 selector's throws connect straight to the pads of their shunt resistors (R5, R6, R7).
 - **Layer use:** about 80% of the copper length is on the top layer. The bottom-side tracks are short jumps, which keeps the ground plane mostly intact.
-- **Size:** 216 track segments and 48 vias, 11 of which are GND stitching vias.
+- **Size:** 216 track segments and 46 vias, 11 of which are GND stitching vias.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 This is auto-routing, so review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which currently returns through the ground plane) and the few bottom-layer tracks that cut the plane.
@@ -144,7 +144,7 @@ Still to do: a manual layout review before ordering (see Fabrication).
 | J6 | Micro JST 1.25, 2-pin | VOUT | GND | Battery voltage out to the powered module, through SW_LOAD |
 | J7 | 2.54mm pin header, 2-pin | VBAT (charger) | BATT+ (battery) | SW_BATT: panel-mount SPST switch, rated ≥1A or the module's peak current |
 | J8 | 2.54mm pin header, 2-pin | VBAT | VOUT | SW_LOAD: panel-mount SPST switch, same rating |
-| J9 | Micro JST 1.25, 4-pin | VCC (3.3–5V) | SDA | Pin 3 = SCL, pin 4 = GND. VCC comes from the MCU and powers the INA219. |
+| J9 | Micro JST 1.25, 4-pin | VCC (3.3–5V) | GND | Pin 3 = SCL, pin 4 = SDA, matching the common red/black/yellow/white 4-wire cable. VCC comes from the MCU and powers the INA219. v1.0 boards have SDA on pin 2 and GND on pin 4. |
 
 J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers, Molex 53047-0210 (2-pin) and 53047-0410 (4-pin). They mate with standard female cable housings (Molex 51021). J7 and J8 are standard 2.54mm vertical pin headers, which take a 2.54mm female housing or a jumper cap. Notes:
 

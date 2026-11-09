@@ -54,8 +54,8 @@ PLACEMENT = {
     "D4": (21.3, 22.9, 0),
     "D3": (24.8, 22.9, 0),
     "R1": (21.0, 25.8, 0),
-    # LED supply solder jumper, on the back under the LEDs (VIN pad on top, R1 pad below)
-    "JP1": (21.0, 24.35, 90, "b"),
+    # LED supply solder jumper, right of R1 (pad 2 to R1, pad 1 up to the LED anode track)
+    "JP1": (24.25, 25.4, 180),
     # INA219 monitor
     "U2": (37.3, 18.9, 0),
     "C6": (37.3, 23.3, 0),
@@ -89,14 +89,15 @@ POLARITY_TEXT = 1.0  # mm
 POLARITY_OFFSET = 1.75  # sign centre from the connector centre, mm
 # I2C connector J9: front label below it, pin names on B.Silkscreen beside each pad
 I2C_LABEL = "I2C"
-I2C_PINS = {"1": "VCC", "2": "SDA", "3": "SCL", "4": "GND"}
+I2C_PINS = {"1": "VCC", "2": "GND", "3": "SCL", "4": "SDA"}  # red, black, yellow, white cable
 I2C_PIN_TEXT = 0.8  # mm; the pads are on a 1.25 mm pitch
 # SW3 (INA219 shunt selector): two vertical lines on B.Silkscreen beside its pads.
 # Rotated 270 so "solar" sits at the PV/VIN throws (pins 1/6) and "batt" at BATT+/BAT_CELL (pins 3/4).
 SW3_LABEL = ["i2c power sensor", "solar/batt"]  # nearest the pads first; reads "solar/batt" then "i2c power sensor"
 # Back-side parts: reference beside the upper pad and this label beside the lower pad, both on
-# B.Silkscreen right of the courtyard. They are left out of the front label placement.
-BACK_LABELS = {"JP1": "LED"}
+# B.Silkscreen right of the courtyard. They are left out of the front label placement. (Empty since
+# JP1 moved to the top; kept for parts placed with the "b" flag.)
+BACK_LABELS = {}
 
 # Label side preference per reference (N/S/E/W); anything unlisted tries N, S, E, W.
 # Connectors and the solar diodes label underneath so each label reads with its own part.

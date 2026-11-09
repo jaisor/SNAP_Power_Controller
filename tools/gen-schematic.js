@@ -180,9 +180,9 @@ function stub(from, dir, name, len = 2.54) {
   LABELS.push({ name, at: end, ang });
   return end;
 }
-function gnd(at) {
+function gnd(at, rot = 0) {
   pwrN++;
-  return place(`#PWR0${String(pwrN).padStart(2, "0")}`, "power:GND", at.x, at.y, { value: "GND", power: true });
+  return place(`#PWR0${String(pwrN).padStart(2, "0")}`, "power:GND", at.x, at.y, { value: "GND", power: true, rot });
 }
 function flag(at, rot) {
   flgN++;
@@ -345,9 +345,10 @@ stub(R9.pin("2"), "down", "SCL");
 // I2C header to the external MCU: 1 VCC (3.3-5V), 2 SDA, 3 SCL, 4 GND
 const J9 = placeByPin("J9", "Connector_Generic:Conn_01x04", "1", P(388.62, 99.06), { value: "I2C_MCU", fp: FP.pico4 });
 stub(J9.pin("1"), "left", "VCC_MCU", 5.08);
-stub(J9.pin("2"), "left", "SDA", 5.08);
+// Pin order follows the common 4-wire cable: red VCC, black GND, yellow SCL, white SDA.
+gnd(wire(J9.pin("2"), P(J9.pin("2").x - 2.54, J9.pin("2").y)), 270);
 stub(J9.pin("3"), "left", "SCL", 5.08);
-gnd(wire(J9.pin("4"), P(386.08, J9.pin("4").y), P(386.08, J9.pin("4").y + 5.08)));
+stub(J9.pin("4"), "left", "SDA", 5.08);
 // M3 mounting holes (non-plated), one per board corner
 for (let i = 0; i < 4; i++)
   place(`H${i + 1}`, "Mechanical:MountingHole", 302.26 + i * 12.7, 142.24, { value: "M3", fp: "MountingHole:MountingHole_3.2mm_M3" });
@@ -382,17 +383,18 @@ const C4 = placeByPin("C4", "Device:C", "1", R2.pin("2"), { value: "220nF", fp: 
 gnd(C4.pin("2"));
 
 // Status LEDs: red = charging (~CHRG), green = done (~DONE)
-const R1 = place("R1", "Device:R", 160.02, 88.9, { value: "1k", fp: FP.r0603 });
-// JP1: open solder jumper in the LED supply, on the back of the board. Bridge it with solder to
-// light the LEDs; left open, they draw nothing.
-const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Open", "1", P(R1.pin("1").x, R1.pin("1").y - 2.54), { rot: 90, value: "LED_EN", fp: FP.jumper });
-wire(R1.pin("1"), JP1.pin("1"));
-stub(JP1.pin("2"), "up", "VIN");
-const D4 = placeByPin("D4", "Device:LED", "2", R1.pin("2"), { rot: 90, value: "RED", fp: FP.led });
+// VIN -> R1 -> JP1 -> both LED anodes. JP1 is an open solder jumper on the top of the board, right
+// of R1: bridge it with solder to light the LEDs; left open, they draw nothing.
+const LEDS = P(160.02, 92.71);
+const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Open", "1", LEDS, { rot: 90, value: "LED_EN", fp: FP.jumper });
+const R1 = placeByPin("R1", "Device:R", "2", P(LEDS.x, JP1.pin("2").y - 2.54), { value: "1k", fp: FP.r0603 });
+wire(JP1.pin("2"), R1.pin("2"));
+stub(R1.pin("1"), "up", "VIN");
+const D4 = placeByPin("D4", "Device:LED", "2", LEDS, { rot: 90, value: "RED", fp: FP.led });
 stub(D4.pin("1"), "down", "~{CHRG}");
-const D3 = placeByPin("D3", "Device:LED", "2", P(172.72, R1.pin("2").y), { rot: 90, value: "GREEN", fp: FP.led });
-wire(R1.pin("2"), D3.pin("2"));
-junction(R1.pin("2"));
+const D3 = placeByPin("D3", "Device:LED", "2", P(172.72, LEDS.y), { rot: 90, value: "GREEN", fp: FP.led });
+wire(LEDS, D3.pin("2"));
+junction(LEDS);
 stub(D3.pin("1"), "down", "~{DONE}");
 
 TEXTS.push({
@@ -406,7 +408,7 @@ TEXTS.push({
     "- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 16uH at 6V Voc / 2.8V batt. 22uH gives ~0.2A ripple at 6V in, 3.7V batt.",
     "- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels; the CN3791 then draws ~21uA",
     "  from the battery via L1 and Q1's body diode when dark (datasheet p.9). Reference D1 is intentionally unused.",
-    "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 (back) open.",
+    "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.",
     "- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
     "  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.",
     "  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.",
@@ -416,7 +418,7 @@ TEXTS.push({
     "- INA219 (U2, I2C 0x40 with A0=A1=GND). SW3 selects the shunt: SOLAR = R7 (PV -> VIN), current from the panels, bus voltage = VIN;",
     "  BATT = R6 (BATT+ -> cell), + charging / - discharging, bus voltage = cell voltage (readable even with SW_BATT open).",
     "  Shunts 0.1R match the common INA219 breakout, so stock library calibration (32V/2A, PGA /8 = +/-320mV = +/-3.2A) works as-is.",
-    "  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 SDA, 3 SCL, 4 GND. R8/R9 10k pull-ups: omit if the MCU board has them.",
+    "  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them.",
   ].join("\\n"),
 });
 
@@ -453,7 +455,8 @@ function emitPart(p) {
     // Explicit field centres, relative to the symbol origin, where the defaults collide.
     refAt = [x + o.textAt.ref[0], y + o.textAt.ref[1]]; valAt = [x + o.textAt.val[0], y + o.textAt.val[1]];
   } else if (o.power) {
-    refAt = [x, y]; valAt = [x, y + 3.81];
+    // A GND symbol rotated 270 points left; its value goes beyond the tip.
+    refAt = [x, y]; valAt = p.rot === 270 ? [x - 4.83, y] : [x, y + 3.81];
     hideVal = p.libId === "power:PWR_FLAG";
   } else if (p.libId === "SolarNode:CN3791") {
     refAt = [x - 7.62, y - 11.43]; valAt = [x + 7.62, y - 11.43];

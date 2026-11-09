@@ -392,9 +392,10 @@ def main():
         r.route_net(n)
 
     # Power-connector GND pins carry battery/panel current: connect them solidly to the pours
-    # (small PicoBlade pads also leave no room for a second thermal spoke next to pin 1).
+    # (small PicoBlade pads also leave no room for a second thermal spoke next to pin 1). J9's GND
+    # pin sits between VCC and SCL, where a thermal relief starves the same way.
     for fp in board.GetFootprints():
-        if fp.GetReference() in {f"J{i}" for i in range(1, 9)}:
+        if fp.GetReference() in {f"J{i}" for i in range(1, 10)}:
             for p in fp.Pads():
                 if p.GetNetname() == "GND":
                     p.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
