@@ -24,7 +24,6 @@ BOARD_W_MM, BOARD_H_MM = 56.5, 29.0
 # Connector body centres in board mm (from tools/place-pcb.py PLACEMENT)
 CONN = {
     "J1": (10.7, 2.85), "J2": (10.7, 9.15), "J3": (10.7, 15.45), "J4": (10.7, 21.75),
-    "SW3": (3.75, 14.5),
     "J7": (45.23, 3.3), "J8": (45.23, 9.6), "J5": (45.8, 15.45), "J6": (45.8, 21.75),
     "J9": (52.75, 14.5),
 }
@@ -35,7 +34,7 @@ d = ImageDraw.Draw(img)
 # Title, in the style of the SNAP component map
 d.text((70, 38), "SOLAR NODE  //  CHARGE MODULE", font=title_font, fill=INK)
 d.line((70, 112, 980, 112), fill=CYAN, width=4)
-d.text((70, 124), "v1.1 · CN3791 MPPT · INA219 · 4 × Micro JST 1.25 solar in · 2.54mm switch headers · drop-in for SNAP v1.2",
+d.text((70, 124), "v1.1 · CN3791 MPPT · INA3221 · 4 × Micro JST 1.25 solar in · 2.54mm switch headers · drop-in for SNAP v1.2",
        font=sub_font, fill=MAGENTA)
 
 # Board render: crop to the board itself (non-transparent, non-shadow pixels)
@@ -124,20 +123,19 @@ def node(x, y):
     d.text((x + 24, y + 156), "BAT pads · I2C SDA/SCL", font=box_sub, fill=DIM)
 
 
-# Left side: solar panels -> J1..J4, and the INA219 selector switch
+# Left side: solar panels -> J1..J4
 panel(50, 250, 190, 104, "5V 200mA · 110×60mm")
 panel(50, 430, 190, 104, "5V 200mA · 110×60mm")
 solar_box = callout("J2", (520, 600), YELLOW, "SOLAR IN  J1–J4", "up to 4 × 5V panels", "left")
 callout("J1", (520, 250 + 20), YELLOW, "Solar_5V", "own 1N5819WS per input", "left")
 for py in (302, 482):
     wire([(240, py), (270, py), (270, 650), (solar_box[0], 650)], RED, 4)
-callout("SW3", (520, 820), MAGENTA, "SW3  SOLAR / BATT", "INA219 measures panel or cell", "left")
 
 # Right side: switches, battery, node
 sw_batt = callout("J7", (1480, 200), ORANGE, "SW_BATT  J7", "2.54mm header · battery cut-off", "right")
 sw_load = callout("J8", (1480, 300), ORANGE, "SW_LOAD  J8", "2.54mm header · node power", "right")
 batt = callout("J5", (1480, 420), GREEN, "BATT  J5", "18650 cell, 0.8 A charge", "right")
-i2c = callout("J9", (1480, 640), CYAN, "I2C  J9", "INA219 @ 0x40 → node", "right")
+i2c = callout("J9", (1480, 640), CYAN, "I2C  J9", "INA3221 @ 0x42 → node", "right")
 vout = callout("J6", (1480, 750), RED, "VOUT  J6", "battery power to the node", "right")
 SWX = 1850  # switch column, right of the widest callout box
 switch(SWX, 201, "")

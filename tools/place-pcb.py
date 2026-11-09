@@ -21,17 +21,18 @@ LABEL_GAP = 0.35  # label to its own courtyard, mm (must exceed the 0.25 mm of c
 
 # ref: (x, y, rotation[, flags]) in mm relative to the board's top-left corner. Position is the
 # footprint origin, or the courtyard centre with flag "c". Flag "b" flips the part to the back.
-# Left band: M3 holes + SOLAR/BATT switch. Then solar inputs, the CN3791 buck stage and the
-# INA219, the battery/load/switch connectors, and the right band: M3 holes + I2C connector.
+# Left band: M3 holes. Then solar inputs, the CN3791 buck stage and the INA3221, the
+# battery/load/switch connectors, and the right band: M3 holes + I2C connector.
 PLACEMENT = {
     "H1": (HOLE_INSET, HOLE_INSET, 0, "c"),
     "H2": (W - HOLE_INSET, HOLE_INSET, 0, "c"),
     "H3": (HOLE_INSET, H - HOLE_INSET, 0, "c"),
     "H4": (W - HOLE_INSET, H - HOLE_INSET, 0, "c"),
-    "SW3": (3.75, H / 2, 90, "c"),
     "J9": (W - 3.75, H / 2, 90, "c"),
     # Solar inputs: connector pin 1 faces its diode's anode; cathodes line up on the PV bus.
-    "J1": (11.29, 2.4, 180), "D5": (15.45, 2.4, 180),
+    # Panel 1 runs through R10 (INA3221 channel 3 shunt, 0603) in D5's place, low enough for its
+    # label above it; D5 drops below it, its cathode still on the PV bus line at x = 16.5.
+    "J1": (11.29, 2.4, 180), "R10": (15.45, 2.85, 0), "D5": (15.45, 4.65, 180),
     "J2": (11.29, 8.7, 180), "D6": (15.45, 8.7, 180),
     "J3": (11.29, 15.0, 180), "D7": (15.45, 15.0, 180),
     "J4": (11.29, 21.3, 180), "D8": (15.45, 21.3, 180),
@@ -56,13 +57,15 @@ PLACEMENT = {
     "R1": (21.0, 25.8, 0),
     # LED supply solder jumper, right of R1 (pad 2 to R1, pad 1 up to the LED anode track)
     "JP1": (24.25, 25.4, 180),
-    # INA219 monitor
+    # INA3221 monitor (VQFN-16): channel 3 pins face left, 2 up, 1 right, I2C down
     "U2": (37.3, 18.9, 0),
-    "C6": (37.3, 23.3, 0),
+    "C6": (33.05, 20.8, 180),  # left of U2, pad 1 by VS (pin 4)
     "R8": (30.8, 24.4, 90),
     "R9": (33.3, 24.4, 90),
-    "R6": (37.95, 25.4, 0),
-    # Reverse-battery P-FET between J5 pin 1 (drain, right) and R6 (source, lower left)
+    # Rotated so BATT+ enters from the right (down the strip beside U2) and the cell side, from
+    # Q2, runs under it to the left pad
+    "R6": (37.95, 25.4, 180),
+    # Reverse-battery P-FET between J5 pin 1 (drain, right) and R6 (source, under R6 to its left pad)
     "Q2": (42.3, 26.6, 0),
     # Right column: switch leads, battery, load
     # 2.54 mm pin headers, pin 1 on the left. Both pads stay left of the BATT+ track at x = 48.
@@ -91,9 +94,6 @@ POLARITY_OFFSET = 1.75  # sign centre from the connector centre, mm
 I2C_LABEL = "I2C"
 I2C_PINS = {"1": "VCC", "2": "GND", "3": "SCL", "4": "SDA"}  # red, black, yellow, white cable
 I2C_PIN_TEXT = 0.8  # mm; the pads are on a 1.25 mm pitch
-# SW3 (INA219 shunt selector): two vertical lines on B.Silkscreen beside its pads.
-# Rotated 270 so "solar" sits at the PV/VIN throws (pins 1/6) and "batt" at BATT+/BAT_CELL (pins 3/4).
-SW3_LABEL = ["i2c power sensor", "solar/batt"]  # nearest the pads first; reads "solar/batt" then "i2c power sensor"
 # Back-side parts: reference beside the upper pad and this label beside the lower pad, both on
 # B.Silkscreen right of the courtyard. They are left out of the front label placement. (Empty since
 # JP1 moved to the top; kept for parts placed with the "b" flag.)
@@ -102,7 +102,7 @@ BACK_LABELS = {}
 # Label side preference per reference (N/S/E/W); anything unlisted tries N, S, E, W.
 # Connectors and the solar diodes label underneath so each label reads with its own part.
 LABEL_SIDES = {r: "SN" for r in ("J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "D5", "D6", "D7", "D8", "R5")}
-LABEL_SIDES.update({"U2": "WNSE", "J9": "NS", "SW3": "NS"})
+LABEL_SIDES.update({"U2": "WNSE", "J9": "NS"})
 
 
 def mm(v):
@@ -251,15 +251,6 @@ def board_silk(board, fps, boxes):
         t = silk_text(board, I2C_PINS[pad.GetNumber()], 0, pcbnew.ToMM(pad.GetPosition().y), I2C_PIN_TEXT, layer=pcbnew.B_SilkS)
         ink = t.GetEffectiveTextShape().BBox()
         t.Move(pcbnew.VECTOR2I(bb.GetLeft() - mm(0.4) - ink.GetRight(), pad.GetPosition().y - ink.Centre().y))
-
-    # SW3: what the switch does, on the back between its pads and the solar connectors.
-    x = max(p.GetBoundingBox().GetRight() for p in fps["SW3"].Pads()) + mm(0.4)
-    cy = boxes["SW3"].Centre().y
-    for text in SW3_LABEL:
-        t = silk_text(board, text, 0, 0, I2C_PIN_TEXT, layer=pcbnew.B_SilkS, angle=270)
-        ink = t.GetEffectiveTextShape().BBox()
-        t.Move(pcbnew.VECTOR2I(x - ink.GetLeft(), cy - ink.Centre().y))
-        x = t.GetEffectiveTextShape().BBox().GetRight() + mm(0.3)
 
     # Back-side parts (JP1): reference at the upper pad, function label at the lower pad.
     for ref, text in BACK_LABELS.items():
