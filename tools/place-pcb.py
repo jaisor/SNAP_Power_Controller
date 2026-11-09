@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # Builds the draft PCB: footprints from the schematic netlist, placed by hand-tuned
 # coordinates, nets assigned, reference labels auto-placed clear of everything, M3 holes
 # in the corners and a chamfered Edge.Cuts outline. No tracks. Run with KiCad's Python:

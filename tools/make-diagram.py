@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # Draws docs/images/wiring-diagram.png: the board render with a callout per connector and the
 # parts of a SNAP-style solar mesh node wired to them, in the style of the SNAP component map.
 # Run with KiCad's Python (has Pillow + numpy) from the repo root, after refreshing pcb-top.png:

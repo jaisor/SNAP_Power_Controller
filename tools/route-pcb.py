@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # Routes the placed board: a small grid A* router (two layers, 8-way moves, vias) written for
 # this design, plus GND stitching vias and GND pours. Needs an unrouted board, so run it
 # right after tools/place-pcb.py (re-run both to re-route). With KiCad's Python:

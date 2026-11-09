@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // Generates the CN3791 solar charger schematic (datasheet Figure 1) for KiCad 10.
 // Usage: node tools/gen-schematic.js [project dir, default: repo root]
 const fs = require("fs");

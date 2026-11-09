@@ -127,6 +127,9 @@ U2 INA219 IN+/IN- <- SW3 DPDT: SOLAR = (PV, VIN) across R7 | BATT = (BATT+, BAT_
 ### Version control
 Git repo at this folder (branch `main`), remote `origin` = https://github.com/jaisor/SolarNodeChargeController (private). Tracked: `.kicad_pro/.kicad_sch/.kicad_pcb`, `SolarNode.kicad_sym`, `sym-lib-table`, `tools/` (schematic generator, PCB placement and routing scripts, fab packager, wiring-diagram drawer), `CLAUDE.md`, `README.md` with images in `docs/images/` (schematic SVG; top, bottom and angled 3D renders — regenerate them when the design changes; commands are in the README). Ignored (see `.gitignore`): `*.kicad_prl` (per-user view state), `*.lck`, KiCad autosaves/backups, `.history/` (KiCad's local history, its own git repo), `*.bak*`, and `output/` (regenerable reports, BOM, PDFs, fab files — attach fab packages to a release tag instead). `.gitattributes` pins KiCad files to LF because `core.autocrlf=true` on this machine.
 
+### License
+`LICENSE` is CERN-OHL-P-2.0 (verbatim SPDX text) for the hardware design and documentation; `tools/LICENSE` is MIT for the scripts, and each script starts with an `SPDX-License-Identifier: MIT` line. The user chose a permissive licence for its warranty and liability disclaimer (section 5 covers products made from the design, including product liability). Copyright holder: Jordan Marinov (JaisorGadgets), 2026. The README has the notice and a Safety section. Keep the SPDX line on new scripts.
+
 ### MCP server
 User-scope `kicad` MCP server (PyPI `kicad-mcp-server` 3.5.0, run with KiCad's Python), configured in `~/.claude.json` with env vars:
 - `KICAD_MCP_PROJECTS_BASE` = `C:\Users\jaiso\Projects\Claude\KiCad`, this repo's parent: projects are its direct subfolders, so the project name is `SolarNodeChargeController` (the repo folder). Updated when the project was flattened.
