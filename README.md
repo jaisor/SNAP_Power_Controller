@@ -37,7 +37,7 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 
 | Example build part | With this board |
 |---|---|
-| CN3158 MPPT module (SDBK03TA) | CN3791 MPPT buck charger, tuned for 5V panels (VIN held at 4.58V) and charging at 0.8A |
+| CN3158 MPPT module (SDBK03TA) | CN3791 MPPT buck charger, tuned for 5V panels (VIN held at 4.42V) and charging at 0.8A |
 | One 1N5819 per panel, soldered inline | A 1N5819WS per input on the board, for up to four panels |
 | Hand-soldered panel, battery and node wiring | Plug-in connectors for every connection: Micro JST 1.25, with 2.54mm pin headers for the switches |
 | Latching on/off switch wired into the battery lead | Two switch connectors: SW_BATT cuts the battery, SW_LOAD cuts only the node |
@@ -53,6 +53,7 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 | J7 / J8 left unswitched | Both switch connectors are in series with the power path, so an unused one needs a 2.54mm jumper cap, or a wire bridging its pads on the back of the board. Otherwise the battery or the node stays disconnected |
 | J6 (VOUT) | The XIAO nRF52840's BAT+ / BAT− pads, which is where SNAP powers it from the 18650 today |
 | J9 (I2C) | XIAO 3V3 → VCC, D6 → SDA, D7 → SCL, GND → GND. These pins need a Meshtastic build with I2C on D6/D7 (see the table below) |
+| JP1 (LED, back) | Nothing. Bridge it with solder if you want the status LEDs. It's open as supplied, so the LEDs stay dark |
 
 Set SW3 to BATT to see the battery's charge and discharge current, or to SOLAR to see what the panels deliver.
 
@@ -72,11 +73,12 @@ In Meshtastic, enable power metrics in the telemetry settings so the readings ar
 ## Features
 
 - **Solar input:** up to four 5V panels in parallel (Micro JST 1.25), each isolated by its own 1N5819WS Schottky (SOD-323) so a shaded or unplugged panel doesn't drag the others down.
-- **MPPT charging:** [CN3791](https://naylampmechatronics.com/img/cms/001216/CN3791.PDF) PWM buck charger with constant-voltage MPPT set to 4.58V input. Charges at 0.8A to 4.2V (CC/CV, trickle charge for deeply discharged cells, automatic recharge).
+- **MPPT charging:** [CN3791](https://naylampmechatronics.com/img/cms/001216/CN3791.PDF) PWM buck charger with constant-voltage MPPT set to 4.42V input. Charges at 0.8A to 4.2V (CC/CV, trickle charge for deeply discharged cells, automatic recharge).
 - **Battery and load switching:** connectors for two panel-mount switches. **SW_BATT** disconnects the battery from everything. **SW_LOAD** cuts only the output, so the battery keeps charging.
 - **Output:** VOUT connector (Micro JST 1.25) that powers the module from the battery.
+- **Reverse-battery protection:** Q2, a P-channel MOSFET between the battery connector and the rest of the board. A cell plugged in backwards is blocked instead of shorting through the charger. With the cell the right way round, Q2 is fully on in both directions, adding about 60mV of drop at 0.8A.
 - **Power monitoring:** [INA219](https://www.ti.com/lit/ds/symlink/ina219.pdf) at I2C address 0x40. A slide switch selects whether it measures the solar input or the battery (bidirectional current plus voltage).
-- **Status LEDs:** red while charging, green when charging is done.
+- **Status LEDs:** red while charging, green when charging is done. They're powered through JP1, an open solder jumper on the back of the board: bridge its two pads with solder to turn them on. Left open, the LEDs are disconnected and draw nothing.
 
 ## Schematic
 
@@ -87,7 +89,7 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 | Item | Value | Why |
 |---|---|---|
 | Charge current | 0.8A (R5 = 0.15Ω) | I<sub>CH</sub> = 120mV / R5. Leaves margin on the 1.0A-rated connectors; use 0.24Ω for 0.5A with small cells. |
-| MPPT setpoint | 4.58V at VIN (R3/R4 = 28.0k/10k) | V<sub>MPPT</sub> = 1.205V × (1 + R3/R4). The panels sit one diode drop higher (~4.9–5.0V), about the max-power voltage of a typical 5V panel. |
+| MPPT setpoint | 4.42V at VIN (R3/R4 = 26.7k/10k) | V<sub>MPPT</sub> = 1.205V × (1 + R3/R4). The panels sit one diode drop higher (~4.7–4.9V), a little under a cool 5V panel's max-power voltage of about 5.0V. That voltage falls about 0.4% per °C, to about 4.2V at a 65°C cell temperature, and a fixed set point above it cuts the panel's output. Modeled for a 10-cell panel, 4.42V gives 99% of maximum power at 25°C and 84% at 65°C. v1.0's 4.58V (28.0k) gives 100% and 71%. |
 | Blocking diode D1 | omitted | The input diodes already stop the battery feeding back into the panels. Leaving D1 out saves ~0.4V of headroom; the trade-off is ~21µA of battery drain in the dark. |
 | Inductor | 22µH, Bourns SRN6045TA | Meets the datasheet's L > 5 × (VCC − VBAT) µH, with ~0.2A ripple. |
 | Input diodes | 1N5819WS, SOD-323 (40V/1A) | The panels peak at ~200–300mA each, so the SMD part has plenty of margin and saves ~12mm of board width over DO-41. |
@@ -104,8 +106,8 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 | Left end | M3 mounting holes H1/H3 in the corners, with the SOLAR/BATT selector SW3 between them |
 | Left column | Solar inputs J1–J4, each with its 1N5819WS (D5–D8) |
 | Top middle | Buck power stage in current-flow order: R7, C1/C5, Q1, D2, L1, R5, C3 |
-| Middle | CN3791 (U1) with its support parts and status LEDs |
-| Right middle | INA219 (U2), I2C pull-ups, battery shunt R6 |
+| Middle | CN3791 (U1) with its support parts and status LEDs. JP1, the LED solder jumper, is on the back under the LEDs |
+| Right middle | INA219 (U2), I2C pull-ups, battery shunt R6, reverse-battery MOSFET Q2 |
 | Right column | SW_BATT/SW_LOAD switch leads (J7/J8), battery J5, VOUT J6 |
 | Right end | M3 mounting holes H2/H4 in the corners, with the 4-pin I2C connector J9 between them |
 
@@ -126,7 +128,7 @@ Every reference label sits next to its own part, clear of pads, other parts and 
 - **Track widths:** power paths are 0.8mm, necked to 0.4mm at small pads. Signals are 0.25mm.
 - **Kelvin sensing:** the CN3791's current-sense pins and the INA219 selector's throws connect straight to the pads of their shunt resistors (R5, R6, R7).
 - **Layer use:** about 80% of the copper length is on the top layer. The bottom-side tracks are short jumps, which keeps the ground plane mostly intact.
-- **Size:** 208 track segments and 45 vias, 11 of which are GND stitching vias.
+- **Size:** 216 track segments and 48 vias, 11 of which are GND stitching vias.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 This is auto-routing, so review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which currently returns through the ground plane) and the few bottom-layer tracks that cut the plane.
@@ -148,7 +150,7 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 
 - **Current:** PicoBlade contacts are rated 1.0A. The charge current is set to 0.8A to stay under that on the battery connector (J5). Keep the module's load current under 1A too, since it flows through J5 when the panels are dark.
 - **No keying between functions:** J1–J6 are the same 2-pin type, so a battery lead fits a solar socket. Check the silkscreen before plugging in. The switch headers take a different plug, so they can't be mixed up with these.
-- **Battery polarity:** "JST 1.25" LiPo pigtails have no standard polarity. Check that red goes to the pin marked `+` (pin 1 on J5) before connecting.
+- **Battery polarity:** "JST 1.25" LiPo pigtails have no standard polarity. Check that red goes to the pin marked `+` (pin 1 on J5) before connecting. Q2 blocks a reversed cell, but fit the cell with SW_BATT off anyway: with SW_BATT on in sunlight, the charger's output can partly turn Q2 on and push a limited current into a reversed cell, which heats Q2.
 - **Reading the marks:** pin 1 is `+` on J1–J6. J1–J4 are rotated 180° from J5 and J6, so the marks read `- J1 +` on the solar inputs and `+ J5 -` on the right-hand connectors.
 
 **Operating note:** if SW_BATT is off while the panels are in sun, the charger sees no battery and VBAT pulses around 4.2V. Keep SW_LOAD off in that state.
@@ -162,7 +164,7 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 | SW3 position | Shunt | Current | Bus voltage |
 |---|---|---|---|
 | SOLAR | R7, between the PV bus and VIN | Panel current, always ≥ 0 | VIN (panel voltage minus the diode drop) |
-| BATT | R6, between BATT+ and the cell | Positive while charging, negative while discharging | Cell voltage, readable even with SW_BATT off |
+| BATT | R6, between BATT+ and the cell | Positive while charging, negative while discharging | Cell voltage, readable even with SW_BATT off. It's measured after Q2, so it reads up to about 50mV off while current flows |
 
 The MCU can't sense SW3's position. Firmware has to know which position is set, or infer it from the readings.
 
@@ -174,7 +176,7 @@ The MCU can't sense SW3's position. Firmware has to know which position is set, 
 | INA219 battery current | Same setup, battery at about 4V | Done. Discharging: about −12 to −15mA. Charging from the XIAO's USB: +100mA |
 | Sunlight | Board wired into a real solar node with 4 × 60mA panels, with metrics tracked in Grafana dashboards | In progress. Voltage and charge current rose as expected when exposed to sunlight. One reading in the Meshtastic app: 4.56V, 110.5mA |
 
-The signs match the expected convention: positive while charging, negative while discharging. The USB reading comes from the XIAO's own charger, so it doesn't test the CN3791. The sunlight reading is from SW3's SOLAR position: 4.56V is above a Li-ion cell's 4.2V and close to the 4.58V MPPT set point. It's a single reading, and longer-term results are still to come. These tests used a board with Micro JST 1.25 connectors on J7 and J8, so the pin-header version hasn't been built yet. In the sunlight test build, J7 and J8 are bridged with wire on the back of the board, so neither switch is fitted.
+The signs match the expected convention: positive while charging, negative while discharging. The USB reading comes from the XIAO's own charger, so it doesn't test the CN3791. The sunlight reading is from SW3's SOLAR position: 4.56V is above a Li-ion cell's 4.2V and close to the 4.58V MPPT set point of the board tested (v1.1 lowers it to 4.42V). It's a single reading, and longer-term results are still to come. These tests used a board with Micro JST 1.25 connectors on J7 and J8, so the pin-header version hasn't been built yet. In the sunlight test build, J7 and J8 are bridged with wire on the back of the board, so neither switch is fitted.
 
 <p align="center">
   <img src="docs/images/testing/solar-node-build.jpg" alt="Test build: the board, a XIAO and an 18650 on a build grid, wired to four panels through the enclosure lid" width="420">
@@ -185,14 +187,14 @@ The signs match the expected convention: positive while charging, negative while
 
 This is an experimental design for charging a lithium-ion cell. It's provided as is, with no warranty, and hasn't been certified to any safety standard. If you build it, you're responsible for:
 
-- Assembling it correctly and checking connector polarity before connecting a cell. J1–J6 share one connector type, so a lead plugs into the wrong socket easily.
+- Assembling it correctly and checking connector polarity before connecting a cell. J1–J6 share one connector type, so a lead plugs into the wrong socket easily. Q2 protects against a reversed cell on J5, but not against every fault, such as a battery plugged into a solar input.
 - Using a protected cell or a separate protection circuit. The CN3791 charges the cell but doesn't protect it from over-discharge or short circuits.
 - Fusing, wiring and an enclosure suited to where the node is installed, including outdoor heat and moisture.
 - Not using it where a failure could hurt someone or damage property.
 
 ## Fabrication
 
-Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). That release is v1.0, which has Micro JST 1.25 connectors on J7 and J8 and no polarity marks. The design in this repo is v1.1, still a work in progress, and it will be released with the next fabrication batch. The package is generated into `output/fab/`, which isn't tracked in git:
+Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). That release is v1.0, which has Micro JST 1.25 connectors on J7 and J8, no polarity marks, and a 4.58V MPPT set point (R3 = 28.0k). The design in this repo is v1.1, still a work in progress, and it will be released with the next fabrication batch. The package is generated into `output/fab/`, which isn't tracked in git:
 
 | File | Contents |
 |---|---|
@@ -201,7 +203,7 @@ Download the package from the [latest release](https://github.com/jaisor/SolarNo
 | `SolarChargeModule_v1.1_BOM.csv` | BOM in JLCPCB format (Comment, Designator, Footprint, LCSC Part #), plus a Manufacturer Part column for the specific parts |
 | `SolarChargeModule_v1.1_CPL.csv` | Pick-and-place file for top-side assembly, in the same coordinates as the Gerbers |
 
-LCSC part numbers are only filled in where verified (D5–D8). Pick the rest in the assembler's part search, and check rotation and polarity in their preview. The PicoBlade headers, the J7 and J8 pin headers, and SW3 are through-hole parts.
+LCSC part numbers are only filled in where verified (D5–D8). Pick the rest in the assembler's part search, and check rotation and polarity in their preview. The PicoBlade headers, the J7 and J8 pin headers, and SW3 are through-hole parts. JP1 is a solder jumper made of bare pads, so it has no part to place.
 
 Regenerating the package (after the board is final and DRC is clean):
 

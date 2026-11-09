@@ -19,8 +19,8 @@ HOLE_INSET = 4.0  # M3 hole centre distance from each edge, mm
 EDGE_CLEAR = 0.6  # courtyard/label to board edge, mm
 LABEL_GAP = 0.35  # label to its own courtyard, mm (must exceed the 0.25 mm of check margins)
 
-# ref: (x, y, rotation[, "c"]) in mm relative to the board's top-left corner. Position is the
-# footprint origin, or the courtyard centre when the 4th element is "c".
+# ref: (x, y, rotation[, flags]) in mm relative to the board's top-left corner. Position is the
+# footprint origin, or the courtyard centre with flag "c". Flag "b" flips the part to the back.
 # Left band: M3 holes + SOLAR/BATT switch. Then solar inputs, the CN3791 buck stage and the
 # INA219, the battery/load/switch connectors, and the right band: M3 holes + I2C connector.
 PLACEMENT = {
@@ -54,12 +54,16 @@ PLACEMENT = {
     "D4": (21.3, 22.9, 0),
     "D3": (24.8, 22.9, 0),
     "R1": (21.0, 25.8, 0),
+    # LED supply solder jumper, on the back under the LEDs (VIN pad on top, R1 pad below)
+    "JP1": (21.0, 24.35, 90, "b"),
     # INA219 monitor
     "U2": (37.3, 18.9, 0),
     "C6": (37.3, 23.3, 0),
     "R8": (30.8, 24.4, 90),
     "R9": (33.3, 24.4, 90),
     "R6": (37.95, 25.4, 0),
+    # Reverse-battery P-FET between J5 pin 1 (drain, right) and R6 (source, lower left)
+    "Q2": (42.3, 26.6, 0),
     # Right column: switch leads, battery, load
     # 2.54 mm pin headers, pin 1 on the left. Both pads stay left of the BATT+ track at x = 48.
     "J7": (43.96, 3.3, 90),
@@ -90,6 +94,9 @@ I2C_PIN_TEXT = 0.8  # mm; the pads are on a 1.25 mm pitch
 # SW3 (INA219 shunt selector): two vertical lines on B.Silkscreen beside its pads.
 # Rotated 270 so "solar" sits at the PV/VIN throws (pins 1/6) and "batt" at BATT+/BAT_CELL (pins 3/4).
 SW3_LABEL = ["i2c power sensor", "solar/batt"]  # nearest the pads first; reads "solar/batt" then "i2c power sensor"
+# Back-side parts: reference beside the upper pad and this label beside the lower pad, both on
+# B.Silkscreen right of the courtyard. They are left out of the front label placement.
+BACK_LABELS = {"JP1": "LED"}
 
 # Label side preference per reference (N/S/E/W); anything unlisted tries N, S, E, W.
 # Connectors and the solar diodes label underneath so each label reads with its own part.
@@ -103,7 +110,7 @@ def mm(v):
 
 def courtyard(fp):
     fp.BuildCourtyardCaches()
-    cy = fp.GetCourtyard(pcbnew.F_CrtYd)
+    cy = fp.GetCourtyard(pcbnew.B_CrtYd if fp.IsFlipped() else pcbnew.F_CrtYd)
     return cy.BBox() if cy.OutlineCount() else fp.GetBoundingBox(False)
 
 
@@ -121,11 +128,12 @@ def inside_board(bb):
 def place_labels(fps, boxes, extra_obstacles):
     """Put each visible reference beside its footprint, on the first side (then nudged
     along that side) where it clears every courtyard, every other label and the edge."""
-    obstacles = [inflate(b, 0.15) for b in boxes.values()] + [inflate(b, 0.3) for b in extra_obstacles]
+    obstacles = [inflate(b, 0.15) for r, b in boxes.items() if not fps[r].IsFlipped()]
+    obstacles += [inflate(b, 0.3) for b in extra_obstacles]
     failed = []
     for ref in sorted(fps, key=lambda r: -boxes[r].GetArea()):
         field = fps[ref].Reference()
-        if not field.IsVisible():
+        if not field.IsVisible() or fps[ref].IsFlipped():
             continue
         default_pos = field.GetPosition()
         field.SetTextAngleDegrees(0)
@@ -251,6 +259,20 @@ def board_silk(board, fps, boxes):
         ink = t.GetEffectiveTextShape().BBox()
         t.Move(pcbnew.VECTOR2I(x - ink.GetLeft(), cy - ink.Centre().y))
         x = t.GetEffectiveTextShape().BBox().GetRight() + mm(0.3)
+
+    # Back-side parts (JP1): reference at the upper pad, function label at the lower pad.
+    for ref, text in BACK_LABELS.items():
+        fp = fps[ref]
+        right = boxes[ref].GetRight() + mm(0.3)
+        ys = sorted(p.GetPosition().y for p in fp.Pads())
+        field = fp.Reference()
+        field.SetTextAngleDegrees(0)
+        field.SetKeepUpright(True)
+        t = silk_text(board, text, 0, 0, I2C_PIN_TEXT, layer=pcbnew.B_SilkS)
+        for item, y in ((field, ys[0]), (t, ys[-1])):
+            item.SetPosition(pcbnew.VECTOR2I(0, y))
+            ink = item.GetEffectiveTextShape().BBox()
+            item.Move(pcbnew.VECTOR2I(right - ink.GetLeft(), y - ink.Centre().y))
     return items
 
 
@@ -299,12 +321,14 @@ def main():
         x, y, rot, *mode = PLACEMENT[ref]
         fp.SetOrientationDegrees(rot)
         fp.SetPosition(pcbnew.VECTOR2I(mm(ORIGIN[0] + x), mm(ORIGIN[1] + y)))
-        if mode == ["c"]:
+        if "c" in mode:
             c = courtyard(fp).Centre()
             fp.Move(pcbnew.VECTOR2I(mm(ORIGIN[0] + x) - c.x, mm(ORIGIN[1] + y) - c.y))
         if ref.startswith("H"):
             fp.Reference().SetVisible(False)
         board.Add(fp)
+        if "b" in mode:  # after Add: flipping a footprint that isn't on a board crashes pcbnew
+            fp.Flip(fp.GetPosition(), pcbnew.FLIP_DIRECTION_LEFT_RIGHT)
         fps[ref] = fp
 
     for net in root.iter("net"):
@@ -327,7 +351,7 @@ def main():
     refs = list(boxes)
     for i, a in enumerate(refs):
         for b in refs[i + 1:]:
-            if boxes[a].Intersects(boxes[b]):
+            if fps[a].IsFlipped() == fps[b].IsFlipped() and boxes[a].Intersects(boxes[b]):
                 problems.append(f"courtyard overlap {a}/{b}")
         if not inside_board(boxes[a]) and not a.startswith("H"):
             problems.append(f"{a} too close to the edge")

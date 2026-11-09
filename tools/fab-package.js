@@ -63,7 +63,7 @@ PCB order settings
   Plated holes:      0.5 mm (Micro JST 1.25 / PicoBlade headers), 0.9 mm (slide switch SW3), 1.0 mm (2.54 mm pin headers J7, J8)
   Non-plated holes:  4 x 3.2 mm (M3 mounting), in NPTH.drl
   Solder mask:       both sides (any colour)
-  Silkscreen:        both sides (back carries the module ID, I2C pin names, SW3 label)
+  Silkscreen:        both sides (back carries the module ID, I2C pin names, SW3 and JP1 labels)
   Surface finish:    HASL lead-free or ENIG
   Panelisation:      none; no castellations, no edge plating, no impedance control
 
@@ -72,10 +72,12 @@ Assembly (optional): top side only
   - LCSC part numbers are filled in only where verified (D5-D8). Pick the rest in the
     assembler's part search; the Manufacturer Part column names the specific parts.
   - Check part rotation and polarity in the assembler's preview before ordering, especially
-    U1 (CN3791), U2 (INA219), Q1, D2, D5-D8 and the LEDs D3 (green) / D4 (red).
+    U1 (CN3791), U2 (INA219), Q1, Q2, D2, D5-D8 and the LEDs D3 (green) / D4 (red).
   - Through-hole parts: J1-J6 and J9 (Molex 53047 PicoBlade headers), J7 and J8 (2.54 mm pin headers) and SW3 (C&K JS202011CQN).
     Hand-solder them, or order through-hole assembly.
   - H1-H4 are mounting holes, not parts (left out of the BOM and placement files).
+  - JP1 (back) is an open solder jumper for the status LEDs: bare pads, no part. Leave it
+    open; bridge it with solder by hand to enable the LEDs.
 `);
 
 // Gerber + drill zip: the file the board house uploads.

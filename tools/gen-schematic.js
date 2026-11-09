@@ -200,6 +200,7 @@ const FP = {
   pico4: "Connector_Molex:Molex_PicoBlade_53047-0410_1x04_P1.25mm_Vertical",
   // 2.54 mm pin header for the switch leads.
   hdr2: "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+  jumper: "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
 };
 
 // ---------- circuit ----------
@@ -235,7 +236,7 @@ const C1 = placeByPin("C1", "Device:C", "1", P(68.58, RAIL), { value: "10uF/25V"
 gnd(C1.pin("2"));
 const C5 = placeByPin("C5", "Device:C", "1", P(83.82, RAIL), { value: "100nF/25V", fp: FP.c0603 });
 gnd(C5.pin("2"));
-const R3 = placeByPin("R3", "Device:R", "1", P(99.06, RAIL), { value: "28.0k 1%", fp: FP.r0603 });
+const R3 = placeByPin("R3", "Device:R", "1", P(99.06, RAIL), { value: "26.7k 1%", fp: FP.r0603 });
 const R4 = placeByPin("R4", "Device:R", "1", R3.pin("2"), { value: "10k 1%", fp: FP.r0603 });
 gnd(R4.pin("2"));
 stub(R3.pin("2"), "right", "MPPT", 12.7);
@@ -280,13 +281,20 @@ stub(J7.pin("2"), "left", "BATT+", 5.08);
 // SW_BATT so the cell voltage still reads with the switch open.
 const R6 = placeByPin("R6", "Device:R", "1", P(200.66, 68.58), { rot: 90, value: "0.1R 1%", fp: FP.r1206, textAbove: true });
 stub(R6.pin("1"), "left", "BATT+", 2.54);
-const cell = P(213.36, 68.58);
+const cell = P(210.82, 68.58);
 wire(R6.pin("2"), cell);
 stub(cell, "up", "BAT_CELL", 5.08);
 junction(cell);
 const J5 = placeByPin("J5", "Connector_Generic:Conn_01x02", "1", P(220.98, 68.58), { value: "LiPo_1S_4.2V", fp: FP.pico2 });
-wire(cell, J5.pin("1"));
-gnd(wire(J5.pin("2"), P(218.44, J5.pin("2").y), P(218.44, 76.2)));
+const j5Gnd = wire(J5.pin("2"), P(218.44, J5.pin("2").y), P(218.44, 76.2));
+gnd(j5Gnd);
+// Q2: reverse-battery protection. Drain to the cell, source to BAT_CELL, gate to GND. With the cell
+// the right way round the body diode lifts the source and Vgs = -Vcell turns Q2 fully on, both ways
+// (charge and discharge). With the cell reversed, Vgs is ~0 and the body diode blocks.
+const Q2 = placeByPin("Q2", "Transistor_FET:AO3401A", "3", J5.pin("1"), { rot: 90, mirror: "y", value: "AO3401A", textAt: { ref: [-6.35, 1.27], val: [-6.86, 3.81] } });
+if (Q2.pin("2").x !== cell.x || Q2.pin("2").y !== cell.y) throw new Error("Q2 source is not on BAT_CELL");
+wire(Q2.pin("1"), j5Gnd);
+junction(j5Gnd);
 
 const J8 = placeByPin("J8", "Connector_Generic:Conn_01x02", "1", P(220.98, 86.36), { value: "SW_LOAD", fp: FP.hdr2 });
 stub(J8.pin("1"), "left", "VBAT", 5.08);
@@ -375,7 +383,11 @@ gnd(C4.pin("2"));
 
 // Status LEDs: red = charging (~CHRG), green = done (~DONE)
 const R1 = place("R1", "Device:R", 160.02, 88.9, { value: "1k", fp: FP.r0603 });
-stub(R1.pin("1"), "up", "VIN");
+// JP1: open solder jumper in the LED supply, on the back of the board. Bridge it with solder to
+// light the LEDs; left open, they draw nothing.
+const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Open", "1", P(R1.pin("1").x, R1.pin("1").y - 2.54), { rot: 90, value: "LED_EN", fp: FP.jumper });
+wire(R1.pin("1"), JP1.pin("1"));
+stub(JP1.pin("2"), "up", "VIN");
 const D4 = placeByPin("D4", "Device:LED", "2", R1.pin("2"), { rot: 90, value: "RED", fp: FP.led });
 stub(D4.pin("1"), "down", "~{CHRG}");
 const D3 = placeByPin("D3", "Device:LED", "2", P(172.72, R1.pin("2").y), { rot: 90, value: "GREEN", fp: FP.led });
@@ -388,16 +400,16 @@ TEXTS.push({
   text: [
     "Design notes (CN3791 datasheet, Figure 1):",
     "- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819WS (SOD-323, 40V/1A). MPPT senses VIN after these diodes,",
-    "  so each panel sits ~0.3-0.45V above the 4.6V setpoint (~4.9-5.0V, typical Vmp of a 5V panel). Panels peak at ~200-300mA each.",
+    "  so each panel sits ~0.3-0.45V above the 4.42V setpoint (~4.7-4.9V: under a cool panel's ~5V Vmp, nearer a hot one's). Panels peak at ~200-300mA each.",
     "- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).",
-    "- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 28.0k/10k) = 4.58V. Charging starts once MPPT > 1.23V (VIN > 4.68V).",
+    "- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 26.7k/10k) = 4.42V. Charging starts once MPPT > 1.23V (VIN > 4.51V).",
     "- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 16uH at 6V Voc / 2.8V batt. 22uH gives ~0.2A ripple at 6V in, 3.7V batt.",
     "- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels; the CN3791 then draws ~21uA",
     "  from the battery via L1 and Q1's body diode when dark (datasheet p.9). Reference D1 is intentionally unused.",
-    "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input or VIN < VBAT.",
+    "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 (back) open.",
     "- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
     "  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.",
-    "  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors.",
+    "  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.",
     "  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.",
     "  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).",
     "  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.",
@@ -437,7 +449,10 @@ function emitPart(p) {
   const looksVertical = pinIds.length === 2 && Math.abs(p.pin(pinIds[0]).x - p.pin(pinIds[1]).x) < 0.01;
   const side = (s, dy) => [x + 2.79 + w(s) / 2, y + dy];
   let refAt, valAt, just, hideVal;
-  if (o.power) {
+  if (o.textAt) {
+    // Explicit field centres, relative to the symbol origin, where the defaults collide.
+    refAt = [x + o.textAt.ref[0], y + o.textAt.ref[1]]; valAt = [x + o.textAt.val[0], y + o.textAt.val[1]];
+  } else if (o.power) {
     refAt = [x, y]; valAt = [x, y + 3.81];
     hideVal = p.libId === "power:PWR_FLAG";
   } else if (p.libId === "SolarNode:CN3791") {
