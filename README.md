@@ -4,7 +4,7 @@ A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built fo
 
 Designed in KiCad 10.
 
-> **Status:** the schematic is complete and passes ERC. The PCB (56.5 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and auto-routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
+> **Status:** the schematic is complete and passes ERC. The PCB (56.5 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
 >
 > **This branch (`multi_channel_sensor`):** a three-channel INA3221 replaces the INA219 and its SOLAR/BATT switch, in both the schematic and the PCB (DRC clean). This version hasn't been built or tested yet; the test results below are from the INA219 board on `main`.
 
@@ -123,16 +123,16 @@ Every reference label sits next to its own part, clear of pads, other parts and 
 - **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed beside its pads on the back, since there's no room between the pads and the connectors on the front.
 - **Back:** the module ID, "Solar Charge Module v1.1 / by JaisorGadgets / Nov. 5, 2026".
 
-**Routing** (by `tools/route-pcb.py`):
+**Routing** (drawn by hand in `tools/draw-routes.py`, so it comes out the same on every run):
 
-- **Ground:** the bottom layer is a solid GND plane. The top layer has a GND fill, and every surface-mount GND pad gets its own via down to the plane.
-- **Track widths:** power paths are 0.8mm, necked to 0.4mm at small pads. Signals are 0.25mm.
-- **Kelvin sensing:** the CN3791's current-sense pins and each INA3221 channel's two inputs connect straight to the pads of their shunt resistors (R5; R6, R7, R10). Each channel's two sense lines run side by side. Channels 2 and 3 run as one bundle and cross under the CN3791 on the bottom layer, clear of the buck converter's switching area.
-- **Layer use:** about two-thirds of the copper length is on the top layer. Besides short jumps, the bottom layer carries two bundles: the channel 2 and 3 sense lines, and the I2C and VCC lines from J9. Each bundle's lines run close together, so no strip of the ground plane is cut off between them.
-- **Size:** 262 track segments and 47 vias, 10 of them on GND.
+- **Ground:** the bottom layer is a GND plane in one piece, and the top layer has a GND fill. Every surface-mount GND pad gets its own via down to the plane, and 62 stitching vias on a 3mm grid tie the two pours together.
+- **Track widths:** power paths are 0.8mm, 0.4mm into the small diode pads. Signals are 0.25mm, with 0.2mm on the sense lines where they squeeze past pads.
+- **Kelvin sensing:** the CN3791's current-sense pins and each INA3221 channel's two inputs connect straight to the pads of their shunt resistors (R5; R6, R7, R10). Each channel's two sense lines run side by side. Channel 3's pair passes through the gap under R7. Channels 2 and 3 then run as one bundle and cross under the CN3791 on the bottom layer, clear of the buck converter's switching area.
+- **Layer use:** about two-thirds of the track length is on the top layer. The bottom layer carries two bundles (the channel 2 and 3 sense lines, and the I2C and VCC lines to J9) plus four short hops: the gate drive under VIN, VIN to R3, VOUT under BATT+, and VPU under U2. With U2 and J9 where they are, those two bundles have to cross other nets, so they can't move to the top.
+- **Size:** 245 track segments and 94 vias, 73 of them on GND.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
-This is auto-routing, so review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which currently returns through the ground plane) and the few bottom-layer tracks that cut the plane.
+Review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which returns through the ground plane).
 
 Still to do: a manual layout review before ordering (see Fabrication).
 
@@ -232,7 +232,8 @@ sym-lib-table
 tools/
   gen-schematic.js              generates the schematic (Node)
   place-pcb.py                  places footprints, labels, holes, outline (KiCad Python / pcbnew)
-  route-pcb.py                  routes tracks, GND stitching vias and pours (run after place-pcb.py)
+  draw-routes.py                draws the tracks, vias and GND pours from fixed coordinates (run after place-pcb.py)
+  route-pcb.py                  the earlier auto-router, kept for reference (v1.0's copper came from it)
   make-diagram.py               draws docs/images/wiring-diagram.png from the board render
   fab-package.js                JLCPCB-style BOM/CPL, fab notes and Gerber zip from the kicad-cli exports
 docs/images/                    images used in this README (snap/: photos from the SNAP v1.2 MakerWorld post)
@@ -253,9 +254,9 @@ node tools/gen-schematic.js
 kicad-cli sch erc --format json --severity-all -o erc.json SolarNodeChargeController.kicad_sch
 # 2. Netlist for the board scripts
 kicad-cli sch export netlist --format kicadxml -o net.xml SolarNodeChargeController.kicad_sch
-# 3. Board (KiCad's Python): placement + labels + holes + outline, then routing + GND pours (~5 min)
+# 3. Board (KiCad's Python): placement + labels + holes + outline, then tracks + GND pours
 "C:/Program Files/KiCad/10.0/bin/python.exe" tools/place-pcb.py net.xml
-"C:/Program Files/KiCad/10.0/bin/python.exe" tools/route-pcb.py
+"C:/Program Files/KiCad/10.0/bin/python.exe" tools/draw-routes.py
 # 4. Check: expect 0 violations, 0 unconnected, 0 parity issues
 kicad-cli pcb drc --schematic-parity --severity-all --format json -o drc.json SolarNodeChargeController.kicad_pcb
 ```

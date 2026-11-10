@@ -57,7 +57,7 @@ PCB order settings
   Size:              56.5 x 29.0 mm (2 mm 45-degree corner chamfers)
   Material:          FR-4, 1.6 mm
   Copper weight:     1 oz outer
-  Min track / space: 0.25 mm / 0.2 mm
+  Min track / space: 0.2 mm / 0.2 mm
   Vias:              0.6 mm / 0.3 mm drill and 0.8 mm / 0.4 mm drill, tented
   Plated holes:      0.5 mm (Micro JST 1.25 / PicoBlade headers), 1.0 mm (2.54 mm pin headers J7, J8)
   Non-plated holes:  4 x 3.2 mm (M3 mounting), in NPTH.drl
