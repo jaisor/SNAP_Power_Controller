@@ -213,10 +213,22 @@ const taps = [];
 for (let i = 0; i < 4; i++) {
   const y = 60.96 + i * 12.7;
   const J = place(`J${i + 1}`, "Connector_Generic:Conn_01x02", 25.4, y, { mirror: "y", value: "Solar_5V", fp: FP.pico2 });
-  const D = placeByPin(`D${i + 5}`, "Diode:1N5819WS", "2", P(35.56, y), { rot: 180, value: "1N5819WS" });
-  wire(J.pin("1"), D.pin("2"));
-  wire(D.pin("1"), P(BUS_X, y));
-  gnd(wire(J.pin("2"), P(33.02, J.pin("2").y), P(33.02, y + 5.08)));
+  if (i === 0) {
+    // Panel 1 alone, for INA3221 channel 3: J1 -> R10 -> D5. D5 moves right to make room.
+    const R10 = placeByPin("R10", "Device:R", "1", P(33.02, y), { rot: 90, value: "0.1R 1%", fp: FP.r0603, textAt: { ref: [0, -3.81], val: [-0.51, 3.81] } });
+    // Value nudged left, off the PV bus line at x = BUS_X
+    const D = placeByPin("D5", "Diode:1N5819WS", "2", P(43.18, y), { rot: 180, value: "1N5819WS", textAt: { ref: [0, -3.81], val: [-1.52, 3.81] } });
+    wire(J.pin("1"), R10.pin("1"));
+    wire(R10.pin("2"), D.pin("2"));
+    stub(R10.pin("1"), "up", "PANEL1", 2.54);
+    stub(R10.pin("2"), "up", "PANEL1_D", 2.54);
+    if (D.pin("1").x !== BUS_X) throw new Error("D5 cathode is not on the PV bus");
+  } else {
+    const D = placeByPin(`D${i + 5}`, "Diode:1N5819WS", "2", P(35.56, y), { rot: 180, value: "1N5819WS" });
+    wire(J.pin("1"), D.pin("2"));
+    wire(D.pin("1"), P(BUS_X, y));
+  }
+  gnd(J.pin("2"));
   taps.push(P(BUS_X, y));
 }
 wire(P(BUS_X, RAIL), ...taps);
@@ -227,7 +239,7 @@ wire(P(40.64, 38.1), P(40.64, 40.64));
 flag(P(40.64, 38.1));
 gnd(P(40.64, 40.64));
 
-// Solar current shunt (INA219 "SOLAR" position): PV bus -> R7 -> VIN
+// Solar current shunt (INA3221 channel 2): PV bus -> R7 -> VIN
 const R7 = placeByPin("R7", "Device:R", "1", P(BUS_X, RAIL), { rot: 90, value: "0.1R 1%", fp: FP.r1206, textAbove: true });
 const vinFlag = P(63.5, RAIL);
 flag(vinFlag);
@@ -277,7 +289,7 @@ const J7 = placeByPin("J7", "Connector_Generic:Conn_01x02", "1", P(220.98, RAIL)
 wire(C3.pin("1"), J7.pin("1"));
 stub(J7.pin("2"), "left", "BATT+", 5.08);
 
-// Battery current shunt (INA219 "BATT" position): BATT+ -> R6 -> cell. Sits after
+// Battery current shunt (INA3221 channel 1): BATT+ -> R6 -> cell. Sits after
 // SW_BATT so the cell voltage still reads with the switch open.
 const R6 = placeByPin("R6", "Device:R", "1", P(200.66, 68.58), { rot: 90, value: "0.1R 1%", fp: FP.r1206, textAbove: true });
 stub(R6.pin("1"), "left", "BATT+", 2.54);
@@ -304,31 +316,29 @@ const J6 = placeByPin("J6", "Connector_Generic:Conn_01x02", "1", P(246.38, 86.36
 stub(J6.pin("1"), "left", "VOUT", 5.08);
 gnd(wire(J6.pin("2"), P(243.84, J6.pin("2").y), P(243.84, 93.98)));
 
-// ---------- INA219 power monitor ----------
-// SW3 (DPDT) routes the INA219 inputs to one shunt at a time:
-//   SOLAR: IN+ = PV, IN- = VIN       -> panel current, bus voltage = VIN
-//   BATT:  IN+ = BATT+, IN- = BAT_CELL -> battery current (+ charging / - discharging), bus = cell voltage
-const SW3 = place("SW3", "Switch:SW_Slide_DPDT", 274.32, 104.14, { value: "SOLAR / BATT", fp: "Button_Switch_THT:SW_CK_JS202011CQN_DPDT_Straight" });
-stub(SW3.pin("1"), "left", "PV", 5.08);
-stub(SW3.pin("2"), "left", "SENSE+", 5.08);
-stub(SW3.pin("3"), "left", "BATT+", 5.08);
-stub(SW3.pin("6"), "right", "VIN", 5.08);
-stub(SW3.pin("5"), "right", "SENSE-", 5.08);
-stub(SW3.pin("4"), "right", "BAT_CELL", 5.08);
-
-const U2 = place("U2", "Sensor_Energy:INA219AxD", 322.58, 104.14, { value: "INA219AID" });
-stub(U2.pin("8"), "left", "SENSE+", 5.08);
-stub(U2.pin("7"), "left", "SENSE-", 5.08);
-stub(U2.pin("5"), "up", "VCC_MCU", 5.08);
-gnd(wire(U2.pin("6"), P(U2.x, U2.pin("6").y + 2.54)));
-stub(U2.pin("3"), "right", "SDA", 5.08);
-stub(U2.pin("4"), "right", "SCL", 5.08);
-// A0 = A1 = GND -> address 0x40
-const aX = U2.pin("1").x + 2.54;
-wire(U2.pin("1"), P(aX, U2.pin("1").y));
-wire(U2.pin("2"), P(aX, U2.pin("2").y));
-gnd(wire(P(aX, U2.pin("1").y), P(aX, U2.pin("2").y), P(aX, U2.pin("2").y + 2.54)));
-junction(P(aX, U2.pin("2").y));
+// ---------- INA3221 power monitor ----------
+// Three channels, all 0.1R shunts. Bus voltage is measured at each IN- pin.
+//   CH1: IN+ = BATT+,  IN- = BAT_CELL -> battery current (+ charging / - discharging), bus = cell voltage
+//   CH2: IN+ = PV,     IN- = VIN      -> total solar current, bus = VIN
+//   CH3: IN+ = PANEL1, IN- = PANEL1_D -> panel 1 current, bus = panel 1 voltage (before its diode)
+const U2 = place("U2", "Power_Management:INA3221", 322.58, 104.14, { value: "INA3221" });
+stub(U2.pin("12"), "left", "BATT+", 5.08);
+stub(U2.pin("11"), "left", "BAT_CELL", 5.08);
+stub(U2.pin("15"), "left", "PV", 5.08);
+stub(U2.pin("14"), "left", "VIN", 5.08);
+stub(U2.pin("2"), "left", "PANEL1", 5.08);
+stub(U2.pin("1"), "left", "PANEL1_D", 5.08);
+// VS and VPU (power-valid pull-up supply; power-valid is unused) both from the MCU's supply
+stub(U2.pin("4"), "up", "VCC_MCU", 5.08);
+stub(U2.pin("16"), "up", "VCC_MCU", 5.08);
+gnd(U2.pin("3"));
+gnd(U2.pin("17")); // exposed pad: ground or floating per the datasheet
+stub(U2.pin("7"), "right", "SDA", 5.08);
+stub(U2.pin("6"), "right", "SCL", 5.08);
+// A0 = SDA -> address 0x42, the INA3221 default in both Meshtastic and MeshCore
+stub(U2.pin("5"), "right", "SDA", 5.08);
+// Open-drain alert outputs, unused
+["8", "9", "10", "13"].forEach((n) => noConnect(U2.pin(n)));
 
 const C6 = placeByPin("C6", "Device:C", "1", P(345.44, 91.44), { value: "100nF", fp: FP.c0603 });
 stub(C6.pin("1"), "up", "VCC_MCU");
@@ -415,9 +425,9 @@ TEXTS.push({
     "  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.",
     "  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).",
     "  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.",
-    "- INA219 (U2, I2C 0x40 with A0=A1=GND). SW3 selects the shunt: SOLAR = R7 (PV -> VIN), current from the panels, bus voltage = VIN;",
-    "  BATT = R6 (BATT+ -> cell), + charging / - discharging, bus voltage = cell voltage (readable even with SW_BATT open).",
-    "  Shunts 0.1R match the common INA219 breakout, so stock library calibration (32V/2A, PGA /8 = +/-320mV = +/-3.2A) works as-is.",
+    "- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;",
+    "  CH2 = R7 solar total (PV -> VIN); CH3 = R10 panel 1 alone (J1 -> D5). Bus voltage is read at each IN- pin: cell, VIN, panel 1.",
+    "  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.",
     "  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them.",
   ].join("\\n"),
 });
@@ -464,6 +474,8 @@ function emitPart(p) {
     // Value beside the body, on the side away from the pins.
     const dir = p.mirror === "y" ? -1 : 1;
     refAt = [x, y - 3.81]; valAt = [x + dir * (2.54 + w(o.value) / 2), y + 3.81];
+  } else if (p.libId === "Power_Management:INA3221") {
+    refAt = [x - 7.62, y - 20.32]; valAt = [x + 7.62, y - 20.32];
   } else if (p.libId.startsWith("Sensor_Energy")) {
     refAt = [x - 6.35, y - 11.43]; valAt = [x + 7.62, y - 11.43];
   } else if (p.libId.startsWith("Switch")) {
@@ -520,7 +532,7 @@ const out = [
 		(date "2026-10-28")
 		(rev "1.1")
 		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")
-		(comment 2 "INA219 I2C power monitor (0x40), switchable between solar input and battery")
+		(comment 2 "INA3221 I2C power monitor (0x42): battery, total solar and panel 1")
 	)
 	(lib_symbols
 ${Object.values(SYMS).map((s) => "\t\t" + indent(s.text.replace(/^\t/, ""))).join("\n")}

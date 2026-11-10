@@ -26,12 +26,13 @@ VIA_COST = 200.0  # in grid steps (10 mm of track): stay on F.Cu unless really b
 POWER_W, POWER_NECK, SIGNAL_W = 0.8, 0.4, 0.25
 POWER_VIA, SIGNAL_VIA = (0.8, 0.4), (0.6, 0.3)  # (diameter, drill)
 POWER_NETS = {"/PV", "/VIN", "Net-(D2-K)", "/CSP", "/VBAT", "/BATT+", "/BAT_CELL", "/VOUT",
-              "Net-(D5-A)", "Net-(D6-A)", "Net-(D7-A)", "Net-(D8-A)"}
+              "/PANEL1", "/PANEL1_D", "Net-(D6-A)", "Net-(D7-A)", "Net-(D8-A)"}
 # Pads tied straight to a partner pad instead of the nearest copper: Kelvin connections to
-# the current-sense resistors (CN3791 CSP/BAT on R5, INA219 selector throws on R7/R6).
+# the current-sense resistors (CN3791 CSP/BAT on R5; INA3221 channel 1 on R6, 2 on R7, 3 on R10).
 KELVIN = {("U1", "8"): ("R5", "1"), ("U1", "7"): ("R5", "2"),
-          ("SW3", "1"): ("R7", "1"), ("SW3", "6"): ("R7", "2"),
-          ("SW3", "3"): ("R6", "1"), ("SW3", "4"): ("R6", "2")}
+          ("U2", "12"): ("R6", "1"), ("U2", "11"): ("R6", "2"),
+          ("U2", "15"): ("R7", "1"), ("U2", "14"): ("R7", "2"),
+          ("U2", "2"): ("R10", "1"), ("U2", "1"): ("R10", "2")}
 SMALL_PARTS = {"U1", "U2"}  # fine-pitch ICs: never used as a stop on a power path
 # Power-stage nets first so the hot loop gets the shortest paths.
 NET_ORDER = ["Net-(D2-K)", "/VIN", "/CSP", "/VBAT", "/PV", "/BATT+", "/BAT_CELL", "/VOUT"]
@@ -386,7 +387,7 @@ def main():
         (n for n in names if n not in NET_ORDER),
         key=lambda n: sum(math.hypot(a["x"] - b["x"], a["y"] - b["y"]) for a in r.net_pads(n) for b in r.net_pads(n)))
     # GND fan-out first: every SMD GND pad gets its via before signals can box it in
-    # (U2 pin 6 sits between IN- and VS and was unreachable when stitched last).
+    # (the INA219's GND pin, between IN- and VS, was unreachable when stitched last).
     r.stitch_gnd(gnd)
     for n in order:
         r.route_net(n)

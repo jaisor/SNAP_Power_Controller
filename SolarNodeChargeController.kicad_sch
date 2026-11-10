@@ -9,7 +9,7 @@
 		(date "2026-10-28")
 		(rev "1.1")
 		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")
-		(comment 2 "INA219 I2C power monitor (0x40), switchable between solar input and battery")
+		(comment 2 "INA3221 I2C power monitor (0x42): battery, total solar and panel 1")
 	)
 	(lib_symbols
 		(symbol "Connector_Generic:Conn_01x02"
@@ -1669,45 +1669,36 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Sensor_Energy:INA219AxD"
+		(symbol "Power_Management:INA3221"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
 			(property "Reference" "U"
-				(at -6.35 8.89 0)
+				(at -10.16 17.78 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left top)
 				)
 			)
-			(property "Value" "INA219AxD"
-				(at 5.08 8.89 0)
+			(property "Value" "INA3221"
+				(at 5.08 17.78 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left top)
 				)
 			)
-			(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-				(at 20.32 -8.89 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" "http://www.ti.com/lit/ds/symlink/ina219.pdf"
-				(at 8.89 -2.54 0)
+			(property "Footprint" "Package_DFN_QFN:Texas_RGV0016A_VQFN-16-1EP_4x4mm_P0.65mm_EP2.1x2.1mm"
+				(at 0 27.94 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -1717,7 +1708,18 @@
 					)
 				)
 			)
-			(property "Description" "Zero-Drift, Bidirectional Current/Power Monitor (0-26V) With I2C Interface, SOIC-8"
+			(property "Datasheet" "http://www.ti.com/lit/ds/symlink/ina3221.pdf"
+				(at 0 17.78 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Triple-Channel High-Side Shunt and Bus Voltage Monitor with I2C and SMBUS Compatible Interface, QFN-16"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1728,7 +1730,7 @@
 					)
 				)
 			)
-			(property "ki_keywords" "ADC I2C 16-Bit Oversampling Current Shunt"
+			(property "ki_keywords" "Shunt and Bus voltage monitor"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1739,7 +1741,7 @@
 					)
 				)
 			)
-			(property "ki_fp_filters" "SOIC*3.9x4.9mm*P1.27mm*"
+			(property "ki_fp_filters" "Texas*RGV0016A*"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1750,10 +1752,10 @@
 					)
 				)
 			)
-			(symbol "INA219AxD_0_1"
+			(symbol "INA3221_0_1"
 				(rectangle
-					(start -7.62 7.62)
-					(end 7.62 -7.62)
+					(start 10.16 -12.7)
+					(end -10.16 15.24)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -1763,11 +1765,11 @@
 					)
 				)
 			)
-			(symbol "INA219AxD_1_1"
+			(symbol "INA3221_1_1"
 				(pin input line
-					(at 10.16 -2.54 180)
+					(at -12.7 -7.62 0)
 					(length 2.54)
-					(name "A1"
+					(name "IN-3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1783,9 +1785,9 @@
 					)
 				)
 				(pin input line
-					(at 10.16 -5.08 180)
+					(at -12.7 -5.08 0)
 					(length 2.54)
-					(name "A0"
+					(name "IN+3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1800,10 +1802,10 @@
 						)
 					)
 				)
-				(pin bidirectional line
-					(at 10.16 5.08 180)
+				(pin power_in line
+					(at -2.54 -15.24 90)
 					(length 2.54)
-					(name "SDA"
+					(name "GND"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1818,10 +1820,10 @@
 						)
 					)
 				)
-				(pin input line
-					(at 10.16 2.54 180)
+				(pin power_in line
+					(at -2.54 17.78 270)
 					(length 2.54)
-					(name "SCL"
+					(name "VS"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1836,10 +1838,10 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 0 10.16 270)
+				(pin input line
+					(at 12.7 -7.62 180)
 					(length 2.54)
-					(name "VS"
+					(name "A0"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1854,10 +1856,10 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 0 -10.16 90)
+				(pin input line
+					(at 12.7 -5.08 180)
 					(length 2.54)
-					(name "GND"
+					(name "SCL"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1872,10 +1874,10 @@
 						)
 					)
 				)
-				(pin input line
-					(at -10.16 -2.54 0)
+				(pin bidirectional line
+					(at 12.7 -2.54 180)
 					(length 2.54)
-					(name "IN-"
+					(name "SDA"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1890,10 +1892,10 @@
 						)
 					)
 				)
-				(pin input line
-					(at -10.16 2.54 0)
+				(pin open_collector line
+					(at 12.7 5.08 180)
 					(length 2.54)
-					(name "IN+"
+					(name "WARNING"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1901,6 +1903,168 @@
 						)
 					)
 					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin open_collector line
+					(at 12.7 7.62 180)
+					(length 2.54)
+					(name "CRITICAL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin open_collector line
+					(at 12.7 10.16 180)
+					(length 2.54)
+					(name "PV"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -12.7 7.62 0)
+					(length 2.54)
+					(name "IN-1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "11"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -12.7 10.16 0)
+					(length 2.54)
+					(name "IN+1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "12"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin open_collector line
+					(at 12.7 2.54 180)
+					(length 2.54)
+					(name "TC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "13"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -12.7 0 0)
+					(length 2.54)
+					(name "IN-2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "14"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -12.7 2.54 0)
+					(length 2.54)
+					(name "IN+2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "15"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 2.54 17.78 270)
+					(length 2.54)
+					(name "VPU"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "16"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -15.24 90)
+					(length 2.54)
+					(name "EP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "17"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2184,284 +2348,6 @@
 						)
 					)
 					(number "10"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Switch:SW_Slide_DPDT"
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "SW"
-				(at 0 6.858 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "SW_Slide_DPDT"
-				(at 0 -8.128 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 13.97 5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Slide Switch, dual pole double throw"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "switch dual-pole double-throw dpdt ON-ON"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "SW_Slide_DPDT_0_0"
-				(circle
-					(center -2.032 5.08)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -2.032 -5.08)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 0)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 -5.08)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_Slide_DPDT_0_1"
-				(circle
-					(center -2.032 0)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 5.08)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_Slide_DPDT_1_1"
-				(rectangle
-					(start -1.397 5.588)
-					(end -0.762 -0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start 0.762 5.588)
-					(end 1.397 -0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(pin passive line
-					(at -5.08 5.08 0)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 -5.08 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 -5.08 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 2.54)
-					(name "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 5.08 180)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3017,7 +2903,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "Design notes (CN3791 datasheet, Figure 1):\n- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819WS (SOD-323, 40V/1A). MPPT senses VIN after these diodes,\n  so each panel sits ~0.3-0.45V above the 4.42V setpoint (~4.7-4.9V: under a cool panel's ~5V Vmp, nearer a hot one's). Panels peak at ~200-300mA each.\n- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).\n- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 26.7k/10k) = 4.42V. Charging starts once MPPT > 1.23V (VIN > 4.51V).\n- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 16uH at 6V Voc / 2.8V batt. 22uH gives ~0.2A ripple at 6V in, 3.7V batt.\n- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels; the CN3791 then draws ~21uA\n  from the battery via L1 and Q1's body diode when dark (datasheet p.9). Reference D1 is intentionally unused.\n- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.\n- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.\n  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.\n  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.\n  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.\n  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).\n  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.\n- INA219 (U2, I2C 0x40 with A0=A1=GND). SW3 selects the shunt: SOLAR = R7 (PV -> VIN), current from the panels, bus voltage = VIN;\n  BATT = R6 (BATT+ -> cell), + charging / - discharging, bus voltage = cell voltage (readable even with SW_BATT open).\n  Shunts 0.1R match the common INA219 breakout, so stock library calibration (32V/2A, PGA /8 = +/-320mV = +/-3.2A) works as-is.\n  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them."
+	(text "Design notes (CN3791 datasheet, Figure 1):\n- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819WS (SOD-323, 40V/1A). MPPT senses VIN after these diodes,\n  so each panel sits ~0.3-0.45V above the 4.42V setpoint (~4.7-4.9V: under a cool panel's ~5V Vmp, nearer a hot one's). Panels peak at ~200-300mA each.\n- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).\n- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 26.7k/10k) = 4.42V. Charging starts once MPPT > 1.23V (VIN > 4.51V).\n- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 16uH at 6V Voc / 2.8V batt. 22uH gives ~0.2A ripple at 6V in, 3.7V batt.\n- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels; the CN3791 then draws ~21uA\n  from the battery via L1 and Q1's body diode when dark (datasheet p.9). Reference D1 is intentionally unused.\n- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.\n- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.\n  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.\n  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.\n  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.\n  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).\n  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.\n- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;\n  CH2 = R7 solar total (PV -> VIN); CH3 = R10 panel 1 alone (J1 -> D5). Bus voltage is read at each IN- pin: cell, VIN, panel 1.\n  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.\n  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them."
 		(exclude_from_sim no)
 		(at 33.782 167.894 0)
 		(effects
@@ -3106,22 +2992,6 @@
 		(color 0 0 0 0)
 		(uuid "f81c3f91-858f-4c4f-bd72-71c9be94ca49")
 	)
-	(junction
-		(at 335.28 109.22)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "fd0bac46-e18a-41eb-b935-a9310d134f52")
-	)
-	(wire
-		(pts
-			(xy 33.02 76.2) (xy 33.02 78.74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0224ad4b-1293-4071-ade7-5f3a52198bf9")
-	)
 	(wire
 		(pts
 			(xy 58.42 50.8) (xy 63.5 50.8)
@@ -3131,16 +3001,6 @@
 			(type default)
 		)
 		(uuid "023e7807-6310-4b8c-ad2f-60a12bb7b1bc")
-	)
-	(wire
-		(pts
-			(xy 269.24 104.14) (xy 264.16 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0792713d-18ad-4ea9-9266-51baa7c74a70")
 	)
 	(wire
 		(pts
@@ -3181,26 +3041,6 @@
 			(type default)
 		)
 		(uuid "0ef945c1-bd60-4276-bb38-1adbc6dac387")
-	)
-	(wire
-		(pts
-			(xy 335.28 109.22) (xy 335.28 111.76)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "129d90cb-43e8-4f69-b00c-a93d2cf6b739")
-	)
-	(wire
-		(pts
-			(xy 332.74 99.06) (xy 337.82 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "13842c3f-94c0-4492-8722-252b553ddeeb")
 	)
 	(wire
 		(pts
@@ -3254,16 +3094,6 @@
 	)
 	(wire
 		(pts
-			(xy 322.58 114.3) (xy 322.58 116.84)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "28ee5cba-8c61-4e1f-b430-a0995ac742b0")
-	)
-	(wire
-		(pts
 			(xy 388.62 99.06) (xy 383.54 99.06)
 		)
 		(stroke
@@ -3284,26 +3114,6 @@
 	)
 	(wire
 		(pts
-			(xy 312.42 106.68) (xy 307.34 106.68)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3059d3cb-15dd-4da9-b285-f087192ef052")
-	)
-	(wire
-		(pts
-			(xy 332.74 109.22) (xy 335.28 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "38bb1248-fa0c-4c9c-809b-d70ddaeeb6f4")
-	)
-	(wire
-		(pts
 			(xy 68.58 50.8) (xy 83.82 50.8)
 		)
 		(stroke
@@ -3311,36 +3121,6 @@
 			(type default)
 		)
 		(uuid "38c4acba-53b8-4b84-a10d-acb90105e98a")
-	)
-	(wire
-		(pts
-			(xy 332.74 106.68) (xy 335.28 106.68)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "38e0df43-51a8-4db1-bd48-f00d680923d9")
-	)
-	(wire
-		(pts
-			(xy 30.48 76.2) (xy 33.02 76.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3caa26b2-426d-412e-9f6b-26b9c313092d")
-	)
-	(wire
-		(pts
-			(xy 279.4 104.14) (xy 284.48 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3e1c8ebc-9a40-4006-ad14-c0ed75e73e4f")
 	)
 	(wire
 		(pts
@@ -3474,26 +3254,6 @@
 	)
 	(wire
 		(pts
-			(xy 332.74 101.6) (xy 337.82 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6123551f-1f66-4887-8373-2dd94ec53e1b")
-	)
-	(wire
-		(pts
-			(xy 33.02 101.6) (xy 33.02 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6146b8cf-0406-4dc1-beae-fb5724e71e6a")
-	)
-	(wire
-		(pts
 			(xy 200.66 68.58) (xy 198.12 68.58)
 		)
 		(stroke
@@ -3504,26 +3264,6 @@
 	)
 	(wire
 		(pts
-			(xy 335.28 106.68) (xy 335.28 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "63b28c18-4b1e-4b33-90d8-5f77ad6b78cd")
-	)
-	(wire
-		(pts
-			(xy 312.42 101.6) (xy 307.34 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7268d730-4f6a-4766-9564-910647f0b533")
-	)
-	(wire
-		(pts
 			(xy 124.46 96.52) (xy 129.54 96.52)
 		)
 		(stroke
@@ -3531,36 +3271,6 @@
 			(type default)
 		)
 		(uuid "74277e4e-b704-436a-bf33-dd5a840ffa20")
-	)
-	(wire
-		(pts
-			(xy 43.18 60.96) (xy 50.8 60.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "747b8510-e5f7-42bd-94c7-312feeaef013")
-	)
-	(wire
-		(pts
-			(xy 322.58 93.98) (xy 322.58 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "768a787a-e75b-4782-9710-2920f8f57052")
-	)
-	(wire
-		(pts
-			(xy 33.02 88.9) (xy 33.02 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7b08ac38-61f3-4c88-ba78-e097c4776d26")
 	)
 	(wire
 		(pts
@@ -3581,16 +3291,6 @@
 			(type default)
 		)
 		(uuid "7f98a73b-fb20-4e91-b1d3-bc944af260cd")
-	)
-	(wire
-		(pts
-			(xy 30.48 60.96) (xy 35.56 60.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "896c2e35-d7a1-43d5-98c8-143817bd2dea")
 	)
 	(wire
 		(pts
@@ -3621,16 +3321,6 @@
 			(type default)
 		)
 		(uuid "8ef7b0bb-63af-4216-baa4-7d8bff907941")
-	)
-	(wire
-		(pts
-			(xy 30.48 88.9) (xy 33.02 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8ff372da-b505-4374-b4ab-0ca1521820d3")
 	)
 	(wire
 		(pts
@@ -3694,16 +3384,6 @@
 	)
 	(wire
 		(pts
-			(xy 269.24 99.06) (xy 264.16 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b025559d-217e-41ab-9b0e-30ac33c7af68")
-	)
-	(wire
-		(pts
 			(xy 160.02 72.39) (xy 160.02 69.85)
 		)
 		(stroke
@@ -3744,16 +3424,6 @@
 	)
 	(wire
 		(pts
-			(xy 33.02 63.5) (xy 33.02 66.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c5c2ae14-32cd-48e5-b8af-2f5c17e9157a")
-	)
-	(wire
-		(pts
 			(xy 124.46 86.36) (xy 127 86.36)
 		)
 		(stroke
@@ -3761,16 +3431,6 @@
 			(type default)
 		)
 		(uuid "cb4e00e4-39c0-4f1e-94b5-e073daf5ab51")
-	)
-	(wire
-		(pts
-			(xy 30.48 101.6) (xy 33.02 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d04021fa-16d6-4cf5-a5cc-e27eb0c7f2bf")
 	)
 	(wire
 		(pts
@@ -3854,26 +3514,6 @@
 	)
 	(wire
 		(pts
-			(xy 269.24 109.22) (xy 264.16 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e8be844b-34b3-48dd-b77b-6fdf6b48c378")
-	)
-	(wire
-		(pts
-			(xy 30.48 63.5) (xy 33.02 63.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e954cfd1-c85f-4be4-94f6-64d29b9876ef")
-	)
-	(wire
-		(pts
 			(xy 30.48 73.66) (xy 35.56 73.66)
 		)
 		(stroke
@@ -3924,16 +3564,6 @@
 	)
 	(wire
 		(pts
-			(xy 279.4 109.22) (xy 284.48 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f6a115f9-4ffb-4c49-8576-dfaac88607b0")
-	)
-	(wire
-		(pts
 			(xy 104.14 96.52) (xy 99.06 96.52)
 		)
 		(stroke
@@ -3944,16 +3574,6 @@
 	)
 	(wire
 		(pts
-			(xy 279.4 99.06) (xy 284.48 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fd5891da-6600-4090-99cf-2075f006a7a8")
-	)
-	(wire
-		(pts
 			(xy 167.64 50.8) (xy 172.72 50.8)
 		)
 		(stroke
@@ -3961,16 +3581,6 @@
 			(type default)
 		)
 		(uuid "fdf5eba2-9aaf-4862-a761-701924d8d036")
-	)
-	(label "VIN"
-		(at 284.48 99.06 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "036755c3-731a-4701-a0cc-6d0c2fcca134")
 	)
 	(label "SCL"
 		(at 383.54 104.14 180)
@@ -4002,16 +3612,6 @@
 		)
 		(uuid "11035536-0b58-4c6b-8ae7-a704cef33bf1")
 	)
-	(label "SCL"
-		(at 337.82 101.6 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "1726e548-3d7d-4450-8c3e-356bb849d934")
-	)
 	(label "VOUT"
 		(at 241.3 86.36 180)
 		(effects
@@ -4021,16 +3621,6 @@
 			(justify right bottom)
 		)
 		(uuid "1a4be4ce-0ee5-4cb5-9e7f-b84049dd4fd6")
-	)
-	(label "SENSE-"
-		(at 284.48 104.14 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "1cfcdcfe-3351-4601-bc9f-28c1fdc923af")
 	)
 	(label "DRV"
 		(at 127 88.9 0)
@@ -4061,16 +3651,6 @@
 			(justify right bottom)
 		)
 		(uuid "31adbb0e-fdbd-41fb-b30b-a854ece5367e")
-	)
-	(label "SDA"
-		(at 337.82 99.06 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "37d784ff-6e9f-4f41-9f03-838a993de678")
 	)
 	(label "VCC_MCU"
 		(at 345.44 88.9 90)
@@ -4163,36 +3743,6 @@
 		(uuid "7c7894f2-795b-46bf-8e29-8d06e80d8f5d")
 	)
 	(label "VCC_MCU"
-		(at 322.58 88.9 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "87f74f9d-9136-4785-86c1-ee7e2c2d87a1")
-	)
-	(label "SENSE+"
-		(at 307.34 101.6 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "917afc80-6e67-4790-b453-46150ad9363b")
-	)
-	(label "SENSE-"
-		(at 307.34 106.68 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "9523f6d2-4e83-4a44-af3b-434600e9f914")
-	)
-	(label "VCC_MCU"
 		(at 355.6 92.71 90)
 		(effects
 			(font
@@ -4201,16 +3751,6 @@
 			(justify left bottom)
 		)
 		(uuid "9fe7ade9-7a39-4602-a844-eca4c1700ee6")
-	)
-	(label "SENSE+"
-		(at 264.16 104.14 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "a16af86c-c044-4e66-af45-ce825df53397")
 	)
 	(label "VCC_MCU"
 		(at 365.76 92.71 90)
@@ -4312,16 +3852,6 @@
 		)
 		(uuid "d2b45a14-9c8b-4d19-a585-2710f79ba397")
 	)
-	(label "PV"
-		(at 264.16 99.06 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "d3caf0c3-57e8-4355-84b4-ed89f732bad7")
-	)
 	(label "~{DONE}"
 		(at 172.72 102.87 270)
 		(effects
@@ -4351,103 +3881,6 @@
 			(justify right bottom)
 		)
 		(uuid "e64ab6cf-4625-46f4-8f4b-03aa7386aa81")
-	)
-	(label "BATT+"
-		(at 264.16 109.22 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "e680d94c-a9ff-4f72-8761-c30fa149c026")
-	)
-	(label "BAT_CELL"
-		(at 284.48 109.22 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "f6323b2b-8d4a-468f-8127-657bf7362a1f")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 33.02 78.74 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "06098bf6-9dee-4b82-bee6-75f4cfdccb40")
-		(property "Reference" "#PWR002"
-			(at 33.02 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 33.02 82.55 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 33.02 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 33.02 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 33.02 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "667df8a3-793b-46b3-b17e-792f66528d31")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR002")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x04")
@@ -4529,83 +3962,6 @@
 			(project "SolarNodeChargeController"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J9")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 322.58 116.84 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "0fbf0500-25f0-465c-a3d4-53ffd7255440")
-		(property "Reference" "#PWR013"
-			(at 322.58 116.84 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 322.58 120.65 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 322.58 116.84 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 322.58 116.84 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 322.58 116.84 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "69fe73ee-15cd-456f-be07-358d53c3b49b")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR013")
 					(unit 1)
 				)
 			)
@@ -4762,103 +4118,6 @@
 			(project "SolarNodeChargeController"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR010")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Sensor_Energy:INA219AxD")
-		(at 322.58 104.14 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "1a7bd488-0155-4ad8-886d-f339c78f64d8")
-		(property "Reference" "U2"
-			(at 316.23 92.71 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "INA219AID"
-			(at 330.2 92.71 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 322.58 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/ina219.pdf"
-			(at 322.58 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Zero-Drift, Bidirectional Current/Power Monitor (0-26V) With I2C Interface, SOIC-8"
-			(at 322.58 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "f108a5bd-bf83-4e6a-be23-69a6919a03ea")
-		)
-		(pin "2"
-			(uuid "0d345717-445a-4af1-81ac-223d860eab59")
-		)
-		(pin "3"
-			(uuid "9e65b1c9-b272-4e7b-93cf-a55d0422054c")
-		)
-		(pin "4"
-			(uuid "b1e710eb-3fd0-400a-87f6-ec31f77bb9b8")
-		)
-		(pin "5"
-			(uuid "1ab77d4c-9921-48dd-ae4f-860e802398bf")
-		)
-		(pin "6"
-			(uuid "6e8c4e0a-0155-4e2f-b1a1-0a438586d5ee")
-		)
-		(pin "7"
-			(uuid "aea2b901-3c23-4892-b965-e5b864ebed4c")
-		)
-		(pin "8"
-			(uuid "7db19008-f52b-40fb-9303-77d5c835511e")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "U2")
 					(unit 1)
 				)
 			)
@@ -5419,83 +4678,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 335.28 111.76 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "348dc915-fb95-4ae1-831f-92720af0948d")
-		(property "Reference" "#PWR014"
-			(at 335.28 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 335.28 115.57 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 335.28 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 335.28 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 335.28 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "1a5157e7-cd91-431c-a086-1d13f63beae0")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR014")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
 		(at 25.4 99.06 0)
 		(mirror y)
@@ -5576,83 +4758,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 33.02 91.44 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "484488ae-3e07-4230-88eb-e52d2159215f")
-		(property "Reference" "#PWR003"
-			(at 33.02 91.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 33.02 95.25 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 33.02 91.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 33.02 91.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 33.02 91.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "0358b18d-f776-48ca-9eb1-8c447ca80bec")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR003")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:LED")
 		(at 160.02 96.52 90)
 		(unit 1)
@@ -5726,97 +4831,6 @@
 			(project "SolarNodeChargeController"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "D4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Switch:SW_Slide_DPDT")
-		(at 274.32 104.14 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "533e67c4-bd54-4a3c-8ee8-bfd3650ceb96")
-		(property "Reference" "SW3"
-			(at 274.32 95.25 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SOLAR / BATT"
-			(at 274.32 113.03 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Button_Switch_THT:SW_CK_JS202011CQN_DPDT_Straight"
-			(at 274.32 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 274.32 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Slide Switch, dual pole double throw"
-			(at 274.32 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "762ffa80-a7c9-4c0f-b86f-0297901b2f10")
-		)
-		(pin "2"
-			(uuid "3cc33c26-503f-4f2b-978d-3a3255fd9d61")
-		)
-		(pin "3"
-			(uuid "6b67cf14-4b93-462e-91c1-fe9e279707ff")
-		)
-		(pin "4"
-			(uuid "56f173e2-1345-46ad-ae60-6b876b7f1382")
-		)
-		(pin "5"
-			(uuid "47532352-c1aa-44e7-9edb-ee92eec9bbc0")
-		)
-		(pin "6"
-			(uuid "c00bd1ad-b7dd-47cd-8978-165d536ceea7")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "SW3")
 					(unit 1)
 				)
 			)
@@ -6050,83 +5064,6 @@
 			(project "SolarNodeChargeController"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 33.02 66.04 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "63411b71-584a-4743-bdbd-f4070f0e2c40")
-		(property "Reference" "#PWR001"
-			(at 33.02 66.04 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 33.02 69.85 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 33.02 66.04 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 33.02 66.04 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 33.02 66.04 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "61b68a0a-fc93-4e82-9636-bf30f10b22bb")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR001")
 					(unit 1)
 				)
 			)
@@ -8026,83 +6963,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 33.02 104.14 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "cf1da55a-3e83-4e11-aba7-f6825c7639b1")
-		(property "Reference" "#PWR004"
-			(at 33.02 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 33.02 107.95 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 33.02 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 33.02 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 33.02 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "ee3dcac1-dd8a-4e6d-b103-43427ee2936c")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR004")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
 		(at 25.4 73.66 0)
 		(mirror y)
@@ -8333,85 +7193,6 @@
 			(project "SolarNodeChargeController"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR005")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Diode:1N5819WS")
-		(at 39.37 60.96 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "d2571b49-c3e7-42c0-8f0b-8a77ae404da8")
-		(property "Reference" "D5"
-			(at 39.37 57.15 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1N5819WS"
-			(at 39.37 64.77 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Diode_SMD:D_SOD-323"
-			(at 39.37 60.96 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
-			(at 39.37 60.96 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "40V 600mV@1A 1A SOD-323 Schottky Barrier Diodes, SOD-323"
-			(at 39.37 60.96 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "fd3e60c1-d967-458a-b9eb-84e03f6e3bf2")
-		)
-		(pin "2"
-			(uuid "cc0ff32e-c604-4a23-88ee-a316e72b932e")
-		)
-		(instances
-			(project "SolarNodeChargeController"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "D5")
 					(unit 1)
 				)
 			)
@@ -9398,6 +8179,938 @@
 			(project "SolarNodeChargeController"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(no_connect
+		(at 335.28 99.06)
+		(uuid "01115d60-ce75-4267-9014-897c79cf255c")
+	)
+	(no_connect
+		(at 335.28 96.52)
+		(uuid "fd116fcf-a867-43b8-a9e8-9692b02c0195")
+	)
+	(no_connect
+		(at 335.28 93.98)
+		(uuid "1c8bf6db-f34e-4546-a1a9-7053c7d80345")
+	)
+	(no_connect
+		(at 335.28 101.6)
+		(uuid "aef9a285-ea7c-425e-89aa-8027f20b4ae6")
+	)
+	(wire
+		(pts
+			(xy 30.48 60.96) (xy 33.02 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5caa25d2-320b-47fb-a5b5-d6de91fc9348")
+	)
+	(wire
+		(pts
+			(xy 40.64 60.96) (xy 43.18 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1d95e1b-67cf-4671-b03f-13ab0e4b6c0d")
+	)
+	(wire
+		(pts
+			(xy 33.02 60.96) (xy 33.02 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e1bc6a79-ba96-4f37-9cb7-749bda8d9dec")
+	)
+	(wire
+		(pts
+			(xy 40.64 60.96) (xy 40.64 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bb24e72f-b489-494f-955a-c94eaed60eef")
+	)
+	(wire
+		(pts
+			(xy 309.88 93.98) (xy 304.8 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6750f201-b83f-4fa1-8743-6ab4c7e31eac")
+	)
+	(wire
+		(pts
+			(xy 309.88 96.52) (xy 304.8 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1d5ad22-ade5-4d64-9cac-eaf741e65a9d")
+	)
+	(wire
+		(pts
+			(xy 309.88 101.6) (xy 304.8 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2384b08e-8c11-44e7-bc1d-be13797a2536")
+	)
+	(wire
+		(pts
+			(xy 309.88 104.14) (xy 304.8 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "181cb9a4-b534-43df-805d-c59690112c3c")
+	)
+	(wire
+		(pts
+			(xy 309.88 109.22) (xy 304.8 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a02fe5d4-1bb9-4bab-95e1-937a13507132")
+	)
+	(wire
+		(pts
+			(xy 309.88 111.76) (xy 304.8 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a53ea242-aa36-445a-9927-fc0502f4c50f")
+	)
+	(wire
+		(pts
+			(xy 320.04 86.36) (xy 320.04 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5aab76b5-047b-4908-9268-f807265a177c")
+	)
+	(wire
+		(pts
+			(xy 325.12 86.36) (xy 325.12 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b5e540e3-5161-44df-a919-25ea3b5c4383")
+	)
+	(wire
+		(pts
+			(xy 335.28 106.68) (xy 340.36 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9abf2c05-0425-4146-aed7-68fb1338e724")
+	)
+	(wire
+		(pts
+			(xy 335.28 109.22) (xy 340.36 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "acd25514-3a8d-4af0-9e61-497e2b489832")
+	)
+	(wire
+		(pts
+			(xy 335.28 111.76) (xy 340.36 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6511d7dc-31c6-4c14-afab-93492d8918d8")
+	)
+	(label "PANEL1"
+		(at 33.02 58.42 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5035080f-e6f0-4684-9727-d024726fb268")
+	)
+	(label "PANEL1_D"
+		(at 40.64 58.42 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "bfc2529a-8185-4048-a0f1-5c2c2523c6c8")
+	)
+	(label "BATT+"
+		(at 304.8 93.98 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "aa79766d-abfa-4ff1-b712-3f6e4e95ace4")
+	)
+	(label "BAT_CELL"
+		(at 304.8 96.52 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "950d3d9e-fa96-4df8-8bed-47e3079f6e1e")
+	)
+	(label "PV"
+		(at 304.8 101.6 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "0158320a-4130-40aa-89d0-3075e44900a1")
+	)
+	(label "VIN"
+		(at 304.8 104.14 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "10818c82-9c51-4463-a8c1-22bec95a33fc")
+	)
+	(label "PANEL1"
+		(at 304.8 109.22 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "c2391d6d-ef49-4427-8f6f-5b4f216a80fa")
+	)
+	(label "PANEL1_D"
+		(at 304.8 111.76 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a8d40cf1-6cf4-4996-850a-e7f64d16b753")
+	)
+	(label "VCC_MCU"
+		(at 320.04 81.28 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c14cb31f-7c24-4a03-8cf7-29c8c284a42c")
+	)
+	(label "VCC_MCU"
+		(at 325.12 81.28 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c22c4dd0-36ba-4fc2-8404-88304f5e615e")
+	)
+	(label "SDA"
+		(at 340.36 106.68 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3a0be5ef-3c8f-477f-ab99-3bdc60bb2a9d")
+	)
+	(label "SCL"
+		(at 340.36 109.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "dc897bde-d557-4cae-b33e-aa119c44e386")
+	)
+	(label "SDA"
+		(at 340.36 111.76 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2d22ec31-c61e-42f3-96d9-db547ae9967c")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 30.48 63.5 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "63411b71-584a-4743-bdbd-f4070f0e2c40")
+		(property "Reference" "#PWR001"
+			(at 30.48 63.5 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 30.48 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 30.48 63.5 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 30.48 63.5 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 30.48 63.5 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "61b68a0a-fc93-4e82-9636-bf30f10b22bb")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "#PWR001")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 30.48 76.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "06098bf6-9dee-4b82-bee6-75f4cfdccb40")
+		(property "Reference" "#PWR002"
+			(at 30.48 76.2 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 30.48 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 30.48 76.2 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 30.48 76.2 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 30.48 76.2 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "667df8a3-793b-46b3-b17e-792f66528d31")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "#PWR002")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 30.48 88.9 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "484488ae-3e07-4230-88eb-e52d2159215f")
+		(property "Reference" "#PWR003"
+			(at 30.48 88.9 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 30.48 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 30.48 88.9 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 30.48 88.9 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 30.48 88.9 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0358b18d-f776-48ca-9eb1-8c447ca80bec")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "#PWR003")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 30.48 101.6 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "cf1da55a-3e83-4e11-aba7-f6825c7639b1")
+		(property "Reference" "#PWR004"
+			(at 30.48 101.6 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 30.48 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 30.48 101.6 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 30.48 101.6 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 30.48 101.6 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ee3dcac1-dd8a-4e6d-b103-43427ee2936c")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "#PWR004")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Power_Management:INA3221")
+		(at 322.58 104.14 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1a7bd488-0155-4ad8-886d-f339c78f64d8")
+		(property "Reference" "U2"
+			(at 314.96 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "INA3221"
+			(at 330.2 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_DFN_QFN:Texas_RGV0016A_VQFN-16-1EP_4x4mm_P0.65mm_EP2.1x2.1mm"
+			(at 322.58 104.14 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/ina3221.pdf"
+			(at 322.58 104.14 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Triple-Channel High-Side Shunt and Bus Voltage Monitor with I2C and SMBUS Compatible Interface, QFN-16"
+			(at 322.58 104.14 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f108a5bd-bf83-4e6a-be23-69a6919a03ea")
+		)
+		(pin "2"
+			(uuid "0d345717-445a-4af1-81ac-223d860eab59")
+		)
+		(pin "3"
+			(uuid "9e65b1c9-b272-4e7b-93cf-a55d0422054c")
+		)
+		(pin "4"
+			(uuid "b1e710eb-3fd0-400a-87f6-ec31f77bb9b8")
+		)
+		(pin "5"
+			(uuid "1ab77d4c-9921-48dd-ae4f-860e802398bf")
+		)
+		(pin "6"
+			(uuid "6e8c4e0a-0155-4e2f-b1a1-0a438586d5ee")
+		)
+		(pin "7"
+			(uuid "aea2b901-3c23-4892-b965-e5b864ebed4c")
+		)
+		(pin "8"
+			(uuid "7db19008-f52b-40fb-9303-77d5c835511e")
+		)
+		(pin "9"
+			(uuid "60d15fe2-28e0-4e6e-87fa-72418975ef4d")
+		)
+		(pin "10"
+			(uuid "d6f7c37f-47c4-4eb4-86d9-360f925b5c47")
+		)
+		(pin "11"
+			(uuid "79e2f9a6-e520-4d3a-a3d9-2da39ad5b745")
+		)
+		(pin "12"
+			(uuid "caf47d41-78a2-429f-b13c-db951ddedad6")
+		)
+		(pin "13"
+			(uuid "b853d7ed-422e-408b-a15e-f45260ab258b")
+		)
+		(pin "14"
+			(uuid "18f81a70-8d9e-49e4-802f-58d8441d37f8")
+		)
+		(pin "15"
+			(uuid "8fe91119-67f7-4775-89a3-9809b3becd5d")
+		)
+		(pin "16"
+			(uuid "8786b7ab-e493-4cbb-ac37-04de7bf3f77a")
+		)
+		(pin "17"
+			(uuid "d890d0ef-b98e-4a5d-886f-620b06c89900")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "U2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 320.04 119.38 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "0fbf0500-25f0-465c-a3d4-53ffd7255440")
+		(property "Reference" "#PWR013"
+			(at 320.04 119.38 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 320.04 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 320.04 119.38 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 320.04 119.38 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 320.04 119.38 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "69fe73ee-15cd-456f-be07-358d53c3b49b")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "#PWR013")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 325.12 119.38 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "348dc915-fb95-4ae1-831f-92720af0948d")
+		(property "Reference" "#PWR014"
+			(at 325.12 119.38 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 325.12 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 325.12 119.38 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 325.12 119.38 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 325.12 119.38 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1a5157e7-cd91-431c-a086-1d13f63beae0")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "#PWR014")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Diode:1N5819WS")
+		(at 46.99 60.96 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d2571b49-c3e7-42c0-8f0b-8a77ae404da8")
+		(property "Reference" "D5"
+			(at 46.99 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1N5819WS"
+			(at 45.47 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SOD-323"
+			(at 46.99 60.96 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
+			(at 46.99 60.96 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "40V 600mV@1A 1A SOD-323 Schottky Barrier Diodes, SOD-323"
+			(at 46.99 60.96 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "fd3e60c1-d967-458a-b9eb-84e03f6e3bf2")
+		)
+		(pin "2"
+			(uuid "cc0ff32e-c604-4a23-88ee-a316e72b932e")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "D5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 36.83 60.96 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "91d63d41-f3ce-493e-934f-90f012a03dc3")
+		(property "Reference" "R10"
+			(at 36.83 57.15 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0.1R 1%"
+			(at 36.32 64.77 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 36.83 60.96 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 36.83 60.96 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 36.83 60.96 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "dedbab8f-a91a-463c-896a-b614130463e0")
+		)
+		(pin "2"
+			(uuid "32fdab06-8cce-48f5-b5dc-41b0e2205093")
+		)
+		(instances
+			(project "SolarNodeChargeController"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "R10")
 					(unit 1)
 				)
 			)
