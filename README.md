@@ -6,7 +6,7 @@ Designed in KiCad 10.
 
 > **Status:** the schematic is complete and passes ERC. The PCB (52 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
 >
-> **This branch (`multi_channel_sensor`):** a three-channel INA3221 replaces the INA219 and its SOLAR/BATT switch, in both the schematic and the PCB (DRC clean). This version hasn't been built or tested yet; the test results below are from the INA219 board on `main`.
+> **v1.1:** a three-channel INA3221 replaces v1.0's INA219 and its SOLAR/BATT switch, and the board is smaller. v1.1 hasn't been built or tested yet; the test results below are from v1.0 boards with the INA219. See the [change log](CHANGELOG.md).
 
 <p align="center">
   <img src="docs/images/pcb-iso.png" alt="3D render of the routed board" width="720">
@@ -199,12 +199,12 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 
 ## Fabrication
 
-Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). That release is v1.0, which has Micro JST 1.25 connectors on J7 and J8, no polarity marks, and a 4.58V MPPT set point (R3 = 28.0k). The design in this repo is v1.1, still a work in progress, and it will be released with the next fabrication batch. The package is generated into `output/fab/`, which isn't tracked in git:
+Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). That release is v1.1, the design in this repo; the [change log](CHANGELOG.md) lists what changed since v1.0. The package is generated into `output/fab/`, which isn't tracked in git:
 
 | File | Contents |
 |---|---|
 | `SolarChargeModule_v1.1_gerbers.zip` | Upload this to the board house. 9 Gerber X2 layers (copper, mask, paste and silkscreen on both sides, plus the outline), a Gerber job file, plated and non-plated Excellon drill files, and drill maps |
-| `FAB_NOTES.txt` | Order settings: 2 layers, FR-4 1.6mm, 1oz copper, 52 × 29mm, 0.25mm/0.2mm minimum track/space, 0.3mm minimum drill, tented vias, four 3.2mm non-plated holes. Also assembly cautions |
+| `FAB_NOTES.txt` | Order settings: 2 layers, FR-4 1.6mm, 1oz copper, 52 × 29mm, 0.2mm/0.2mm minimum track/space, 0.3mm minimum drill, tented vias, four 3.2mm non-plated holes. Also assembly cautions |
 | `SolarChargeModule_v1.1_BOM.csv` | BOM in JLCPCB format (Comment, Designator, Footprint, LCSC Part #), plus a Manufacturer Part column for the specific parts |
 | `SolarChargeModule_v1.1_CPL.csv` | Pick-and-place file for top-side assembly, in the same coordinates as the Gerbers |
 
