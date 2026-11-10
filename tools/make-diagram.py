@@ -20,12 +20,12 @@ box_title = ImageFont.truetype(FONTS + "consolab.ttf", 23)
 box_sub = ImageFont.truetype(FONTS + "consola.ttf", 17)
 small = ImageFont.truetype(FONTS + "consola.ttf", 16)
 
-BOARD_W_MM, BOARD_H_MM = 56.5, 29.0
+BOARD_W_MM, BOARD_H_MM = 52.0, 29.0
 # Connector body centres in board mm (from tools/place-pcb.py PLACEMENT)
 CONN = {
-    "J1": (10.7, 2.85), "J2": (10.7, 9.15), "J3": (10.7, 15.45), "J4": (10.7, 21.75),
-    "J7": (45.23, 3.3), "J8": (45.23, 9.6), "J5": (45.8, 15.45), "J6": (45.8, 21.75),
-    "J9": (52.75, 14.5),
+    "J1": (13.7, 2.85), "J2": (13.7, 9.15), "J3": (13.7, 15.45), "J4": (13.7, 21.75),
+    "J7": (48.27, 10.8), "J8": (48.27, 17.7), "J6": (41.8, 17.3), "J5": (41.8, 23.5),
+    "J9": (3.3, 15.5),
 }
 
 img = Image.new("RGB", (W, H), BG)
@@ -134,9 +134,9 @@ for py in (302, 482):
 # Right side: switches, battery, node
 sw_batt = callout("J7", (1480, 200), ORANGE, "SW_BATT  J7", "2.54mm header · battery cut-off", "right")
 sw_load = callout("J8", (1480, 300), ORANGE, "SW_LOAD  J8", "2.54mm header · node power", "right")
-batt = callout("J5", (1480, 420), GREEN, "BATT  J5", "18650 cell, 0.8 A charge", "right")
-i2c = callout("J9", (1480, 640), CYAN, "I2C  J9", "INA3221 @ 0x42 → node", "right")
-vout = callout("J6", (1480, 750), RED, "VOUT  J6", "battery power to the node", "right")
+vout = callout("J6", (1480, 420), RED, "VOUT  J6", "battery power to the node", "right")
+batt = callout("J5", (1480, 600), GREEN, "BATT  J5", "18650 cell, 0.8 A charge", "right")
+i2c = callout("J9", (520, 820), CYAN, "I2C  J9", "INA3221 @ 0x42 → node", "left")
 SWX = 1850  # switch column, right of the widest callout box
 switch(SWX, 201, "")
 switch(SWX, 301, "")
@@ -145,11 +145,11 @@ for text, ty in (("panel-mount SPST ≥1A", 172), ("or a jumper cap", 404)):
 jumper_cap(SWX + 9, 374)
 wire([(sw_batt[2], 233), (SWX, 233)], ORANGE, 4)
 wire([(sw_load[2], 333), (SWX, 333)], ORANGE, 4)
-cell18650(1500, 525)
-wire([(1615, batt[3]), (1615, 525)], GREEN, 4)
+cell18650(1500, 705)
+wire([(1615, batt[3]), (1615, 705)], GREEN, 4)
 node(1480, 900)
-wire([(i2c[2], 673), (1768, 673), (1768, 900)], CYAN, 5)
-wire([(1560, vout[3]), (1560, 900)], RED, 5)
+wire([(i2c[0] + 60, i2c[3]), (i2c[0] + 60, 1010), (1480, 1010)], CYAN, 5)
+wire([(vout[2], 453), (1800, 453), (1800, 960), (1780, 960)], RED, 5)
 
 d.text((70, 1130), "Replaces the CN3158 module, discrete Schottky diodes and loose wiring of a SNAP v1.2 build.",
        font=small, fill=DIM)

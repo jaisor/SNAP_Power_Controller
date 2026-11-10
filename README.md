@@ -4,7 +4,7 @@ A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built fo
 
 Designed in KiCad 10.
 
-> **Status:** the schematic is complete and passes ERC. The PCB (56.5 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
+> **Status:** the schematic is complete and passes ERC. The PCB (52 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
 >
 > **This branch (`multi_channel_sensor`):** a three-channel INA3221 replaces the INA219 and its SOLAR/BATT switch, in both the schematic and the PCB (DRC clean). This version hasn't been built or tested yet; the test results below are from the INA219 board on `main`.
 
@@ -105,31 +105,30 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 
 | Area | Parts |
 |---|---|
-| Left end | M3 mounting holes H1/H3 in the corners |
+| Left end | M3 mounting holes H1/H3 in the corners. Between them, the 4-pin I2C connector J9 at the edge and the INA3221 (U2) beside it, with its bypass capacitor C6 and the I2C pull-ups R8/R9 above |
 | Left column | Solar inputs J1–J4, each with its 1N5819WS (D5–D8). Panel 1's shunt R10 sits beside J1, with D5 just below it |
 | Top middle | Buck power stage in current-flow order: R7, C1/C5, Q1, D2, L1, R5, C3 |
 | Middle | CN3791 (U1) with its support parts and status LEDs, and JP1, the LED solder jumper, right of R1 |
-| Right middle | INA3221 (U2) with its bypass capacitor C6, I2C pull-ups, battery shunt R6, reverse-battery MOSFET Q2 |
-| Right column | SW_BATT/SW_LOAD switch leads (J7/J8), battery J5, VOUT J6 |
-| Right end | M3 mounting holes H2/H4 in the corners, with the 4-pin I2C connector J9 between them |
+| Right middle | Under L1: battery shunt R6 and reverse-battery MOSFET Q2, then VOUT (J6) and battery (J5) |
+| Right end | M3 mounting holes H2/H4 in the corners, with the SW_BATT/SW_LOAD switch headers (J7/J8) between them |
 
 Every reference label sits next to its own part, clear of pads, other parts and the edge (DRC reports no silkscreen issues). The holes are plain non-plated 3.2mm M3 holes, 4mm in from each edge.
 
 **Silkscreen labels:**
 
-- **Connector functions:** vertical labels beside the right-hand connectors read `SW_BATT` (J7), `SW_LOAD` (J8), `BATT` (J5) and `VOUT` (J6).
+- **Connector functions:** `SW_BATT` (J7) and `SW_LOAD` (J8) are printed above the two switch headers. `BATT` (J5) and `VOUT` (J6) are vertical labels to the left of those connectors.
 - **Solar inputs:** one `Solar_5V` label, with a bracket along the four solar inputs (J1–J4).
 - **Polarity:** `-` and `+` under the solar, battery and VOUT connectors (J1–J6), on the side of the matching pin.
-- **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed beside its pads on the back, since there's no room between the pads and the connectors on the front.
+- **I2C connector:** `I2C` under J9 on the front (J9 has no reference label; there's no room for both). The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed beside its pads on the back.
 - **Back:** the module ID, "Solar Charge Module v1.1 / by JaisorGadgets / Nov. 5, 2026".
 
 **Routing** (drawn by hand in `tools/draw-routes.py`, so it comes out the same on every run):
 
-- **Ground:** the bottom layer is a GND plane in one piece, and the top layer has a GND fill. Every surface-mount GND pad gets its own via down to the plane, and 62 stitching vias on a 3mm grid tie the two pours together.
+- **Ground:** the bottom layer is a GND plane in one piece, covering about 87% of the board, and the top layer has a GND fill. Every surface-mount GND pad gets its own via down to the plane, and 46 stitching vias on a 3mm grid tie the two pours together.
 - **Track widths:** power paths are 0.8mm, 0.4mm into the small diode pads. Signals are 0.25mm, with 0.2mm on the sense lines where they squeeze past pads.
-- **Kelvin sensing:** the CN3791's current-sense pins and each INA3221 channel's two inputs connect straight to the pads of their shunt resistors (R5; R6, R7, R10). Each channel's two sense lines run side by side. Channel 3's pair passes through the gap under R7. Channels 2 and 3 then run as one bundle and cross under the CN3791 on the bottom layer, clear of the buck converter's switching area.
-- **Layer use:** about two-thirds of the track length is on the top layer. The bottom layer carries two bundles (the channel 2 and 3 sense lines, and the I2C and VCC lines to J9) plus four short hops: the gate drive under VIN, VIN to R3, VOUT under BATT+, and VPU under U2. With U2 and J9 where they are, those two bundles have to cross other nets, so they can't move to the top.
-- **Size:** 245 track segments and 94 vias, 73 of them on GND.
+- **Kelvin sensing:** the CN3791's current-sense pins and each INA3221 channel's two inputs connect straight to the pads of their shunt resistors (R5; R6, R7, R10). Each channel's two sense lines run side by side. Channel 3's pair runs over and under J1, channel 2's passes between J2 and J3, and channel 1's follows the bottom edge from the battery shunt to U2.
+- **Layer use:** nearly all track is on the top layer: about 454mm, against 25mm on the bottom. The bottom layer only carries short hops: the gate drive under VIN, VIN to R3, the two channel 2 sense lines under the PV bus, and three links under U2.
+- **Size:** 212 track segments and 68 vias, 57 of them on GND.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 Review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which returns through the ground plane).
@@ -205,7 +204,7 @@ Download the package from the [latest release](https://github.com/jaisor/SolarNo
 | File | Contents |
 |---|---|
 | `SolarChargeModule_v1.1_gerbers.zip` | Upload this to the board house. 9 Gerber X2 layers (copper, mask, paste and silkscreen on both sides, plus the outline), a Gerber job file, plated and non-plated Excellon drill files, and drill maps |
-| `FAB_NOTES.txt` | Order settings: 2 layers, FR-4 1.6mm, 1oz copper, 56.5 × 29mm, 0.25mm/0.2mm minimum track/space, 0.3mm minimum drill, tented vias, four 3.2mm non-plated holes. Also assembly cautions |
+| `FAB_NOTES.txt` | Order settings: 2 layers, FR-4 1.6mm, 1oz copper, 52 × 29mm, 0.25mm/0.2mm minimum track/space, 0.3mm minimum drill, tented vias, four 3.2mm non-plated holes. Also assembly cautions |
 | `SolarChargeModule_v1.1_BOM.csv` | BOM in JLCPCB format (Comment, Designator, Footprint, LCSC Part #), plus a Manufacturer Part column for the specific parts |
 | `SolarChargeModule_v1.1_CPL.csv` | Pick-and-place file for top-side assembly, in the same coordinates as the Gerbers |
 
