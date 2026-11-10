@@ -85,7 +85,7 @@ FUNCTION_LABEL_RIGHT = {}
 SOLAR_LABEL = "Solar_5V"  # one label for J1-J4, with a bracket along their left side
 SOLAR_BRACKET_X = 10.75
 # Module ID, centred and mirrored on B.Silkscreen: (text, height mm)
-BACK_TEXT = [("Solar Charge Module v1.1", 1.2), ("by JaisorGadgets", 1.0), ("Nov. 5, 2026", 1.0)]
+BACK_TEXT = [("Solar Charge Module v1.1", 1.2), ("by JaisorGadgets", 1.0), ("Nov. 9, 2026", 1.0)]
 # + and - on F.Silkscreen under each power connector, either side of its reference, on the side of
 # the matching pad: GND pad "-", the other "+".
 POLARITY_REFS = ("J1", "J2", "J3", "J4", "J5", "J6")

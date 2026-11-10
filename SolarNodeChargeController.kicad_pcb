@@ -9847,7 +9847,7 @@
 			(justify mirror)
 		)
 	)
-	(gr_text "Nov. 5, 2026"
+	(gr_text "Nov. 9, 2026"
 		(at 126 116.7 0)
 		(layer "B.SilkS")
 		(uuid "b617b30e-e3b9-4af1-84f2-ab48dabed47b")

@@ -120,7 +120,7 @@ Every reference label sits next to its own part, clear of pads, other parts and 
 - **Solar inputs:** one `Solar_5V` label, with a bracket along the four solar inputs (J1–J4).
 - **Polarity:** `-` and `+` under the solar, battery and VOUT connectors (J1–J6), on the side of the matching pin.
 - **I2C connector:** `I2C` under J9 on the front (J9 has no reference label; there's no room for both). The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed beside its pads on the back.
-- **Back:** the module ID, "Solar Charge Module v1.1 / by JaisorGadgets / Nov. 5, 2026".
+- **Back:** the module ID, "Solar Charge Module v1.1 / by JaisorGadgets / Nov. 9, 2026".
 
 **Routing** (drawn by hand in `tools/draw-routes.py`, so it comes out the same on every run):
 
