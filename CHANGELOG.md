@@ -33,10 +33,6 @@ v1.1 is not a drop-in replacement for v1.0. The board outline, the mounting hole
 - The copper is drawn by hand from fixed coordinates (`tools/draw-routes.py`) instead of auto-routed, so the tools reproduce the board exactly. Only 25 mm of track is left on the bottom layer, which is one ground plane over about 87% of the board, with ground stitching vias on a 3 mm grid.
 - Minimum track width is 0.2 mm (was 0.25 mm) on a few sense lines that pass between pads.
 
-### Parts
-
-- The BOM names metal-element current-sense resistors for the four shunts: Vishay WSL1206R1500FEA (R5), WSL1206R1000FEA (R6, R7) and WSL0603R1000FEA (R10), or equivalents rated 100 ppm/°C or better. An ordinary thick-film resistor at these values drifts several times more with temperature, which moves the charge current and the current readings. Values and footprints are unchanged. The BOM attached to the release was replaced on Nov. 11, 2026 to add these; the Gerbers, placement file and fab notes are the original ones.
-
 ### Silkscreen
 
 - `+` and `-` marks at the solar (J1–J4), battery (J5) and VOUT (J6) connectors.

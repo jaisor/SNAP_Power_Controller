@@ -18,12 +18,6 @@ const MPN = {
   D2: "SS34",
   D5: "1N5819WS", D6: "1N5819WS", D7: "1N5819WS", D8: "1N5819WS",
   L1: "SRN6045TA-220M (Bourns)",
-  // Shunts: metal-element current-sense resistors (about 75 ppm/C). A generic thick-film part at
-  // these values drifts a few hundred ppm/C, which moves the charge current and the INA3221 readings.
-  R5: "WSL1206R1500FEA (Vishay) or equivalent metal-element current-sense resistor, 100 ppm/C or better",
-  R6: "WSL1206R1000FEA (Vishay) or equivalent metal-element current-sense resistor, 100 ppm/C or better",
-  R7: "WSL1206R1000FEA (Vishay) or equivalent metal-element current-sense resistor, 100 ppm/C or better",
-  R10: "WSL0603R1000FEA (Vishay) or equivalent metal-element current-sense resistor, 100 ppm/C or better",
   J1: "53047-0210 (Molex)", J2: "53047-0210 (Molex)", J3: "53047-0210 (Molex)", J4: "53047-0210 (Molex)",
   J5: "53047-0210 (Molex)", J6: "53047-0210 (Molex)", J7: "2.54mm 1x02 vertical pin header", J8: "2.54mm 1x02 vertical pin header",
   J9: "53047-0410 (Molex)",
