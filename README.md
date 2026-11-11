@@ -208,7 +208,7 @@ Download the package from the [latest release](https://github.com/jaisor/SolarNo
 | `SolarChargeModule_v1.1_BOM.csv` | BOM in JLCPCB format (Comment, Designator, Footprint, LCSC Part #), plus a Manufacturer Part column for the specific parts |
 | `SolarChargeModule_v1.1_CPL.csv` | Pick-and-place file for top-side assembly, in the same coordinates as the Gerbers |
 
-LCSC part numbers are only filled in where verified (D5–D8). Pick the rest in the assembler's part search, and check rotation and polarity in their preview. The PicoBlade headers and the J7 and J8 pin headers are through-hole parts. JP1 is a solder jumper made of bare pads, so it has no part to place.
+LCSC part numbers are only filled in where verified (D5–D8). The four shunts (R5, R6, R7, R10) are listed as Vishay WSL metal-element current-sense resistors: use those or an equivalent rated 100 ppm/°C or better, since an ordinary thick-film resistor at 0.1Ω drifts several times more with temperature, and that drift goes straight into the charge current and the INA3221 readings. Pick the rest in the assembler's part search, and check rotation and polarity in their preview. The PicoBlade headers and the J7 and J8 pin headers are through-hole parts. JP1 is a solder jumper made of bare pads, so it has no part to place.
 
 Regenerating the package (after the board is final and DRC is clean):
 
