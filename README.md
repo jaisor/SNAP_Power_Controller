@@ -199,7 +199,7 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 
 ## Fabrication
 
-Download the package from the [latest release](https://github.com/jaisor/SolarNodeChargeController/releases/latest). That release is v1.1, the design in this repo; the [change log](CHANGELOG.md) lists what changed since v1.0. The package is generated into `output/fab/`, which isn't tracked in git:
+Download the package from the [latest release](https://github.com/jaisor/SNAP_Power_Controller/releases/latest). That release is v1.1, the design in this repo; the [change log](CHANGELOG.md) lists what changed since v1.0. The package is generated into `output/fab/`, which isn't tracked in git:
 
 | File | Contents |
 |---|---|
@@ -287,4 +287,4 @@ The hardware design (schematic, board, symbol library) and its documentation, in
 
 The scripts in `tools/` are licensed under the [MIT License](tools/LICENSE).
 
-Source location: https://github.com/jaisor/SolarNodeChargeController
+Source location: https://github.com/jaisor/SNAP_Power_Controller
