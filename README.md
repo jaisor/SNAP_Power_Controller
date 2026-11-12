@@ -28,7 +28,7 @@ I2C power sensors are supported natively by both [Meshtastic](https://meshtastic
 </p>
 
 <p align="center">
-  <img src="docs/images/wiring-diagram.png" alt="Wiring diagram: panels, 18650, switches and a XIAO nRF52840 + Wio-SX1262 node connected to the charge module" width="900">
+  <img src="docs/images/wiring-diagram.png" alt="Wiring diagram: panels, 18650, switches and a XIAO nRF52840 + Wio-SX1262 node connected to the charge module, with a dimension drawing of the board below" width="900">
 </p>
 
 In the SNAP v1.2 example build, shown below, the board replaces several separately wired parts:
@@ -113,6 +113,18 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 | Right end | M3 mounting holes H2/H4 in the corners, with the SW_BATT/SW_LOAD switch headers (J7/J8) between them |
 
 Every reference label sits next to its own part, clear of pads, other parts and the edge (DRC reports no silkscreen issues). The holes are plain non-plated 3.2mm M3 holes, 4mm in from each edge.
+
+### Dimensions
+
+The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing to scale.
+
+| | |
+|---|---|
+| Outline | 52 × 29mm, with a 2mm × 45° chamfer on each corner |
+| Thickness | 1.6mm PCB, two layers. All parts are on the top side; the through-hole connector pins stick out the back |
+| Mounting holes | Four, 3.2mm diameter, not plated, for M3 screws |
+| Hole positions | One in each corner, centre 4mm from both edges |
+| Hole spacing | 44mm across, 21mm down, centre to centre |
 
 **Silkscreen labels:**
 

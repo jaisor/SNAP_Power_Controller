@@ -6,7 +6,7 @@
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-W, H = 2000, 1180
+W, H = 2000, 1580
 BG = (13, 17, 23)
 INK = (230, 237, 243)
 DIM = (139, 148, 158)
@@ -21,6 +21,8 @@ box_sub = ImageFont.truetype(FONTS + "consola.ttf", 17)
 small = ImageFont.truetype(FONTS + "consola.ttf", 16)
 
 BOARD_W_MM, BOARD_H_MM = 52.0, 29.0
+# Mechanical data for the dimension drawing (W, H, CHAMFER, HOLE_INSET in tools/place-pcb.py)
+CHAMFER_MM, HOLE_INSET_MM, HOLE_DIA_MM = 2.0, 4.0, 3.2
 # Connector body centres in board mm (from tools/place-pcb.py PLACEMENT)
 CONN = {
     "J1": (13.7, 2.85), "J2": (13.7, 9.15), "J3": (13.7, 15.45), "J4": (13.7, 21.75),
@@ -151,8 +153,67 @@ node(1480, 900)
 wire([(i2c[0] + 60, i2c[3]), (i2c[0] + 60, 1010), (1480, 1010)], CYAN, 5)
 wire([(vout[2], 453), (1800, 453), (1800, 960), (1780, 960)], RED, 5)
 
-d.text((70, 1130), "Replaces the CN3158 module, discrete Schottky diodes and loose wiring of a SNAP v1.2 build.",
+# ---------- Board dimensions: outline drawing, to scale ----------
+DY = 1120  # top of the dimension strip
+d.line((70, DY, W - 70, DY), fill=(48, 54, 61), width=2)
+d.text((70, DY + 28), "BOARD DIMENSIONS", font=box_title, fill=INK)
+d.text((70, DY + 60), "all in mm · top view", font=box_sub, fill=CYAN)
+S = 8.0  # px per mm
+OX, OY = 600, DY + 95
+bw, bh, c = BOARD_W_MM * S, BOARD_H_MM * S, CHAMFER_MM * S
+d.polygon([(OX + c, OY), (OX + bw - c, OY), (OX + bw, OY + c), (OX + bw, OY + bh - c),
+           (OX + bw - c, OY + bh), (OX + c, OY + bh), (OX, OY + bh - c), (OX, OY + c)],
+          fill=(24, 44, 30), outline=INK, width=3)
+hi, hr = HOLE_INSET_MM * S, HOLE_DIA_MM * S / 2
+holes = [(OX + hi, OY + hi), (OX + bw - hi, OY + hi), (OX + hi, OY + bh - hi), (OX + bw - hi, OY + bh - hi)]
+for hx, hy in holes:
+    d.ellipse((hx - hr, hy - hr, hx + hr, hy + hr), fill=BG, outline=INK, width=2)
+    d.line((hx - hr - 5, hy, hx + hr + 5, hy), fill=DIM, width=1)
+    d.line((hx, hy - hr - 5, hx, hy + hr + 5), fill=DIM, width=1)
+
+
+def dim_h(x0, x1, y, from_y, text, colour):
+    """Horizontal dimension at height y, with extension lines from from_y."""
+    for x in (x0, x1):
+        d.line((x, from_y, x, y + (6 if y > from_y else -6)), fill=colour, width=1)
+        d.line((x - 5, y + 5, x + 5, y - 5), fill=colour, width=2)
+    d.line((x0, y, x1, y), fill=colour, width=2)
+    tw = d.textlength(text, font=box_sub)
+    tx, ty = (x0 + x1) / 2 - tw / 2, y - 9
+    d.rectangle((tx - 6, ty - 2, tx + tw + 6, ty + 20), fill=BG)
+    d.text((tx, ty), text, font=box_sub, fill=colour)
+
+
+def dim_v(y0, y1, x, from_x, text, colour):
+    """Vertical dimension at x, with extension lines from from_x; the text sits on the outer side."""
+    for y in (y0, y1):
+        d.line((from_x, y, x + (6 if x > from_x else -6), y), fill=colour, width=1)
+        d.line((x - 5, y + 5, x + 5, y - 5), fill=colour, width=2)
+    d.line((x, y0, x, y1), fill=colour, width=2)
+    tw = d.textlength(text, font=box_sub)
+    tx = x + 10 if x > from_x else x - 10 - tw
+    d.text((tx, (y0 + y1) / 2 - 9), text, font=box_sub, fill=colour)
+
+
+dim_h(OX, OX + bw, OY - 34, OY, "52", INK)                                    # board width
+dim_h(holes[2][0], holes[3][0], OY + bh + 34, holes[2][1], "44", YELLOW)      # hole centres, across
+dim_v(OY, OY + bh, OX - 34, OX, "29", INK)                                    # board height
+dim_v(holes[1][1], holes[3][1], OX + bw + 34, holes[1][0], "21", YELLOW)      # hole centres, down
+# Hole callout, from the top-right hole
+lx, ly = OX + bw + 150, OY + 6
+d.line((holes[1][0] + hr * 0.7, holes[1][1] - hr * 0.7, lx - 12, ly + 12), fill=YELLOW, width=2)
+NX = lx
+for i, (text, colour) in enumerate((
+        ("4 × Ø3.2 mounting holes for M3 screws, not plated", YELLOW),
+        ("hole centres 4 from each edge · 44 × 21 apart", YELLOW),
+        ("", INK),
+        ("Outline 52 × 29, four 2 × 45° corner chamfers", INK),
+        ("PCB 1.6 thick, 2 layers · parts on the top side only", INK),
+        ("Solder pins of the through-hole connectors stick out the back", DIM))):
+    d.text((NX, ly + i * 30), text, font=box_sub, fill=colour)
+
+d.text((70, H - 50), "Replaces the CN3158 module, discrete Schottky diodes and loose wiring of a SNAP v1.2 build.",
        font=small, fill=DIM)
-d.text((W - 300, 1130), "JAISORGADGETS", font=box_title, fill=CYAN)
+d.text((W - 300, H - 50), "JAISORGADGETS", font=box_title, fill=CYAN)
 img.save("docs/images/wiring-diagram.png", optimize=True)
 print("wrote docs/images/wiring-diagram.png", img.size)
