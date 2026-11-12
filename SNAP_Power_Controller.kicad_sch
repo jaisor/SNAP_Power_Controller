@@ -5,7 +5,7 @@
 	(uuid "94501acb-e983-4695-a18c-1a4d3ecd2660")
 	(paper "A3")
 	(title_block
-		(title "Solar Node Charge Controller")
+		(title "SNAP Power Controller")
 		(date "2026-10-28")
 		(rev "1.1")
 		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")
@@ -3959,7 +3959,7 @@
 			(uuid "25e5a6a9-d034-4c24-8a32-358c89d2c927")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J9")
 					(unit 1)
@@ -4038,7 +4038,7 @@
 			(uuid "589d4cf9-d7c7-408d-b787-6a8ee94eadea")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "D8")
 					(unit 1)
@@ -4115,7 +4115,7 @@
 			(uuid "1bd15b3e-514c-41bb-bf1d-5cac15d83059")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR010")
 					(unit 1)
@@ -4193,7 +4193,7 @@
 			(uuid "245fb83e-c5bb-4377-9d07-06c5c2ad6c0b")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#FLG002")
 					(unit 1)
@@ -4272,7 +4272,7 @@
 			(uuid "9ab3c8ac-6655-49d9-87be-1880e4ac3a27")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "D6")
 					(unit 1)
@@ -4354,7 +4354,7 @@
 			(uuid "5469140f-13e6-4c22-9dff-ab1666d65b8a")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "Q1")
 					(unit 1)
@@ -4433,7 +4433,7 @@
 			(uuid "10ff8018-d04b-4fb1-a3d3-c47a6059d85b")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "C5")
 					(unit 1)
@@ -4511,7 +4511,7 @@
 			(uuid "97444f05-8fc9-4baf-ab4f-f79487edfcb4")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#FLG001")
 					(unit 1)
@@ -4590,7 +4590,7 @@
 			(uuid "3427705e-341c-44eb-aa04-73ca13071be3")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J7")
 					(unit 1)
@@ -4669,7 +4669,7 @@
 			(uuid "4636eab2-3351-4e9d-b389-bf9f3a2b446c")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "C6")
 					(unit 1)
@@ -4749,7 +4749,7 @@
 			(uuid "ff273f88-c0fe-45a7-b651-0d9df5f79004")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J4")
 					(unit 1)
@@ -4828,7 +4828,7 @@
 			(uuid "9fc440ea-eb7c-469d-81de-eed6866c1d6c")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "D4")
 					(unit 1)
@@ -4905,7 +4905,7 @@
 			(uuid "18849bad-6b0e-4716-affd-0bf2dacdd1ec")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR009")
 					(unit 1)
@@ -4982,7 +4982,7 @@
 			(uuid "5659e118-9378-4f74-976a-50b61b04eaf8")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR006")
 					(unit 1)
@@ -5061,7 +5061,7 @@
 			(uuid "14b261af-d458-4327-a5f2-5a1d7ba7f38c")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J6")
 					(unit 1)
@@ -5134,7 +5134,7 @@
 			)
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "H1")
 					(unit 1)
@@ -5207,7 +5207,7 @@
 			)
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "H3")
 					(unit 1)
@@ -5287,7 +5287,7 @@
 			(uuid "f45571ca-9198-4615-93bc-005c373c084d")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J1")
 					(unit 1)
@@ -5366,7 +5366,7 @@
 			(uuid "e42ea567-bc11-4b45-851c-f231a4b80574")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "D7")
 					(unit 1)
@@ -5471,7 +5471,7 @@
 			(uuid "b453e1af-2c0c-42c1-9690-103d4e6cd33e")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "U1")
 					(unit 1)
@@ -5550,7 +5550,7 @@
 			(uuid "650d7879-6726-4178-845d-ded134a543e8")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "L1")
 					(unit 1)
@@ -5627,7 +5627,7 @@
 			(uuid "c19510fb-6761-44f7-bb47-906d97125199")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR008")
 					(unit 1)
@@ -5706,7 +5706,7 @@
 			(uuid "40d3d44c-d820-40a1-ab5b-4f686d4cce7c")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R9")
 					(unit 1)
@@ -5783,7 +5783,7 @@
 			(uuid "fbe3d4f4-a7a7-4cd7-8c3b-c3016a835de3")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR017")
 					(unit 1)
@@ -5862,7 +5862,7 @@
 			(uuid "e127cecc-736a-4b7e-9f56-27c410061724")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "C3")
 					(unit 1)
@@ -5935,7 +5935,7 @@
 			)
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "H2")
 					(unit 1)
@@ -6012,7 +6012,7 @@
 			(uuid "e148d886-4062-41f4-a87e-17062fe81b4e")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR007")
 					(unit 1)
@@ -6091,7 +6091,7 @@
 			(uuid "7a8f6ff7-f7cc-42af-bcf1-e63e21716149")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "D2")
 					(unit 1)
@@ -6168,7 +6168,7 @@
 			(uuid "0ef5f856-b599-43ee-8205-1751c28986b6")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR015")
 					(unit 1)
@@ -6247,7 +6247,7 @@
 			(uuid "ed98aa18-82ff-41d4-8769-971aaf2c0ae2")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R4")
 					(unit 1)
@@ -6324,7 +6324,7 @@
 			(uuid "75422dd0-b69d-4577-87fa-34a927f2c4fa")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR011")
 					(unit 1)
@@ -6403,7 +6403,7 @@
 			(uuid "890c9190-e417-4f4d-b0e5-082e2f3bf8f3")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "C2")
 					(unit 1)
@@ -6482,7 +6482,7 @@
 			(uuid "d2990fa5-ffeb-4d58-8415-ab48578d917e")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R2")
 					(unit 1)
@@ -6561,7 +6561,7 @@
 			(uuid "44b0bf00-fcde-45a3-9236-7f4ef8b766ea")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "C4")
 					(unit 1)
@@ -6638,7 +6638,7 @@
 			(uuid "250c3036-b3e6-4290-9a8e-6033c0ea7979")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR012")
 					(unit 1)
@@ -6717,7 +6717,7 @@
 			(uuid "175378e2-8586-44f2-a3b1-252ba68c0056")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R8")
 					(unit 1)
@@ -6796,7 +6796,7 @@
 			(uuid "a20485d0-a0c8-470e-957a-deb85b677d72")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J5")
 					(unit 1)
@@ -6875,7 +6875,7 @@
 			(uuid "a3571319-78e6-46bd-9e81-f447f908effe")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "D3")
 					(unit 1)
@@ -6954,7 +6954,7 @@
 			(uuid "d7f4e4e6-bbce-4e91-82e7-a6a770496a26")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R7")
 					(unit 1)
@@ -7034,7 +7034,7 @@
 			(uuid "ced23bd2-d68c-4836-8146-00119bbb1c66")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J2")
 					(unit 1)
@@ -7113,7 +7113,7 @@
 			(uuid "d1c44e9d-f731-44e8-9399-e88729e8339e")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R5")
 					(unit 1)
@@ -7190,7 +7190,7 @@
 			(uuid "999a3c8c-101d-470f-b1a2-69c4bcc63002")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR005")
 					(unit 1)
@@ -7269,7 +7269,7 @@
 			(uuid "65aabeb0-00b4-41b1-92bf-0427f7a08537")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R6")
 					(unit 1)
@@ -7346,7 +7346,7 @@
 			(uuid "9027c016-283d-4d4d-8c5d-f3dd07e7a572")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR018")
 					(unit 1)
@@ -7426,7 +7426,7 @@
 			(uuid "9ba9bb34-7010-4d4b-81b6-00efabc2b322")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J3")
 					(unit 1)
@@ -7504,7 +7504,7 @@
 			(uuid "cb21887c-10e3-4f60-85ad-08ba924c2873")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#FLG003")
 					(unit 1)
@@ -7583,7 +7583,7 @@
 			(uuid "63330566-8fa5-4220-9883-8355fae69a7e")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "J8")
 					(unit 1)
@@ -7656,7 +7656,7 @@
 			)
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "H4")
 					(unit 1)
@@ -7735,7 +7735,7 @@
 			(uuid "47902225-392f-42b5-9921-1896b21072d9")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R3")
 					(unit 1)
@@ -7814,7 +7814,7 @@
 			(uuid "460b34fb-37b2-41b7-b9fd-518075b8ad3e")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "C1")
 					(unit 1)
@@ -7937,7 +7937,7 @@
 			(uuid "759b8f13-2062-4866-87dc-f2619e9d6264")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "Q2")
 					(unit 1)
@@ -8042,7 +8042,7 @@
 			(uuid "99566349-3ac2-4bfd-b1a7-46d2f4e54961")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR016")
 					(unit 1)
@@ -8109,7 +8109,7 @@
 			(uuid "2a60c99c-57b4-4d29-b001-a123793e94c9")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "JP1")
 					(unit 1)
@@ -8176,7 +8176,7 @@
 			(uuid "d97c213b-89e6-4e4c-a228-6218a4c71bcd")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R1")
 					(unit 1)
@@ -8537,7 +8537,7 @@
 			(uuid "61b68a0a-fc93-4e82-9636-bf30f10b22bb")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR001")
 					(unit 1)
@@ -8602,7 +8602,7 @@
 			(uuid "667df8a3-793b-46b3-b17e-792f66528d31")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR002")
 					(unit 1)
@@ -8667,7 +8667,7 @@
 			(uuid "0358b18d-f776-48ca-9eb1-8c447ca80bec")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR003")
 					(unit 1)
@@ -8732,7 +8732,7 @@
 			(uuid "ee3dcac1-dd8a-4e6d-b103-43427ee2936c")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR004")
 					(unit 1)
@@ -8844,7 +8844,7 @@
 			(uuid "d890d0ef-b98e-4a5d-886f-620b06c89900")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "U2")
 					(unit 1)
@@ -8909,7 +8909,7 @@
 			(uuid "69fe73ee-15cd-456f-be07-358d53c3b49b")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR013")
 					(unit 1)
@@ -8974,7 +8974,7 @@
 			(uuid "1a5157e7-cd91-431c-a086-1d13f63beae0")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR014")
 					(unit 1)
@@ -9041,7 +9041,7 @@
 			(uuid "cc0ff32e-c604-4a23-88ee-a316e72b932e")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "D5")
 					(unit 1)
@@ -9108,7 +9108,7 @@
 			(uuid "32fdab06-8cce-48f5-b5dc-41b0e2205093")
 		)
 		(instances
-			(project "SolarNodeChargeController"
+			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "R10")
 					(unit 1)

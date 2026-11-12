@@ -1,4 +1,4 @@
-# Solar Node Charge Controller
+# SNAP Power Controller
 
 A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built for solar-powered LoRa mesh nodes such as [SNAP v1.2](https://makerworld.com/en/models/3360988-snap-v1-2-solar-node-adaptable-platform-2x200ma). Up to four 5V panels feed a CN3791 MPPT buck charger. A switched output powers the node, and an INA3221 reports voltage and current on three channels over I2C.
 
@@ -214,7 +214,7 @@ Regenerating the package (after the board is final and DRC is clean):
 
 ```bash
 OUT=output/fab
-P=SolarNodeChargeController
+P=SNAP_Power_Controller
 kicad-cli pcb export gerbers --layers F.Cu,B.Cu,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts --subtract-soldermask --check-zones -o $OUT/gerbers $P.kicad_pcb
 kicad-cli pcb export drill --format excellon --excellon-units mm --excellon-zeros-format decimal --drill-origin absolute --excellon-separate-th --generate-map --map-format gerberx2 -o $OUT/gerbers/ $P.kicad_pcb
 kicad-cli pcb export pos --format csv --units mm --side both -o $OUT/pos-kicad.csv $P.kicad_pcb
@@ -225,7 +225,7 @@ node tools/fab-package.js $OUT
 ## Repository layout
 
 ```
-SolarNodeChargeController.kicad_pro / .kicad_sch / .kicad_pcb   KiCad project
+SNAP_Power_Controller.kicad_pro / .kicad_sch / .kicad_pcb   KiCad project
 SolarNode.kicad_sym             project symbol library (CN3791)
 sym-lib-table
 tools/
@@ -250,14 +250,14 @@ The whole design can be rebuilt from the scripts. Run these from the repo root, 
 ```bash
 # 1. Schematic (Node): rewrites the .kicad_sch, SolarNode.kicad_sym and sym-lib-table
 node tools/gen-schematic.js
-kicad-cli sch erc --format json --severity-all -o erc.json SolarNodeChargeController.kicad_sch
+kicad-cli sch erc --format json --severity-all -o erc.json SNAP_Power_Controller.kicad_sch
 # 2. Netlist for the board scripts
-kicad-cli sch export netlist --format kicadxml -o net.xml SolarNodeChargeController.kicad_sch
+kicad-cli sch export netlist --format kicadxml -o net.xml SNAP_Power_Controller.kicad_sch
 # 3. Board (KiCad's Python): placement + labels + holes + outline, then tracks + GND pours
 "C:/Program Files/KiCad/10.0/bin/python.exe" tools/place-pcb.py net.xml
 "C:/Program Files/KiCad/10.0/bin/python.exe" tools/draw-routes.py
 # 4. Check: expect 0 violations, 0 unconnected, 0 parity issues
-kicad-cli pcb drc --schematic-parity --severity-all --format json -o drc.json SolarNodeChargeController.kicad_pcb
+kicad-cli pcb drc --schematic-parity --severity-all --format json -o drc.json SNAP_Power_Controller.kicad_pcb
 ```
 
 The scripts overwrite their output files. Once you edit the schematic or board in KiCad, stop regenerating that file (or port your edits into the scripts first).
@@ -265,13 +265,13 @@ The scripts overwrite their output files. Once you edit the schematic or board i
 Refreshing the images in `docs/images/`:
 
 ```bash
-kicad-cli sch export svg -o docs/images SolarNodeChargeController.kicad_sch
-kicad-cli pcb render --side top --width 1600 --height 900 --quality high --zoom 1.6 -o docs/images/pcb-top.png SolarNodeChargeController.kicad_pcb
-kicad-cli pcb render --side bottom --width 1600 --height 900 --quality high --zoom 1.6 -o docs/images/pcb-bottom.png SolarNodeChargeController.kicad_pcb
-kicad-cli pcb render --width 1600 --height 1000 --quality high --perspective --rotate "-40,0,-25" -o docs/images/pcb-iso.png SolarNodeChargeController.kicad_pcb
+kicad-cli sch export svg -o docs/images SNAP_Power_Controller.kicad_sch
+kicad-cli pcb render --side top --width 1600 --height 900 --quality high --zoom 1.6 -o docs/images/pcb-top.png SNAP_Power_Controller.kicad_pcb
+kicad-cli pcb render --side bottom --width 1600 --height 900 --quality high --zoom 1.6 -o docs/images/pcb-bottom.png SNAP_Power_Controller.kicad_pcb
+kicad-cli pcb render --width 1600 --height 1000 --quality high --perspective --rotate "-40,0,-25" -o docs/images/pcb-iso.png SNAP_Power_Controller.kicad_pcb
 ```
 
-(The schematic export is named `SolarNodeChargeController.svg`; rename it to `schematic.svg`.)
+(The schematic export is named `SNAP_Power_Controller.svg`; rename it to `schematic.svg`.)
 
 After refreshing `pcb-top.png`, redraw the wiring diagram with KiCad's Python, which includes Pillow and NumPy:
 

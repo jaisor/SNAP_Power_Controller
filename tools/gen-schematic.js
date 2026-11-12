@@ -7,7 +7,7 @@ const path = require("path");
 
 const LIBDIR = "C:/Program Files/KiCad/10.0/share/kicad/symbols";
 const PROJ = process.argv[2] || ".";
-const NAME = "SolarNodeChargeController";
+const NAME = "SNAP_Power_Controller";
 const SCH = path.join(PROJ, NAME + ".kicad_sch");
 // Deterministic UUIDs keyed by what an item is (symbol ref, wire endpoints, ...), so
 // regenerating keeps symbol identities stable for the PCB links and keeps git diffs small.
@@ -528,7 +528,7 @@ const out = [
 	(uuid "${sheetUuid}")
 	(paper "A3")
 	(title_block
-		(title "Solar Node Charge Controller")
+		(title "SNAP Power Controller")
 		(date "2026-10-28")
 		(rev "1.1")
 		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")

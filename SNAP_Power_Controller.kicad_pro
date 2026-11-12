@@ -492,7 +492,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "SolarNodeChargeController.kicad_pro",
+    "filename": "SNAP_Power_Controller.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -660,8 +660,8 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "SolarNodeChargeController.kicad_sch",
-        "name": "SolarNodeChargeController",
+        "filename": "SNAP_Power_Controller.kicad_sch",
+        "name": "SNAP_Power_Controller",
         "uuid": "94501acb-e983-4695-a18c-1a4d3ecd2660"
       }
     ],
@@ -671,7 +671,7 @@
   "sheets": [
     [
       "94501acb-e983-4695-a18c-1a4d3ecd2660",
-      "SolarNodeChargeController"
+      "SNAP_Power_Controller"
     ]
   ],
   "text_variables": {},

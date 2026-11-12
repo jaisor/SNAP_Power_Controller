@@ -3,7 +3,7 @@
 # coordinates, nets assigned, reference labels auto-placed clear of everything, M3 holes
 # in the corners and a chamfered Edge.Cuts outline. No tracks. Run with KiCad's Python:
 #   "C:\Program Files\KiCad\10.0\bin\python.exe" tools/place-pcb.py <netlist.xml> [project dir, default: repo root]
-# Netlist: kicad-cli sch export netlist --format kicadxml -o net.xml SolarNodeChargeController.kicad_sch
+# Netlist: kicad-cli sch export netlist --format kicadxml -o net.xml SNAP_Power_Controller.kicad_sch
 import os
 import sys
 import xml.etree.ElementTree as ET
@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ET
 import pcbnew
 
 FPDIR = "C:/Program Files/KiCad/10.0/share/kicad/footprints"
-NAME = "SolarNodeChargeController"
+NAME = "SNAP_Power_Controller"
 ORIGIN = (100.0, 100.0)  # board top-left in the editor, mm
 W, H = 52.0, 29.0  # board size, mm
 CHAMFER = 2.0  # 45-degree corner chamfer, mm
@@ -296,7 +296,7 @@ def main():
 
     board = pcbnew.NewBoard(pcb_path)
     tb = board.GetTitleBlock()
-    tb.SetTitle("Solar Node Charge Controller")
+    tb.SetTitle("SNAP Power Controller")
     tb.SetRevision("1.1")
 
     fps = {}

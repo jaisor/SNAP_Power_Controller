@@ -8,7 +8,7 @@
 	)
 	(paper "A4")
 	(title_block
-		(title "Solar Node Charge Controller")
+		(title "SNAP Power Controller")
 		(rev "1.1")
 	)
 	(layers
@@ -155,7 +155,7 @@
 		)
 		(path "/2306e480-2dba-432f-bb42-fede7ea4375f")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -296,7 +296,7 @@
 		)
 		(path "/1099581a-6422-4fb4-84c5-51e63b67f8f4")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -574,7 +574,7 @@
 		)
 		(path "/739c4e13-7b40-4ea6-a839-19a826d62213")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_circle
@@ -683,7 +683,7 @@
 		)
 		(path "/cf8d1b70-521a-41bf-a5ac-b5f594ac0819")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -1008,7 +1008,7 @@
 		)
 		(path "/99d34222-9ca6-4588-ae15-d45d354dd464")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_circle
@@ -1117,7 +1117,7 @@
 		)
 		(path "/95c70013-83f3-42dd-8517-ec1e6cf2cdff")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -1267,7 +1267,7 @@
 		)
 		(path "/6a72d16c-c0ba-495c-b624-5dd1fabd40b9")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_circle
@@ -1376,7 +1376,7 @@
 		)
 		(path "/211d4535-e9d0-4a1f-ac88-7908350498bc")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -1745,7 +1745,7 @@
 		)
 		(path "/99cfea4d-4461-4323-bbd4-97f25360acd4")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -1894,7 +1894,7 @@
 		)
 		(path "/bddec6ca-c264-44bb-bc06-176b1ab35e7a")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -2043,7 +2043,7 @@
 		)
 		(path "/c0a34b7a-559f-4102-8280-15ee9a84d36d")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -2184,7 +2184,7 @@
 		)
 		(path "/8eb039af-bf9f-4473-a80f-91f554e36837")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -2429,7 +2429,7 @@
 		)
 		(path "/7f8d8a21-8580-46aa-978d-d2ae99aab704")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -2753,7 +2753,7 @@
 		)
 		(path "/eebe16a2-b2fe-4b39-9086-8beeab49bfcb")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -2902,7 +2902,7 @@
 		)
 		(path "/49bcc3da-a0ab-4ccc-b12c-89fc03f9c956")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -3100,7 +3100,7 @@
 		)
 		(path "/4d969a19-fec7-4a9b-b1de-dc1a1ec9185d")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -3469,7 +3469,7 @@
 		)
 		(path "/bf43ad3f-ca39-4734-ad31-5586a589e41b")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -3618,7 +3618,7 @@
 		)
 		(path "/fb9ce6a6-f8da-45f4-a7b3-3c5047e00d7c")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -3767,7 +3767,7 @@
 		)
 		(path "/1a7bd488-0155-4ad8-886d-f339c78f64d8")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -4327,7 +4327,7 @@
 		)
 		(path "/bda591db-c995-4b41-b961-0735d3156250")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -4468,7 +4468,7 @@
 		)
 		(path "/83ef407e-2a71-4d95-87fd-f39230884bb2")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -4745,7 +4745,7 @@
 		)
 		(path "/c4e2101d-6b55-4428-b415-b927f627a0de")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -5069,7 +5069,7 @@
 		)
 		(path "/df9d9624-bf11-47f3-afec-38c5891f898b")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -5385,7 +5385,7 @@
 		)
 		(path "/03a9ea07-6d54-4641-8d14-a65ccd962d57")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(zone_connect 1)
 		(attr exclude_from_pos_files exclude_from_bom allow_soldermask_bridges)
 		(duplicate_pad_numbers_are_jumpers no)
@@ -5659,7 +5659,7 @@
 		)
 		(path "/e8675389-1999-4eaa-b672-34faa83d6247")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_circle
@@ -5768,7 +5768,7 @@
 		)
 		(path "/29b0deea-1245-4f71-b667-d9575ef2881f")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -5998,7 +5998,7 @@
 		)
 		(path "/cd04fd35-cf71-4628-8ba3-19549071dea2")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -6147,7 +6147,7 @@
 		)
 		(path "/0cae1070-43ba-4188-98bc-f9e6e82e7e77")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -6296,7 +6296,7 @@
 		)
 		(path "/2d5f6aac-9ee7-4b1d-98a9-270ad19250dc")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -6446,7 +6446,7 @@
 		)
 		(path "/0fb3a45a-ce5a-4f61-a54a-c973dda53c9f")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -6788,7 +6788,7 @@
 		)
 		(path "/619270b0-8c9b-4ecc-86e0-a2f7f178e90a")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -7104,7 +7104,7 @@
 		)
 		(path "/ac16d887-cd80-4f7d-949d-f787bfd1d3c7")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -7381,7 +7381,7 @@
 		)
 		(path "/c6a6eba2-09dd-4c82-9a74-64e9d55d569d")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -7579,7 +7579,7 @@
 		)
 		(path "/91d63d41-f3ce-493e-934f-90f012a03dc3")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -7728,7 +7728,7 @@
 		)
 		(path "/e214fcfa-4c5c-43ca-85e4-5458942bb7fa")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -7958,7 +7958,7 @@
 		)
 		(path "/d06f1007-1dbd-4e7a-8d96-f506b4dcd019")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -8099,7 +8099,7 @@
 		)
 		(path "/1d44fc39-4e77-40de-b63e-fb5b7614fdc9")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -8376,7 +8376,7 @@
 		)
 		(path "/b3cf8506-ac23-40f8-95eb-d32fdf72e797")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -8525,7 +8525,7 @@
 		)
 		(path "/3c96f539-abd3-417e-96fc-b900d22a7059")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -8841,7 +8841,7 @@
 		)
 		(path "/8462a983-4dee-4944-9c68-22f1963102f1")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -9124,7 +9124,7 @@
 		)
 		(path "/d8b893ef-f80e-4415-9aac-f2ea61dba5c8")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -9265,7 +9265,7 @@
 		)
 		(path "/d2571b49-c3e7-42c0-8f0b-8a77ae404da8")
 		(sheetname "/")
-		(sheetfile "SolarNodeChargeController.kicad_sch")
+		(sheetfile "SNAP_Power_Controller.kicad_sch")
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line

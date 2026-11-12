@@ -12,7 +12,7 @@ import sys
 import numpy as np
 import pcbnew
 
-NAME = "SolarNodeChargeController"
+NAME = "SNAP_Power_Controller"
 ORIGIN = (100.0, 100.0)  # must match place-pcb.py
 W, H, CHAMFER = 56.5, 29.0, 2.0  # must match place-pcb.py
 RES = 0.05  # routing grid, mm
