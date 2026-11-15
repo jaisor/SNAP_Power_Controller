@@ -253,10 +253,22 @@ gnd(C1.pin("2"));
 // It needs no MPPT divider, pass FET, inductor, catch diode or sense resistor: an on-chip loop
 // cuts the charge current to keep VIN at or above 4.4 V, which holds the panels near their
 // maximum-power voltage.
-const U1 = placeByPin("U1", "SolarNode:CN3163", "4", P(114.3, RAIL), { value: "CN3163" });
-wire(R7.pin("2"), vinFlag, P(68.58, RAIL), P(101.6, RAIL), U1.pin("4"));
-[63.5, 68.58].forEach((x) => junction(P(x, RAIL)));
-LABELS.push({ name: "VIN", at: P(101.6, RAIL), ang: 0 });
+const U1 = placeByPin("U1", "SolarNode:CN3163", "4", P(124.46, RAIL), { value: "CN3163" });
+// Input voltage limiter: every CN3163 pin is limited to 6.5 V, and a 6 V panel (or a 5 V one in
+// cold sun) floats above that once the battery is full. U3, a 5.0 V LDO good for 18 V in, sits
+// between the shunt and the charger. While charging, the CN3163 pulls the panels down to about
+// 4.5 V, so U3 is in dropout and only costs its on-resistance (typ 350 mV at 1.2 A, so about
+// 0.3 ohm); with the battery full it holds VCHG at 5.0 V while passing under 1 mA.
+// KiCad has no LDL1117 symbol: the AMS1117 symbol has the same pins (1 GND, 2 OUT + tab, 3 IN).
+const U3 = placeByPin("U3", "Regulator_Linear:AMS1117-5.0", "3", P(78.74, RAIL), { value: "LDL1117S50R" });
+gnd(U3.pin("1"));
+const C2 = placeByPin("C2", "Device:C", "1", P(99.06, RAIL), { value: "10uF/10V", fp: FP.c1206 });
+gnd(C2.pin("2"));
+wire(R7.pin("2"), vinFlag, P(68.58, RAIL), U3.pin("3"));
+wire(U3.pin("2"), P(99.06, RAIL), U1.pin("4"));
+[63.5, 68.58, 99.06].forEach((x) => junction(P(x, RAIL)));
+LABELS.push({ name: "VIN", at: P(71.12, RAIL), ang: 0 });
+LABELS.push({ name: "VCHG", at: P(106.68, RAIL), ang: 0 });
 stub(U1.pin("7"), "left", "~{CHRG}", 5.08);
 stub(U1.pin("6"), "left", "~{DONE}", 5.08);
 // TEMP to GND: battery temperature sensing off (no NTC in the cell holder)
@@ -367,14 +379,14 @@ LABELS.push({ name: "VCC_MCU", at: P(375.92, 86.36), ang: 0 });
 // Status LEDs: red = charging (~CHRG), green = done (~DONE)
 // VIN -> R1 -> JP1 -> both LED anodes. JP1 is an open solder jumper on the top of the board, right
 // of R1: bridge it with solder to light the LEDs; left open, they draw nothing.
-const LEDS = P(160.02, 92.71);
+const LEDS = P(170.18, 92.71);
 const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Open", "1", LEDS, { rot: 90, value: "LED_EN", fp: FP.jumper });
 const R1 = placeByPin("R1", "Device:R", "2", P(LEDS.x, JP1.pin("2").y - 2.54), { value: "1k", fp: FP.r0603 });
 wire(JP1.pin("2"), R1.pin("2"));
-stub(R1.pin("1"), "up", "VIN");
+stub(R1.pin("1"), "up", "VCHG"); // the limited rail: CHRG and DONE are 6.5 V pins too
 const D4 = placeByPin("D4", "Device:LED", "2", LEDS, { rot: 90, value: "RED", fp: FP.led });
 stub(D4.pin("1"), "down", "~{CHRG}");
-const D3 = placeByPin("D3", "Device:LED", "2", P(172.72, LEDS.y), { rot: 90, value: "GREEN", fp: FP.led });
+const D3 = placeByPin("D3", "Device:LED", "2", P(182.88, LEDS.y), { rot: 90, value: "GREEN", fp: FP.led });
 wire(LEDS, D3.pin("2"));
 junction(LEDS);
 stub(D3.pin("1"), "down", "~{DONE}");
@@ -384,14 +396,17 @@ TEXTS.push({
   text: [
     "Design notes (CN3163 datasheet, Figure 1):",
     "- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A). Up to 0.5A per input.",
-    "  VIN MUST STAY BELOW 6.5V (CN3163 absolute maximum, all pins): use 5V panels only, open-circuit voltage 6.5V or less.",
+    "- U3 LDL1117S50R (5.0V LDO, 2.6-18V in, 20V abs max) limits the charger's supply VCHG to 5.0V: every CN3163 pin has a 6.5V absolute maximum,",
+    "  and panels float to their open-circuit voltage once the battery is full. While charging U3 is in dropout (about 0.3R: ~70mV at 0.25A,",
+    "  ~0.25V at 0.8A). Panels up to 18V open-circuit are safe; above 5-6V nominal the extra voltage is only burnt off as heat in U3 and U1.",
+    "  C1 10uF/25V on U3's input, C2 10uF on its output at U1 (datasheet: 1uF in, 4.7uF out, ceramic). The LEDs run from VCHG as well.",
     "- U1 CN3163: linear CC/CV charger, 4.2V 1%. No inductor, pass FET, sense resistor or MPPT divider. When the panels can't supply the",
-    "  set current it cuts the charge current to hold VIN at 4.4V or above, so each panel sits ~0.3-0.45V higher (diode drop), near its Vmp.",
+    "  set current it cuts the charge current to hold VCHG at 4.4V or above, so each panel sits ~0.4-0.6V higher (diode + U3), near its Vmp.",
     "- Charge current: ICH = 1188V / R2 = 1188 / 1.5k = 0.79A, leaving margin on the 1.0A connector contacts (R2 = 2.4k for 0.5A).",
     "  Precharge at 10% below 2.94V (70% of 4.2V); terminates at 10% of ICH; recharges automatically. Die limited to ~130C by thermal regulation:",
-    "  dissipation is (VIN - VBAT) x ICH, about 0.55W at VIN 4.4V / 3.7V cell / 0.79A, more from a stiff 5V source, so the current may fold back.",
+    "  dissipation is (VCHG - VBAT) x ICH, about 0.55W at VCHG 4.4V / 3.7V cell / 0.79A, up to ~1W at 5.0V, so the current may fold back.",
     "- FB tied to BAT at the VBAT node (no Rx). TEMP grounded: battery temperature sensing disabled. Exposed pad (pin 9) soldered to GND.",
-    "- C1 10uF input and C3 10uF output (datasheet: 1uF or more on VIN, 1-22uF ceramic on BAT). No blocking diode needed: under 3uA from the",
+    "- C3 10uF on BAT (datasheet: 1uF typical, 1-22uF ceramic stable). No blocking diode needed: under 3uA from the",
     "  battery when the input is dark. D5-D8 are there to keep a shaded panel from loading the others.",
     "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.",
     "- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
@@ -456,6 +471,8 @@ function emitPart(p) {
     refAt = [x - 6.35, y - 11.43]; valAt = [x + 7.62, y - 11.43];
   } else if (p.libId.startsWith("Switch")) {
     refAt = [x, y - 8.89]; valAt = [x, y + 8.89];
+  } else if (p.libId.startsWith("Regulator")) {
+    refAt = [x, y - 6.35]; valAt = [x, y - 3.81];
   } else if (p.libId.startsWith("Transistor")) {
     refAt = [x - 3.81 - w(p.ref) / 2, y - 5.08]; valAt = [x - 3.81 - w(o.value) / 2, y - 2.54];
   } else if (looksVertical) {
@@ -507,7 +524,7 @@ const out = [
 		(title "SNAP Power Controller")
 		(date "2026-10-28")
 		(rev "1.1")
-		(comment 1 "CN3163 linear solar Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")
+		(comment 1 "CN3163 linear solar Li-ion charger behind a 5V input limiter: up to 4 solar panels (diode OR) -> 1S LiPo (4.2V)")
 		(comment 2 "INA3221 I2C power monitor (0x42): battery, total solar and panel 1")
 	)
 	(lib_symbols

@@ -9,11 +9,11 @@ Designed in KiCad 10.
 > What changes in the circuit:
 >
 > - **Removed:** the switching stage and its support parts: Q1, D2, L1, the sense resistor R5, the MPPT divider R3/R4, C2, C4, C5 and the old R2. Ten parts go, one comes back (the new R2).
-> - **Added:** R2 = 1.5k, which sets the charge current to 0.79A (1188V / R2).
+> - **Added:** R2 = 1.5k, which sets the charge current to 0.79A (1188V / R2). Also U3, an LDL1117S50R 5V regulator with its output capacitor C2, as an input voltage limiter.
 > - **Kept:** the four diode-isolated solar inputs, the INA3221 and its three shunts, both switch headers, the reverse-battery FET, the status LEDs behind JP1, and every connector and pinout.
-> - **Panel voltage limit drops to 6.5V.** That is the CN3163's absolute maximum on every pin, against 20V for the CN3791 board. Use 5V panels only; a "6V" panel can exceed it open-circuit.
+> - **Panel voltage:** every CN3163 pin has a 6.5V absolute maximum, and a panel floats to its open-circuit voltage once the battery is full. U3 sits between the panels and the charger and holds the charger's supply at 5.0V, so panels up to 18V open-circuit are safe. While charging, the CN3163 pulls the panels down to about 4.5V and U3 is simply fully on, costing about 0.3Ω: roughly 70mV at 0.25A and 0.25V at 0.8A. The board is still meant for 5–6V panels; anything higher only makes heat.
 > - **Solar tracking is built in and fixed.** The CN3163 cuts the charge current to keep its input at 4.4V or above, so there is no set point to tune.
-> - **It is a linear charger.** The difference between input and battery voltage is lost as heat in the chip, about 0.55W at 0.79A from panels. From a stiff 5V supply it will reduce the current to stay near 130°C.
+> - **It is a linear charger.** The difference between input and battery voltage is lost as heat in the chip, about 0.55W at 0.79A from panels, and up to about 1W when the supply holds 5V. It reduces the current by itself to stay near 130°C.
 
 > **Status:** the schematic is complete and passes ERC. The PCB (52 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
 >

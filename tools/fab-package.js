@@ -13,6 +13,7 @@ const NAME = "SolarChargeModule_v1.1";
 // the assembler's basic-parts library. LCSC numbers only where verified (KiCad lib description).
 const MPN = {
   U1: "CN3163 (Consonance)",
+  U3: "LDL1117S50R (ST)",
   U2: "INA3221AIRGVR (TI)",
   Q2: "AO3401A (Alpha & Omega)",
   D5: "1N5819W (SOD-123)", D6: "1N5819W (SOD-123)", D7: "1N5819W (SOD-123)", D8: "1N5819W (SOD-123)",
