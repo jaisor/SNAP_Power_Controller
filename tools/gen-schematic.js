@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Generates the CN3791 solar charger schematic (datasheet Figure 1) for KiCad 10.
+// Generates the CN3163 solar charger schematic (datasheet Figure 1) for KiCad 10.
 // Usage: node tools/gen-schematic.js [project dir, default: repo root]
 const fs = require("fs");
 const crypto = require("crypto");
@@ -59,7 +59,7 @@ function pinsOf(symText) {
   return out;
 }
 
-// ---------- CN3791 symbol (pinout from datasheet p.1/p.3) ----------
+// ---------- CN3163 symbol (pinout from the datasheet's pin description, p.4) ----------
 const fx = (s) => `(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t)`;
 function libProp(name, value, x, y, hide, justify) {
   return `\t\t(property "${name}" "${value}"
@@ -83,24 +83,24 @@ function libPin(type, x, y, ang, name, num) {
 				)
 			)`;
 }
-const CN3791 = `\t(symbol "CN3791"
+const CN3163 = `\t(symbol "CN3163"
 		(pin_names
 			(offset 1.016)
 		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-${libProp("Reference", "U", -7.62, 11.43, false, "left")}
-${libProp("Value", "CN3791", 7.62, 11.43, false, "right")}
-${libProp("Footprint", "Package_SO:SSOP-10_3.9x4.9mm_P1.00mm", 0, -16.51, true)}
-${libProp("Datasheet", "https://naylampmechatronics.com/img/cms/001216/CN3791.PDF", 0, -19.05, true)}
-${libProp("Description", "4A standalone Li-ion charger controller with photovoltaic MPPT, 4.2V, SSOP-10", 0, 0, true)}
-${libProp("ki_keywords", "solar MPPT lithium Li-ion charger buck PWM", 0, 0, true)}
-${libProp("ki_fp_filters", "SSOP*3.9x4.9mm*P1.00mm*", 0, 0, true)}
-		(symbol "CN3791_0_1"
+${libProp("Reference", "U", -7.62, 8.89, false, "left")}
+${libProp("Value", "CN3163", 7.62, 8.89, false, "right")}
+${libProp("Footprint", "Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm", 0, -19.05, true)}
+${libProp("Datasheet", "https://kaspars.net/wp-content/uploads/2023/12/CN3163.pdf", 0, -21.59, true)}
+${libProp("Description", "1A linear Li-ion charger for solar-powered systems, adapts charge current to the input source, 4.2V, eSOP-8", 0, 0, true)}
+${libProp("ki_keywords", "solar lithium Li-ion charger linear adaptive", 0, 0, true)}
+${libProp("ki_fp_filters", "SOIC*1EP*3.9x4.9mm*P1.27mm*", 0, 0, true)}
+		(symbol "CN3163_0_1"
 			(rectangle
-				(start -7.62 10.16)
-				(end 7.62 -10.16)
+				(start -7.62 7.62)
+				(end 7.62 -12.7)
 				(stroke
 					(width 0.254)
 					(type default)
@@ -110,18 +110,17 @@ ${libProp("ki_fp_filters", "SSOP*3.9x4.9mm*P1.00mm*", 0, 0, true)}
 				)
 			)
 		)
-		(symbol "CN3791_1_1"
+		(symbol "CN3163_1_1"
 ${[
-  libPin("power_in", -10.16, 7.62, 0, "VCC", "9"),
-  libPin("input", -10.16, 2.54, 0, "MPPT", "6"),
-  libPin("open_collector", -10.16, -2.54, 0, "~{CHRG}", "3"),
-  libPin("open_collector", -10.16, -5.08, 0, "~{DONE}", "4"),
-  libPin("passive", 10.16, 7.62, 180, "VG", "1"),
-  libPin("output", 10.16, 5.08, 180, "DRV", "10"),
-  libPin("input", 10.16, 0, 180, "CSP", "8"),
-  libPin("input", 10.16, -2.54, 180, "BAT", "7"),
-  libPin("passive", 10.16, -7.62, 180, "COM", "5"),
-  libPin("power_in", 0, -12.7, 90, "GND", "2"),
+  libPin("power_in", -10.16, 5.08, 0, "VIN", "4"),
+  libPin("open_collector", -10.16, 0, 0, "~{CHRG}", "7"),
+  libPin("open_collector", -10.16, -2.54, 0, "~{DONE}", "6"),
+  libPin("input", -10.16, -5.08, 0, "TEMP", "1"),
+  libPin("passive", 10.16, 5.08, 180, "BAT", "5"),
+  libPin("input", 10.16, 2.54, 180, "FB", "8"),
+  libPin("passive", 10.16, -5.08, 180, "ISET", "2"),
+  libPin("power_in", -2.54, -15.24, 90, "GND", "3"),
+  libPin("passive", 2.54, -15.24, 90, "EP", "9"),
 ].join("\n")}
 		)
 		(embedded_fonts no)
@@ -132,7 +131,7 @@ const SYMS = {};
 function useSym(libId) {
   if (SYMS[libId]) return SYMS[libId];
   const [lib, name] = libId.split(":");
-  const text = lib === "SolarNode" ? CN3791.replace('(symbol "CN3791"', '(symbol "SolarNode:CN3791"') : libSymbol(lib, name);
+  const text = lib === "SolarNode" ? CN3163.replace('(symbol "CN3163"', '(symbol "SolarNode:CN3163"') : libSymbol(lib, name);
   return (SYMS[libId] = { text, pins: pinsOf(text) });
 }
 
@@ -249,40 +248,34 @@ flag(vinFlag);
 
 const C1 = placeByPin("C1", "Device:C", "1", P(68.58, RAIL), { value: "10uF/25V", fp: FP.c1206 });
 gnd(C1.pin("2"));
-const C5 = placeByPin("C5", "Device:C", "1", P(83.82, RAIL), { value: "100nF/25V", fp: FP.c0603 });
-gnd(C5.pin("2"));
-const R3 = placeByPin("R3", "Device:R", "1", P(99.06, RAIL), { value: "26.7k 1%", fp: FP.r0603 });
-const R4 = placeByPin("R4", "Device:R", "1", R3.pin("2"), { value: "10k 1%", fp: FP.r0603 });
-gnd(R4.pin("2"));
-stub(R3.pin("2"), "right", "MPPT", 12.7);
-junction(R3.pin("2"));
 
-// Power path: Q1 -> SW -> L1 -> CSP -> R5 (RCS) -> VBAT
-const Q1 = placeByPin("Q1", "Transistor_FET:AO3401A", "2", P(116.84, RAIL), { rot: 270, value: "AO3401A" });
-wire(R7.pin("2"), vinFlag, P(68.58, RAIL), P(83.82, RAIL), P(99.06, RAIL), P(109.22, RAIL), Q1.pin("2"));
-[63.5, 68.58, 83.82, 99.06].forEach((x) => junction(P(x, RAIL)));
-LABELS.push({ name: "VIN", at: P(109.22, RAIL), ang: 0 });
-stub(Q1.pin("1"), "up", "DRV");
-
-// Datasheet D1 (blocking diode) omitted: D5-D8 already keep the battery out of the panels.
-const SW = P(144.78, RAIL);
-wire(Q1.pin("3"), SW);
-const D2 = placeByPin("D2", "Diode:SS34", "1", SW, { rot: 270, value: "SS34" });
-gnd(D2.pin("2"));
-const L1 = placeByPin("L1", "Device:L", "1", P(154.94, RAIL), { rot: 90, value: "22uH", fp: "Inductor_SMD:L_Bourns_SRN6045TA" });
-wire(SW, L1.pin("1"));
-junction(SW);
-const CSP = P(167.64, RAIL);
-wire(L1.pin("2"), CSP);
-stub(CSP, "up", "CSP", 5.08);
-const R5 = placeByPin("R5", "Device:R", "1", P(172.72, RAIL), { rot: 90, value: "0.15R 1%", fp: FP.r1206 });
-wire(CSP, R5.pin("1"));
-junction(CSP);
+// Charger: CN3163 linear CC/CV charger, in line on the rail (VIN on the left, BAT on the right).
+// It needs no MPPT divider, pass FET, inductor, catch diode or sense resistor: an on-chip loop
+// cuts the charge current to keep VIN at or above 4.4 V, which holds the panels near their
+// maximum-power voltage.
+const U1 = placeByPin("U1", "SolarNode:CN3163", "4", P(114.3, RAIL), { value: "CN3163" });
+wire(R7.pin("2"), vinFlag, P(68.58, RAIL), P(101.6, RAIL), U1.pin("4"));
+[63.5, 68.58].forEach((x) => junction(P(x, RAIL)));
+LABELS.push({ name: "VIN", at: P(101.6, RAIL), ang: 0 });
+stub(U1.pin("7"), "left", "~{CHRG}", 5.08);
+stub(U1.pin("6"), "left", "~{DONE}", 5.08);
+// TEMP to GND: battery temperature sensing off (no NTC in the cell holder)
+gnd(wire(U1.pin("1"), P(U1.pin("1").x - 2.54, U1.pin("1").y), P(U1.pin("1").x - 2.54, U1.pin("1").y + 5.08)));
+gnd(U1.pin("3"));
+gnd(U1.pin("9")); // exposed pad: must be soldered to ground, it is the heat path
+// FB senses the battery voltage straight at the BAT node (no Rx: 4.2 V regulation)
 const VB = P(185.42, RAIL);
-wire(R5.pin("2"), VB);
+const fbTap = P(U1.pin("8").x + 5.08, RAIL);
+wire(U1.pin("5"), fbTap, VB);
+wire(U1.pin("8"), P(fbTap.x, U1.pin("8").y), fbTap);
+junction(fbTap);
+// Charge current: ICH = 1188 V / RISET = 1188 / 1.5k = 0.79 A
+const iset = wire(U1.pin("2"), P(U1.pin("2").x + 7.62, U1.pin("2").y));
+const R2 = placeByPin("R2", "Device:R", "1", iset, { value: "1.5k 1%", fp: FP.r0603 });
+gnd(R2.pin("2"));
 stub(VB, "up", "VBAT", 5.08);
 junction(VB);
-const C3 = placeByPin("C3", "Device:C", "1", P(193.04, RAIL), { value: "22uF/10V", fp: FP.c1206 });
+const C3 = placeByPin("C3", "Device:C", "1", P(193.04, RAIL), { value: "10uF/10V", fp: FP.c1206 });
 gnd(C3.pin("2"));
 wire(VB, C3.pin("1"));
 junction(C3.pin("1"));
@@ -371,30 +364,6 @@ wire(P(375.92, 83.82), P(375.92, 86.36));
 flag(P(375.92, 83.82));
 LABELS.push({ name: "VCC_MCU", at: P(375.92, 86.36), ang: 0 });
 
-// Controller
-const U1 = place("U1", "SolarNode:CN3791", 114.3, 93.98, { value: "CN3791" });
-stub(U1.pin("9"), "left", "VIN", 5.08);
-stub(U1.pin("6"), "left", "MPPT", 5.08);
-stub(U1.pin("3"), "left", "~{CHRG}", 5.08);
-stub(U1.pin("4"), "left", "~{DONE}", 5.08);
-stub(U1.pin("10"), "right", "DRV");
-stub(U1.pin("8"), "right", "CSP", 5.08);
-stub(U1.pin("7"), "right", "VBAT", 5.08);
-gnd(wire(U1.pin("2"), P(114.3, U1.pin("2").y + 2.54)));
-
-// VG bypass: 100nF between VG and VCC
-const vgEnd = P(127, U1.pin("1").y);
-wire(U1.pin("1"), vgEnd);
-const C2 = placeByPin("C2", "Device:C", "2", vgEnd, { value: "100nF", fp: FP.c0603 });
-stub(C2.pin("1"), "up", "VIN");
-
-// Loop compensation: 120R + 220nF from COM to GND
-const comEnd = P(129.54, U1.pin("5").y);
-wire(U1.pin("5"), comEnd);
-const R2 = placeByPin("R2", "Device:R", "1", comEnd, { value: "120R", fp: FP.r0603 });
-const C4 = placeByPin("C4", "Device:C", "1", R2.pin("2"), { value: "220nF", fp: FP.c0603 });
-gnd(C4.pin("2"));
-
 // Status LEDs: red = charging (~CHRG), green = done (~DONE)
 // VIN -> R1 -> JP1 -> both LED anodes. JP1 is an open solder jumper on the top of the board, right
 // of R1: bridge it with solder to light the LEDs; left open, they draw nothing.
@@ -413,21 +382,24 @@ stub(D3.pin("1"), "down", "~{DONE}");
 TEXTS.push({
   at: P(33.782, 167.894),
   text: [
-    "Design notes (CN3791 datasheet, Figure 1):",
-    "- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A). MPPT senses VIN after these diodes,",
-    "  so each panel sits ~0.3-0.45V above the 4.42V setpoint (~4.7-4.9V: under a cool panel's ~5V Vmp, nearer a hot one's). Up to 0.5A per input.",
-    "- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).",
-    "- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 26.7k/10k) = 4.42V. Charging starts once MPPT > 1.23V (VIN > 4.51V).",
-    "- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 16uH at 6V Voc / 2.8V batt. 22uH gives ~0.2A ripple at 6V in, 3.7V batt.",
-    "- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels; the CN3791 then draws ~21uA",
-    "  from the battery via L1 and Q1's body diode when dark (datasheet p.9). Reference D1 is intentionally unused.",
+    "Design notes (CN3163 datasheet, Figure 1):",
+    "- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A). Up to 0.5A per input.",
+    "  VIN MUST STAY BELOW 6.5V (CN3163 absolute maximum, all pins): use 5V panels only, open-circuit voltage 6.5V or less.",
+    "- U1 CN3163: linear CC/CV charger, 4.2V 1%. No inductor, pass FET, sense resistor or MPPT divider. When the panels can't supply the",
+    "  set current it cuts the charge current to hold VIN at 4.4V or above, so each panel sits ~0.3-0.45V higher (diode drop), near its Vmp.",
+    "- Charge current: ICH = 1188V / R2 = 1188 / 1.5k = 0.79A, leaving margin on the 1.0A connector contacts (R2 = 2.4k for 0.5A).",
+    "  Precharge at 10% below 2.94V (70% of 4.2V); terminates at 10% of ICH; recharges automatically. Die limited to ~130C by thermal regulation:",
+    "  dissipation is (VIN - VBAT) x ICH, about 0.55W at VIN 4.4V / 3.7V cell / 0.79A, more from a stiff 5V source, so the current may fold back.",
+    "- FB tied to BAT at the VBAT node (no Rx). TEMP grounded: battery temperature sensing disabled. Exposed pad (pin 9) soldered to GND.",
+    "- C1 10uF input and C3 10uF output (datasheet: 1uF or more on VIN, 1-22uF ceramic on BAT). No blocking diode needed: under 3uA from the",
+    "  battery when the input is dark. D5-D8 are there to keep a shaded panel from loading the others.",
     "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.",
     "- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
     "  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.",
     "  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.",
     "  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.",
     "  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).",
-    "  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.",
+    "  With SW_BATT off in sun the CN3163 sees no battery and holds VBAT near 4.2V: keep SW_LOAD off then.",
     "- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;",
     "  CH2 = R7 solar total (PV -> VIN); CH3 = R10 panel 1 alone (J1 -> D5). Bus voltage is read at each IN- pin: cell, VIN, panel 1.",
     "  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.",
@@ -472,8 +444,8 @@ function emitPart(p) {
     // A GND symbol rotated 270 points left; its value goes beyond the tip.
     refAt = [x, y]; valAt = p.rot === 270 ? [x - 4.83, y] : [x, y + 3.81];
     hideVal = p.libId === "power:PWR_FLAG";
-  } else if (p.libId === "SolarNode:CN3791") {
-    refAt = [x - 7.62, y - 11.43]; valAt = [x + 7.62, y - 11.43];
+  } else if (p.libId === "SolarNode:CN3163") {
+    refAt = [x - 7.62, y - 8.89]; valAt = [x + 7.62, y - 8.89];
   } else if (p.libId.startsWith("Connector")) {
     // Value beside the body, on the side away from the pins.
     const dir = p.mirror === "y" ? -1 : 1;
@@ -493,7 +465,7 @@ function emitPart(p) {
   } else {
     refAt = [x, y - 3.81]; valAt = [x, y + 3.81];
   }
-  const cn = p.libId === "SolarNode:CN3791";
+  const cn = p.libId === "SolarNode:CN3163";
   const props = [
     prop("Reference", p.ref, ...refAt, { hide: o.power, justify: cn ? "left" : just, ang }),
     prop("Value", o.value, ...valAt, { hide: hideVal, justify: cn ? "right" : just, ang }),
@@ -535,7 +507,7 @@ const out = [
 		(title "SNAP Power Controller")
 		(date "2026-10-28")
 		(rev "1.1")
-		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")
+		(comment 1 "CN3163 linear solar Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")
 		(comment 2 "INA3221 I2C power monitor (0x42): battery, total solar and panel 1")
 	)
 	(lib_symbols
@@ -558,10 +530,10 @@ ${Object.values(SYMS).map((s) => "\t\t" + indent(s.text.replace(/^\t/, ""))).joi
 ];
 fs.writeFileSync(SCH, out.join("\n"));
 
-// Project symbol library + table so the CN3791 is reusable from the symbol chooser.
+// Project symbol library + table so the CN3163 is reusable from the symbol chooser.
 fs.writeFileSync(
   path.join(PROJ, "SolarNode.kicad_sym"),
-  `(kicad_symbol_lib\n\t(version 20251024)\n\t(generator "kicad_symbol_editor")\n\t(generator_version "10.0")\n${CN3791}\n)\n`
+  `(kicad_symbol_lib\n\t(version 20251024)\n\t(generator "kicad_symbol_editor")\n\t(generator_version "10.0")\n${CN3163}\n)\n`
 );
 const tbl = path.join(PROJ, "sym-lib-table");
 if (!fs.existsSync(tbl))

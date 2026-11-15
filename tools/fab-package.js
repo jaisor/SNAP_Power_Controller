@@ -12,12 +12,10 @@ const NAME = "SolarChargeModule_v1.1";
 // Manufacturer part numbers for the parts that need a specific one; generic passives are left to
 // the assembler's basic-parts library. LCSC numbers only where verified (KiCad lib description).
 const MPN = {
-  U1: "CN3791 (Consonance)",
+  U1: "CN3163 (Consonance)",
   U2: "INA3221AIRGVR (TI)",
-  Q1: "AO3401A (Alpha & Omega)",
-  D2: "SS34",
+  Q2: "AO3401A (Alpha & Omega)",
   D5: "1N5819W (SOD-123)", D6: "1N5819W (SOD-123)", D7: "1N5819W (SOD-123)", D8: "1N5819W (SOD-123)",
-  L1: "SRN6045TA-220M (Bourns)",
   J1: "53047-0210 (Molex)", J2: "53047-0210 (Molex)", J3: "53047-0210 (Molex)", J4: "53047-0210 (Molex)",
   J5: "53047-0210 (Molex)", J6: "53047-0210 (Molex)", J7: "2.54mm 1x02 vertical pin header", J8: "2.54mm 1x02 vertical pin header",
   J9: "53047-0410 (Molex)",
