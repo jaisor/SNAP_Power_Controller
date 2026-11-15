@@ -4,7 +4,7 @@ A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built fo
 
 Designed in KiCad 10.
 
-> **Branch `cn3163` (work in progress):** on this branch the schematic uses a CN3163 linear solar charger in place of the CN3791 buck charger. **Only the schematic is done.** The board file, the board images, the fabrication notes and most of this README still describe the CN3791 board on `main`, and the board no longer matches the schematic.
+> **Branch `cn3163` (work in progress):** on this branch a CN3163 linear solar charger replaces the CN3791 buck charger. The schematic and the board are both done: ERC reports 0 errors, DRC 0 violations, 0 unconnected items and 0 schematic parity issues. It has not been built. The images, the PCB section, the Safety limits and the fabrication notes describe this board; the Features list, the design-notes table, the comparison with SNAP v1.2, Testing and the change log still describe the CN3791 board on `main`.
 >
 > What changes in the circuit:
 >
@@ -118,9 +118,9 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 |---|---|
 | Left end | M3 mounting holes H1/H3 in the corners. Between them, the 4-pin I2C connector J9 at the edge and the INA3221 (U2) beside it, with its bypass capacitor C6 and the I2C pull-ups R8/R9 above |
 | Left column | Solar inputs J1–J4, each with its 1N5819W (D5–D8). Panel 1's shunt R10 sits beside J1, with D5 just below it |
-| Top middle | Buck power stage in current-flow order: R7, C1/C5, Q1, D2, L1, R5, C3 |
-| Middle | CN3791 (U1) with its support parts and status LEDs, and JP1, the LED solder jumper, right of R1 |
-| Right middle | Under L1: battery shunt R6 and reverse-battery MOSFET Q2, then VOUT (J6) and battery (J5) |
+| Top middle | Solar shunt R7 and input capacitor C1, then the 5V limiter U3 (SOT-223) with its input pin in line with them. R1, the LED solder jumper JP1 and the status LEDs D4/D3 sit along the top edge beside it |
+| Middle | CN3163 (U1) under U3, its BAT pin facing the output capacitor C3. The charge-current resistor R2 and the limiter's output capacitor C2 are below it |
+| Right middle | Battery shunt R6 and reverse-battery MOSFET Q2, then VOUT (J6) and battery (J5) |
 | Right end | M3 mounting holes H2/H4 in the corners, with the SW_BATT/SW_LOAD switch headers (J7/J8) between them |
 
 Every reference label sits next to its own part, clear of pads, other parts and the edge (DRC reports no silkscreen issues). The holes are plain non-plated 3.2mm M3 holes, 4mm in from each edge.
@@ -143,18 +143,18 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **Solar inputs:** one `Solar_5V` label, with a bracket along the four solar inputs (J1–J4).
 - **Polarity:** `-` and `+` under the solar, battery and VOUT connectors (J1–J6), on the side of the matching pin.
 - **I2C connector:** `I2C` under J9 on the front (J9 has no reference label; there's no room for both). The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed beside its pads on the back.
-- **Back:** the module ID, "SNAP Power Controller v1.1 / by JaisorGadgets - Nov. 14, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
+- **Back:** the module ID, "SNAP Power Controller CN3163 / by JaisorGadgets - Nov. 15, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
 
 **Routing** (drawn by hand in `tools/draw-routes.py`, so it comes out the same on every run):
 
-- **Ground:** the bottom layer is a GND plane in one piece, covering about 87% of the board, and the top layer has a GND fill. Every surface-mount GND pad gets its own via down to the plane, and 43 stitching vias on a 3mm grid tie the two pours together.
+- **Ground:** the bottom layer is a GND plane in one piece, covering about 87% of the board, and the top layer has a GND fill. Every surface-mount GND pad has a via down to the plane, and 42 stitching vias on a 3mm grid tie the two pours together. Six vias in the CN3163's exposed pad carry its heat to the bottom plane.
 - **Track widths:** power paths are 0.8mm, 0.4mm into the small diode pads. Signals are 0.25mm, with 0.2mm on the sense lines where they squeeze past pads.
-- **Kelvin sensing:** the CN3791's current-sense pins and each INA3221 channel's two inputs connect straight to the pads of their shunt resistors (R5; R6, R7, R10). Each channel's two sense lines run side by side. Channel 3's pair runs over and under J1, channel 2's passes between J2 and J3, and channel 1's follows the bottom edge from the battery shunt to U2.
-- **Layer use:** nearly all track is on the top layer: about 454mm, against 25mm on the bottom. The bottom layer only carries short hops: the gate drive under VIN, VIN to R3, the two channel 2 sense lines under the PV bus, and three links under U2.
-- **Size:** 213 track segments and 65 vias, 54 of them on GND.
+- **Kelvin sensing:** each INA3221 channel's two inputs connect straight to the pads of its shunt resistor (R6, R7, R10), and the two sense lines run side by side. Channel 3's pair runs over and under J1, channel 2's passes between J2 and J3, and channel 1's follows the bottom edge from the battery shunt to U2. The CN3163's FB pin senses the battery rail through its own line.
+- **Layer use:** nearly all track is on the top layer: about 419mm, against 27mm on the bottom. The bottom layer only carries short hops: the CN3163's FB line round the north of the chip, the two channel 2 sense lines under the PV bus, and three links under U2.
+- **Size:** 163 track segments and 64 vias, 55 of them on GND.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
-Review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which returns through the ground plane).
+Review it before ordering, especially the charger's heat path (the exposed pad, its vias and the ground plane) and the 21mm run from the limiter to the charger's input.
 
 Still to do: a manual layout review before ordering (see Fabrication).
 
@@ -225,7 +225,7 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 | | Limit | Set by |
 |---|---|---|
 | Battery | One Li-ion or LiPo cell (1S), charged to 4.2V | The CN3791's fixed charge voltage |
-| Panel voltage | 20V open-circuit at most. The board is tuned for 5–6V panels, and a higher-voltage panel delivers little power without a new R3 | The 25V input capacitors and the CN3791's MPPT pin |
+| Panel voltage | 18V open-circuit at most. The board is meant for 5–6V panels; a higher-voltage panel is safe but its extra voltage is only lost as heat | The input rating of U3, the 5V limiter in front of the charger |
 | Panel current | 0.5A per input | Heat in each input's 1N5819W diode |
 | Load on VOUT | 1A | The connector contacts at J5 and J6 |
 

@@ -94,53 +94,45 @@ for j, d in (("J2", "D6"), ("J3", "D7"), ("J4", "D8")):
 track("/PV", [P("D5", "1"), P("D8", "1")], 0.5)
 track("/PV", [(P("D5", "1")[0], P("R7", "1")[1]), P("R7", "1")], 0.6)
 
-# ---------------------------------------------------------------- buck power stage
-# VIN: R7 -> C1 -> C5 in a straight line along the top, then down to Q1's source
-track("/VIN", [P("R7", "2")] + X([(22.3, 3.938), (24.3, 3.938), (24.987, 4.625)]) + [P("C5", "1")]
-      + X([(25.835, 4.625), (27.56, 6.35)]) + [P("Q1", "2")], PWR)
-# switch node: Q1 drain to L1, and down to D2's cathode
-track("Net-(D2-K)", [P("Q1", "3")] + X([(33.225, 5.4)]) + [P("L1", "1")], PWR)
-track("Net-(D2-K)", [P("Q1", "3")] + X([(29.738, 6.6), (27.3, 9.038), (27.3, 10.9)]) + [P("D2", "1")], PWR)
-# L1 -> R5 (charge-current shunt) -> C3
-track("/CSP", [P("L1", "2")] + X([(38.375, 9.163)]) + [P("R5", "1")], PWR)
-track("/VBAT", [P("R5", "2")] + X([(38.925, 12.7)]) + [P("C3", "1")], PWR)
-# gate drive: up the west side of D2, one hop on B.Cu under the VIN track into Q1's gate
-track("/DRV", [P("U1", "10")] + X([(25.6, 14.15), (25.15, 13.7), (25.15, 9.0), (26.3, 7.85), (26.3, 6.9)]))
-via("/DRV", (29.3, 6.9))
-track("/DRV", X([(26.3, 6.9), (26.3, 4.2), (26.6, 3.9)]), layer=B)
-via("/DRV", (29.6, 3.9))
-track("/DRV", X([(26.6, 3.9), (27.15, 4.45)]) + [P("Q1", "1")])
-
-# ---------------------------------------------------------------- CN3791 and its parts
-# VIN to C2 and, under the IC between its pin rows, to pin 9
-track("/VIN", X([(24.0, 3.938), (24.0, 10.6), (23.075, 11.525)]) + [P("C2", "1")], 0.4)
-track("/VIN", [P("C2", "1")] + X([(23.075, 12.7), (23.9, 13.525), (23.9, 15.1), (24.7, 15.9)]) + [P("U1", "9")])
-# ...on to R3 (MPPT divider) with a hop on B.Cu under the charge-current sense pair
-track("/VIN", [P("U1", "9"), (29.95, 15.9), (30.25, 15.6)])
-via("/VIN", (30.25, 15.6))
-track("/VIN", [(30.25, 15.6), (30.45, 15.4), (33.3, 15.4)], layer=B)
-via("/VIN", (33.3, 15.4))
-track("/VIN", [(33.3, 15.4), (33.3, 16.05), (32.775, 16.575), P("R3", "1")])
-# ...and out under the IC, round the LEDs and JP1, to R1 (LED supply)
-track("/VIN", X([(23.9, 15.1), (23.9, 19.9), (26.45, 22.45), (26.45, 26.45), (26.25, 26.65), (20.6, 26.65),
-                 (20.175, 26.225)]) + [P("R1", "1")])
-track("Net-(U1-VG)", [P("C2", "2")] + X([(21.525, 12.4), (21.25, 12.675)]) + [P("U1", "1")])
-# charge-current sense: Kelvin pair from R5's pads straight into pins 8 and 7
-# (0.2 mm wide: the pair squeezes between pin 8 and R3)
-track("/CSP", [P("R5", "1")] + X([(34.838, 13.7), (34.538, 14.0), (29.894, 14.0), (26.994, 16.9)]) + [P("U1", "8")], 0.2)
-track("/VBAT", [P("R5", "2")] + X([(37.762, 14.15), (37.462, 14.45), (30.08, 14.45), (26.63, 17.9)]) + [P("U1", "7")], 0.2)
-# MPPT node: pin 6 and the R3/R4 junction, kept short
-track("/MPPT", [P("R3", "2"), P("R4", "1")])
-track("/MPPT", [P("U1", "6")] + X([(28.6, 18.9), (28.85, 19.15), (29.3, 19.15)]))
-# compensation network
-track("Net-(U1-COM)", [P("U1", "5")] + X([(20.2, 18.9), (19.65, 18.35), (19.65, 17.25), (18.975, 16.575)]) + [P("R2", "1")])
-track("Net-(C4-Pad1)", [P("R2", "2"), P("C4", "1")])
-# status LEDs: cathodes out under the IC, anodes joined below the LEDs and down to JP1
-track("/~{DONE}", [P("U1", "4")] + X([(22.2, 17.9), (22.2, 19.9), (20.513, 21.587)]) + [P("D3", "1")])
-track("/~{CHRG}", [P("U1", "3")] + X([(22.65, 16.9), (22.65, 20.3), (24.013, 21.663)]) + [P("D4", "1")])
-track("Net-(D3-A)", [P("D3", "2")] + X([(22.088, 23.6), (22.388, 23.9), (25.288, 23.9), (25.588, 23.6)]) + [P("D4", "2")])
-track("Net-(D3-A)", [(27.9, 23.9), P("JP1", "1")])
-track("Net-(JP1-B)", [P("R1", "2"), (25.225, 25.4), P("JP1", "2")])
+# ---------------------------------------------------------------- limiter (U3) and charger (U1)
+# VIN: R7 -> C1 -> U3's input pin, straight along the top
+r7_2 = P("R7", "2")
+track("/VIN", [r7_2, (P("C1", "1")[0], r7_2[1]), (P("U3", "3")[0], r7_2[1])], PWR)
+# VCHG: U3's output pin to its tab under the body (both are pad 2), then round the west and south
+# of U1 to C2 and up into U1's VIN pin. R2 and C2's ground sit inside that loop.
+U3_OUT, U3_TAB = (30.3, 3.95), (30.3, 10.25)
+track("/VCHG", [U3_OUT, U3_TAB], PWR)
+c2_1, u1_4 = P("C2", "1"), P("U1", "4")
+track("/VCHG", [U3_TAB, (26.6, 10.25), (26.6, 25.0), (c2_1[0], 25.0), c2_1], PWR)
+track("/VCHG", [c2_1, u1_4], 0.5)
+# VBAT: U1's BAT pin straight into C3, which carries on to the switch headers below
+track("/VBAT", [P("U1", "5"), P("C3", "1")], PWR)
+# FB senses VBAT. CHRG and DONE sit between FB and BAT, so FB takes one hop on B.Cu round the
+# north of U1 to a via in the VBAT track.
+fb = P("U1", "8")
+track("/VBAT", [fb, (27.7, fb[1])])
+via("/VBAT", (27.7, fb[1])); via("/VBAT", (33.7, fb[1]))
+track("/VBAT", [(27.7, fb[1]), (27.7, 13.0), (28.2, 12.5), (33.2, 12.5), (33.7, 13.0), (33.7, fb[1])], layer=B)
+# charge current: ISET to R2, R2's other end to U1's GND pin
+track("Net-(U1-ISET)", [P("U1", "2"), (29.965, 21.01), P("R2", "1")])
+track("GND", [P("R2", "2"), (31.425, 20.0), (31.235, 19.81), P("U1", "3")], 0.3)
+# U1 ground: GND pin and TEMP (grounded: no NTC) into the exposed pad. Six 0.3 mm vias in the pad
+# carry the heat to the bottom plane (the library's thermal-via footprint drills 0.2 mm, under
+# this board's 0.3 mm minimum).
+ep = P("U1", "9")
+for dx in (-1.2, 0, 1.2):
+    for dy in (-0.7, 0.7):
+        via("GND", (ep[0] + dx, ep[1] + dy))
+track("GND", [P("U1", "3"), (31.235, 17.2)], 0.3)
+track("GND", [P("U1", "1"), (28.695, 17.9), (29.2, 17.395)], 0.3)
+# status LEDs, along the top edge: VCHG -> R1 -> JP1 -> both anodes; cathodes come up from U1
+track("/VCHG", [U3_OUT, P("R1", "1")], 0.4)
+track("Net-(JP1-B)", [P("R1", "2"), (34.65, 1.5), P("JP1", "2")])
+d4a, d3a = P("D4", "2"), P("D3", "2")
+track("Net-(D3-A)", [P("JP1", "1"), (d4a[0] - (d4a[1] - 1.9), 1.9), d4a])
+track("Net-(D3-A)", [(d4a[0] - (d4a[1] - 1.9), 1.9), (d3a[0] - (d3a[1] - 1.9), 1.9), d3a])
+track("/~{CHRG}", [P("U1", "7"), (29.965, 11.8), (34.4, 11.8), (34.4, 6.2), (P("D4", "1")[0], 6.2), P("D4", "1")])
+track("/~{DONE}", [P("U1", "6"), (31.235, 12.3), (34.85, 12.3), (34.85, 6.65), (P("D3", "1")[0], 6.65), P("D3", "1")])
 
 # ---------------------------------------------------------------- battery, load, switches
 # VBAT from C3 up and over J7 to the two headers' right-hand pins
@@ -201,12 +193,9 @@ track("/BAT_CELL", [U["11"], (8.325, 27.3), (8.775, 27.75), (33.9, 27.75), (34.3
 
 # ---------------------------------------------------------------- GND vias for surface-mount pads
 gnd_via(P("C1", "2"), (25.3, 8.15))
-gnd_via(P("C5", "2"), (28.3, 7.35))
-gnd_via((33.3, 10.4), (33.3, 9.2)); gnd_via((34.3, 10.4), (34.3, 9.2))  # D2 anode
-gnd_via(P("C3", "2"), (43.1, 9.75))
-gnd_via(P("U1", "2"), (22.9, 15.9), SIG)
-gnd_via(P("C4", "2"), (21.5, 23.3))
-track("GND", [P("R4", "2"), (33.0, 22.425)], 0.4); via("GND", (33.0, 22.425))
+track("GND", [P("U3", "1"), (32.6, 4.9), (33.5, 5.8)], 0.4); via("GND", (33.5, 5.8))
+gnd_via(P("C2", "2"), (28.2, P("C2", "2")[1]))
+gnd_via(P("C3", "2"), (37.0, 9.5))
 gnd_via(P("C6", "2"), (7.65, P("C6", "2")[1]))
 gnd_via(P("Q2", "1"), (37.9, P("Q2", "1")[1]))
 
@@ -216,6 +205,10 @@ for fp in board.GetFootprints():
     if fp.GetReference() in {f"J{i}" for i in range(1, 10)}:
         for p in fp.Pads():
             if p.GetNetname() == "GND":  # connector GND pins: solid, they carry panel/battery current
+                p.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
+    if fp.GetReference() == "U1":
+        for p in fp.Pads():
+            if p.GetNumber() == "9":  # exposed pad: solid into the top pour, it is the heat path
                 p.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
 
 

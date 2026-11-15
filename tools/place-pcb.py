@@ -21,7 +21,7 @@ LABEL_GAP = 0.35  # label to its own courtyard, mm (must exceed the 0.25 mm of c
 
 # ref: (x, y, rotation[, flags]) in mm relative to the board's top-left corner. Position is the
 # footprint origin, or the courtyard centre with flag "c". Flag "b" flips the part to the back.
-# Left band: M3 holes. Then solar inputs, the CN3791 buck stage and the INA3221, the
+# Left band: M3 holes. Then solar inputs, the limiter and CN3163 charger and the INA3221, the
 # battery/load/switch connectors, and the right band: M3 holes + I2C connector.
 PLACEMENT = {
     "H1": (HOLE_INSET, HOLE_INSET, 0, "c"),
@@ -47,28 +47,23 @@ PLACEMENT = {
     "J2": (13.84, 8.9, 180), "D6": (18.25, 9.05, 180),
     "J3": (13.99, 15.0, 180), "D7": (18.4, 14.7, 180),
     "J4": (13.84, 21.3, 180), "D8": (18.25, 21.3, 180),
-    # Solar shunt and input caps next to the P-FET (short hot loop: C1 -> Q1 -> D2).
+    # Solar shunt and the limiter's input cap, in a straight line with U3's input pin
     "R7": (21.8, 5.4, 90),
     "C1": (25.3, 5.4, 270),
-    "C5": (28.3, 5.4, 270),
-    "Q1": (31.8, 5.4, 0),
-    "D2": (31.8, 10.9, 0),
-    "L1": (39.3, 6.4, 0),
-    "R5": (39.3, 12.7, 0),
-    "C3": (43.1, 12.4, 90),
-    # CN3791 and its support parts
-    "U1": (26.8, 16.9, 0),
-    "C2": (25.3, 11.9, 180),
-    "R2": (21.5, 17.4, 270),
-    "C4": (21.5, 21.4, 270),
-    "R3": (32.3, 17.4, 270),
-    "R4": (32.3, 20.9, 270),
-    "D4": (27.8, 22.9, 0),
-    "D3": (24.3, 22.9, 0),
-    "R1": (24.0, 25.8, 0),
-    # LED supply solder jumper, right of R1 (pad 2 to R1, pad 1 up to the LED anode track)
-    "JP1": (27.25, 25.4, 180),
-    # Battery side, under L1: shunt R6 (BATT+ pad up) and the reverse-battery P-FET Q2 below it,
+    # U3 (5 V limiter, SOT-223): pins along the top, VIN on the left, tab (VCHG) at the bottom.
+    # R1, JP1 and the LEDs hang off U3's output pin along the top edge.
+    "U3": (30.3, 7.1, 270),
+    "R1": (31.125, 1.5, 0),
+    "JP1": (35.7, 1.9, 180),
+    "D4": (38.5, 3.6, 90),
+    "D3": (40.9, 3.6, 90),
+    # U1 (CN3163, eSOP-8) below U3, turned so BAT (top right) looks straight at C3 and VIN is
+    # bottom right. R2 (charge current) and C2 (VCHG) sit below it, inside the VCHG loop.
+    "U1": (30.6, 16.35, 90),
+    "R2": (30.6, 21.2, 0),
+    "C2": (31.03, 23.2, 180),
+    "C3": (37.0, 12.4, 90),
+    # Battery side: shunt R6 (BATT+ pad up) and the reverse-battery P-FET Q2 below it,
     # then the battery (J5) and VOUT (J6) connectors, pin 1 on the right
     "R6": (36.6, 17.6, 270),
     "Q2": (36.0, 22.3, 270),
@@ -91,16 +86,16 @@ SOLAR_LABEL = "Solar_5V"  # one label for J1-J4, with a bracket along their left
 SOLAR_BRACKET_X = 10.75
 # Back label, mirrored on B.Silkscreen: module ID, then ratings and a disclaimer. (text, height mm)
 # per line, None for a gap. Centred on BACK_X, the middle of the strip between the solder pads of
-# J1-J4 and J5/J6, and centred top to bottom. Limits: 20 V is set by C1/C5 (25 V) and the CN3791's
-# MPPT pin (6.5 V max through R3/R4); 0.5 A per input is about 0.2 W in a 1N5819W (SOD-123); 1 A is the
+# J1-J4 and J5/J6, and centred top to bottom. Limits: 18 V is the input rating of U3, the limiter
+# in front of the CN3163; 0.5 A per input is about 0.2 W in a 1N5819W (SOD-123); 1 A is the
 # PicoBlade contact rating at J5/J6.
 BACK_TEXT = [
-    ("SNAP Power Controller v1.1", 1.2),
-    ("by JaisorGadgets - Nov. 14, 2026", 1.0),
+    ("SNAP Power Controller CN3163", 1.2),
+    ("by JaisorGadgets - Nov. 15, 2026", 1.0),
     None,
     ("CHECK POLARITY BEFORE USE", 1.0),
     ("BATTERY: 1S LI-ION 4.2V ONLY", 1.0),
-    ("SOLAR: 5-6V PANELS, 20V MAX,", 1.0),
+    ("SOLAR: 5-6V PANELS, 18V MAX,", 1.0),
     ("0.5A MAX PER INPUT", 1.0),
     ("LOAD (VOUT): 1A MAX", 1.0),
     None,
