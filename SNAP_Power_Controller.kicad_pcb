@@ -4605,7 +4605,7 @@
 				)
 			)
 		)
-		(property "Value" "10k 1%"
+		(property "Value" "100k 1%"
 			(at 0 1.43 270)
 			(layer "F.Fab")
 			(uuid "4257ae0e-0044-406c-958f-6f1da193d79a")
@@ -8570,7 +8570,7 @@
 				)
 			)
 		)
-		(property "Value" "26.7k 1%"
+		(property "Value" "267k 1%"
 			(at 0 1.43 270)
 			(layer "F.Fab")
 			(uuid "a6484bbe-8903-455c-8397-1286df28927f")

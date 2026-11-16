@@ -82,6 +82,18 @@ In Meshtastic, enable power metrics in the telemetry settings so the readings ar
 - **Power monitoring:** [INA3221](https://www.ti.com/lit/ds/symlink/ina3221.pdf) at I2C address 0x42, with three channels: the battery (bidirectional current plus voltage), the total solar input, and panel 1 on its own.
 - **Status LEDs:** red while charging, green when charging is done. They're powered through JP1, an open solder jumper next to R1 on the top of the board: bridge its two pads with solder to turn them on. Left open, the LEDs are disconnected and draw nothing.
 
+## Choosing panels
+
+The charger holds its input at 4.42V and each input diode drops about 0.35V, so a panel has to deliver its power at about 4.8V or more. A panel's maximum-power voltage falls about 0.4% per °C, so what matters is how the panel does hot, not at its rated 25°C.
+
+| Panel | Open-circuit at 25°C | Output in heat (modeled, 65°C cell) | Setting |
+|---|---|---|---|
+| "6V" panel, 12 cells | about 7.2V | Close to full, with headroom to spare | R3 = 301k (4.83V). **Preferred** |
+| "5V" panel, 10 cells | about 6.0V | About 84% of what the panel could give | R3 = 267k (4.42V), as built |
+| "5V" panel that measures about 5.5V | about 5.5V | About 36%, and charging may not start | R3 = 267k. Works, but poorly on hot days |
+
+The figures for the two 5V rows come from a single-diode panel model, not from measurements; the 6V row is an expectation, not modeled. The loss comes from the diode drop as much as the set point: a lower-drop input diode, or an ideal-diode circuit rated above the panel's open-circuit voltage, would recover most of it and is the obvious next improvement to the board. The set point can't simply be lowered, because the charger needs its input above the battery's 4.2V and the CN3791's own minimum.
+
 ## Schematic
 
 [![Schematic](docs/images/schematic.svg)](docs/images/schematic.svg)
@@ -91,8 +103,8 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 | Item | Value | Why |
 |---|---|---|
 | Charge current | 0.8A (R5 = 0.15Ω) | I<sub>CH</sub> = 120mV / R5. Leaves margin on the 1.0A-rated connectors; use 0.24Ω for 0.5A with small cells. |
-| MPPT setpoint | 4.42V at VIN (R3/R4 = 26.7k/10k) | Chosen for panels that measure about 5.5V open-circuit. It's below the CN3791's specified 4.5V minimum input. Typical parts run down to their 3.8V undervoltage lockout, but the datasheet doesn't guarantee it. With 6V panels, use R3 = 30.1k (4.83V), which stays in spec. V<sub>MPPT</sub> = 1.205V × (1 + R3/R4). The panels sit one diode drop higher (~4.7–4.9V), a little under a cool 5V panel's max-power voltage of about 5.0V. That voltage falls about 0.4% per °C, to about 4.2V at a 65°C cell temperature, and a fixed set point above it cuts the panel's output. Modeled for a 10-cell panel, 4.42V gives 99% of maximum power at 25°C and 84% at 65°C. v1.0's 4.58V (28.0k) gives 100% and 71%. |
-| Blocking diode D1 | omitted | The input diodes already stop the battery feeding back into the panels. Leaving D1 out saves ~0.4V of headroom; the trade-off is ~21µA of battery drain in the dark. |
+| MPPT setpoint | 4.42V at VIN (R3/R4 = 267k/100k) | Chosen for panels that measure about 5.5V open-circuit. It's below the CN3791's specified 4.5V minimum input. Typical parts run down to their 3.8V undervoltage lockout, but the datasheet doesn't guarantee it. With 6V panels, use R3 = 301k (4.83V), which stays in spec. V<sub>MPPT</sub> = 1.205V × (1 + R3/R4). The panels sit one diode drop higher (~4.7–4.9V), a little under a cool 5V panel's max-power voltage of about 5.0V. That voltage falls about 0.4% per °C, to about 4.2V at a 65°C cell temperature, and a fixed set point above it cuts the panel's output. Modeled for a 10-cell panel (6.0V open-circuit), 4.42V gives 99% of maximum power at 25°C and 84% at 65°C. v1.0's 4.58V gives 100% and 71%. Panels that only reach about 5.5V open-circuit do much worse in heat: the same model gives 95% at 25°C, 76% at 45°C, 59% at 55°C and 36% at 65°C, because the input diode holds the panel about 0.35V above the set point. See [Choosing panels](#choosing-panels). The divider is 267k/100k and not 26.7k/10k so that it draws about 10µA, not 95µA, from the battery at night (see the next row); the MPPT pin's bias current (±100nA at most) moves the set point by under 30mV. |
+| Blocking diode D1 | omitted | The input diodes already stop the battery feeding back into the panels, and leaving D1 out saves ~0.4V of headroom. The trade-off: in the dark the battery back-feeds VIN through L1 and Q1's body diode, so everything on VIN drains the battery. That is about 21µA into the CN3791 (datasheet figure) plus about 10µA through R3 and R4, roughly 30µA in all. Earlier files used 26.7k/10k, which made it about 115µA. Not measured on a board. |
 | Inductor | 22µH, Bourns SRN6045TA | Meets the datasheet's L > 5 × (VCC − VBAT) µH, with ~0.2A ripple. |
 | Input diodes | 1N5819W, SOD-123 (40V/1A) | Rated 0.5A per input here: about 0.2W in the diode, which the SOD-123 package handles with margin in a warm enclosure. The first v1.1 files used the smaller SOD-323 1N5819WS, which is only good for about 0.3A. |
 
@@ -171,6 +183,7 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 
 - **Address:** 0x42 (A0 = SDA). That's the INA3221 default in both Meshtastic and MeshCore.
 - **Shunts:** all three are 0.1Ω, which both firmwares assume. Full scale is ±163.8mV, so about ±1.64A, in 0.4mA steps.
+- **What it can't measure:** sleep current. A sleeping node draws 50–100µA, which is 5–10µV across 0.1Ω, below the chip's 40µV step and its offset (up to 80µV). The monitor is for charge and load telemetry, in the tens to hundreds of milliamps; profile sleep current on the bench with a tool made for it. A larger battery shunt isn't an option here: 0.5–1Ω would drop 0.4–0.8V at the 0.8A charge current and exceed the chip's input range.
 - **Pull-ups:** R8/R9 are 10k I2C pull-ups to the MCU's VCC. Leave them off if the MCU board already has pull-ups.
 
 | Channel | Shunt | Current | Bus voltage |

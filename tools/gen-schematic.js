@@ -251,8 +251,8 @@ const C1 = placeByPin("C1", "Device:C", "1", P(68.58, RAIL), { value: "10uF/25V"
 gnd(C1.pin("2"));
 const C5 = placeByPin("C5", "Device:C", "1", P(83.82, RAIL), { value: "100nF/25V", fp: FP.c0603 });
 gnd(C5.pin("2"));
-const R3 = placeByPin("R3", "Device:R", "1", P(99.06, RAIL), { value: "26.7k 1%", fp: FP.r0603 });
-const R4 = placeByPin("R4", "Device:R", "1", R3.pin("2"), { value: "10k 1%", fp: FP.r0603 });
+const R3 = placeByPin("R3", "Device:R", "1", P(99.06, RAIL), { value: "267k 1%", fp: FP.r0603 });
+const R4 = placeByPin("R4", "Device:R", "1", R3.pin("2"), { value: "100k 1%", fp: FP.r0603 });
 gnd(R4.pin("2"));
 stub(R3.pin("2"), "right", "MPPT", 12.7);
 junction(R3.pin("2"));
@@ -417,10 +417,10 @@ TEXTS.push({
     "- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A). MPPT senses VIN after these diodes,",
     "  so each panel sits ~0.3-0.45V above the 4.42V setpoint (~4.7-4.9V: under a cool panel's ~5V Vmp, nearer a hot one's). Up to 0.5A per input.",
     "- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).",
-    "- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 26.7k/10k) = 4.42V. Charging starts once MPPT > 1.23V (VIN > 4.51V).",
+    "- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 267k/100k) = 4.42V. Charging starts once MPPT > 1.23V (VIN > 4.51V).",
     "- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 16uH at 6V Voc / 2.8V batt. 22uH gives ~0.2A ripple at 6V in, 3.7V batt.",
-    "- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels; the CN3791 then draws ~21uA",
-    "  from the battery via L1 and Q1's body diode when dark (datasheet p.9). Reference D1 is intentionally unused.",
+    "- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels. In the dark the battery back-feeds VIN",
+    "  through L1 and Q1's body diode: ~21uA into the CN3791 (datasheet p.9) plus ~10uA through R3 + R4, which are 267k/100k for that reason. D1 is unused.",
     "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.",
     "- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
     "  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.",
