@@ -146,7 +146,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed under its pads on the back.
 - **LED jumper:** `LED` beside JP1.
 - **Back:** the module ID, "SNAP Power Controller v1.1 / Nov. 14, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
-- **Text size:** the front labels are 0.6mm text, under the board's 0.8mm minimum, so DRC lists them as 12 warnings. The back label is 0.8 to 1.0mm.
+- **Text size:** the front labels are 0.6mm text, the board's minimum. Board houses often recommend 0.8–1mm or more, so check that yours prints 0.6mm cleanly. The back label is 0.8 to 1.0mm.
 
 **Routing** (a grid auto-router adapted from `tools/route-pcb.py`, with the tightest connections placed by hand first; the board file is the source of truth):
 
@@ -156,7 +156,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **Kelvin sensing:** the CN3791's current-sense pins and the INA3221's channel inputs connect straight to the pads of their shunt resistors (R5; R6, R7). The CN3791's pair runs side by side on the bottom layer, below L1.
 - **Layer use:** about 310mm of track on the top layer and 79mm on the bottom. The gate drive (U1 to Q1) hops under the power stage on the bottom layer, because Q1's gate and source are on the same side.
 - **Size:** 213 track segments and 39 vias, 11 of them on GND.
-- **Checks:** DRC reports 0 errors and 0 unconnected items, and schematic parity is clean. The only warnings are the front labels' text height.
+- **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 Review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which returns through the ground plane).
 
