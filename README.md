@@ -1,12 +1,12 @@
 # SNAP Power Controller
 
-A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built for solar-powered LoRa mesh nodes such as [SNAP v1.2](https://makerworld.com/en/models/3360988-snap-v1-2-solar-node-adaptable-platform-2x200ma). Up to four 5V panels feed a CN3791 MPPT buck charger. A switched output powers the node, and an INA3221 reports voltage and current on three channels over I2C.
+A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built for solar-powered LoRa mesh nodes such as [SNAP v1.2](https://makerworld.com/en/models/3360988-snap-v1-2-solar-node-adaptable-platform-2x200ma). Up to four 5V panels feed a CN3791 MPPT buck charger. A switched output powers the node, and an INA3221 reports the battery's and the panels' voltage and current over I2C.
 
 Designed in KiCad 10.
 
-> **Status:** the schematic is complete and passes ERC. The PCB (52 × 29 mm, 2mm corner chamfers, four M3 mounting holes, two layers) is **placed and routed** with a clean DRC, but hasn't had a manual layout review. A first board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
+> **Status:** the schematic is complete. ERC reports one error: INA3221 channel 3's two inputs are tied together and unused, and nothing drives them. The PCB is a new, smaller layout (36.4 × 23.6 mm, 1mm corner chamfers, four M2 mounting holes, two layers), **placed by hand and routed**, with no DRC errors. It hasn't been built. A first v1.0 board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
 >
-> **v1.1:** a three-channel INA3221 replaces v1.0's INA219 and its SOLAR/BATT switch, and the board is smaller. v1.1 hasn't been built or tested yet; the test results below are from v1.0 boards with the INA219. See the [change log](CHANGELOG.md).
+> **v1.1:** an INA3221 replaces v1.0's INA219 and its SOLAR/BATT switch, and reads the battery and the total solar input at the same time. The released v1.1 files are a 52 × 29mm board that also read panel 1 on its own. The board in this repo drops that channel and its shunt to fit in 36.4 × 23.6mm, and has no release yet. Neither has been built or tested; the test results below are from v1.0 boards with the INA219. See the [change log](CHANGELOG.md).
 
 <p align="center">
   <img src="docs/images/pcb-iso.png" alt="3D render of the routed board" width="720">
@@ -43,7 +43,7 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 | One 1N5819 per panel, soldered inline | A 1N5819W per input on the board, for up to four panels |
 | Hand-soldered panel, battery and node wiring | Plug-in connectors for every connection: Micro JST 1.25, with 2.54mm pin headers for the switches |
 | Latching on/off switch wired into the battery lead | Two switch connectors: SW_BATT cuts the battery, SW_LOAD cuts only the node |
-| (none) | INA3221 power monitor on I2C, reading the battery, the total solar input and panel 1 at once |
+| (none) | INA3221 power monitor on I2C, reading the battery and the total solar input at once |
 
 ### Example wiring
 
@@ -57,7 +57,7 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 | J9 (I2C) | XIAO 3V3 → VCC, D6 → SDA, D7 → SCL, GND → GND, on a 4-wire cable coloured red VCC, black GND, yellow SCL, white SDA. These pins need a Meshtastic build with I2C on D6/D7 (see the table below) |
 | JP1 (LED) | Nothing. Bridge it with solder if you want the status LEDs. It's open as supplied, so the LEDs stay dark |
 
-The INA3221 reads the battery's charge and discharge current, what the panels deliver in total, and panel 1 on its own, all at the same time. There's no switch to set.
+The INA3221 reads the battery's charge and discharge current and what the panels deliver in total, both at the same time. There's no switch to set.
 
 The XIAO's I2C pins depend on the firmware build. D4 and D5 can't be used with the Wio-SX1262, because the radio uses them.
 
@@ -79,8 +79,8 @@ In Meshtastic, enable power metrics in the telemetry settings so the readings ar
 - **Battery and load switching:** connectors for two panel-mount switches. **SW_BATT** disconnects the battery from everything. **SW_LOAD** cuts only the output, so the battery keeps charging.
 - **Output:** VOUT connector (Micro JST 1.25) that powers the module from the battery.
 - **Reverse-battery protection:** Q2, a P-channel MOSFET between the battery connector and the rest of the board. A cell plugged in backwards is blocked instead of shorting through the charger. With the cell the right way round, Q2 is fully on in both directions, adding about 60mV of drop at 0.8A.
-- **Power monitoring:** [INA3221](https://www.ti.com/lit/ds/symlink/ina3221.pdf) at I2C address 0x42, with three channels: the battery (bidirectional current plus voltage), the total solar input, and panel 1 on its own.
-- **Status LEDs:** red while charging, green when charging is done. They're powered through JP1, an open solder jumper next to R1 on the top of the board: bridge its two pads with solder to turn them on. Left open, the LEDs are disconnected and draw nothing.
+- **Power monitoring:** [INA3221](https://www.ti.com/lit/ds/symlink/ina3221.pdf) at I2C address 0x42, on two channels: the battery (bidirectional current plus voltage) and the total solar input. The third channel is unused.
+- **Status LEDs:** red while charging, green when charging is done. They're powered through JP1, an open solder jumper marked `LED` on the top of the board: bridge its two pads with solder to turn them on. Left open, the LEDs are disconnected and draw nothing.
 
 ## Choosing panels
 
@@ -112,19 +112,19 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 
 <p align="center">
   <img src="docs/images/pcb-top.png" alt="Top side of the routed board" width="720">
-  <img src="docs/images/pcb-bottom.png" alt="Bottom side: GND plane with a few short jumps" width="720">
+  <img src="docs/images/pcb-bottom.png" alt="Bottom side: GND plane with the module label, limits and I2C pin names" width="720">
 </p>
 
 | Area | Parts |
 |---|---|
-| Left end | M3 mounting holes H1/H3 in the corners. Between them, the 4-pin I2C connector J9 at the edge and the INA3221 (U2) beside it, with its bypass capacitor C6 and the I2C pull-ups R8/R9 above |
-| Left column | Solar inputs J1–J4, each with its 1N5819W (D5–D8). Panel 1's shunt R10 sits beside J1, with D5 just below it |
-| Top middle | Buck power stage in current-flow order: R7, C1/C5, Q1, D2, L1, R5, C3 |
-| Middle | CN3791 (U1) with its support parts and status LEDs, and JP1, the LED solder jumper, right of R1 |
-| Right middle | Under L1: battery shunt R6 and reverse-battery MOSFET Q2, then VOUT (J6) and battery (J5) |
-| Right end | M3 mounting holes H2/H4 in the corners, with the SW_BATT/SW_LOAD switch headers (J7/J8) between them |
+| Corners | M2 mounting holes H1–H4 |
+| Top edge | Solar inputs J1 (`S1`) and J2 (`S2`), the 4-pin I2C connector J9, then the INA3221 (U2) with its bypass capacitor C6 |
+| Upper middle | Input diodes D5/D6 and the solar shunt R7, then the buck power stage: C1/C5, Q1, D2, with the I2C pull-ups R8/R9 above Q1. Right of D2: the charge-current shunt R5 and C3, the reverse-battery MOSFET Q2 and the battery shunt R6 |
+| Middle | CN3791 (U1), with C2, the status LEDs D3/D4, R2 and C4 in a column on its left and the MPPT divider R3/R4 below it. L1 is to its right. JP1, the LED solder jumper, and R1 sit at the left edge |
+| Right edge | Battery (J5, `1S BATT`) and VOUT (J6, `LOAD`) |
+| Bottom edge | Solar inputs J4 (`S4`) and J3 (`S3`) with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
 
-Every reference label sits next to its own part, clear of pads, other parts and the edge (DRC reports no silkscreen issues). The holes are plain non-plated 3.2mm M3 holes, 4mm in from each edge.
+Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge.
 
 ### Dimensions
 
@@ -132,28 +132,31 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 
 | | |
 |---|---|
-| Outline | 52 × 29mm, with a 2mm × 45° chamfer on each corner |
+| Outline | 36.4 × 23.6mm, with a 1mm × 45° chamfer on each corner |
 | Thickness | 1.6mm PCB, two layers. All parts are on the top side; the through-hole connector pins stick out the back |
-| Mounting holes | Four, 3.2mm diameter, not plated, for M3 screws |
-| Hole positions | One in each corner, centre 4mm from both edges |
-| Hole spacing | 44mm across, 21mm down, centre to centre |
+| Mounting holes | Four, 2.2mm diameter, not plated, for M2 screws |
+| Hole positions | One in each corner, centre 2.5mm from both edges |
+| Hole spacing | 31.4mm across, 18.6mm down, centre to centre |
 
 **Silkscreen labels:**
 
-- **Connector functions:** `SW_BATT` (J7) and `SW_LOAD` (J8) are printed above the two switch headers. `BATT` (J5) and `VOUT` (J6) are vertical labels to the left of those connectors.
-- **Solar inputs:** one `Solar_5V` label, with a bracket along the four solar inputs (J1–J4).
-- **Polarity:** `-` and `+` under the solar, battery and VOUT connectors (J1–J6), on the side of the matching pin.
-- **I2C connector:** `I2C` under J9 on the front (J9 has no reference label; there's no room for both). The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed beside its pads on the back.
-- **Back:** the module ID, "SNAP Power Controller v1.1 / by JaisorGadgets - Nov. 14, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
+- **Connector functions:** `1S BATT` (J5) and `LOAD` (J6) under the two right-hand connectors. `SW BATT` (J7) and `SW LOAD` (J8) are vertical labels left of the switch headers.
+- **Solar inputs:** `S1` to `S4` beside J1–J4.
+- **Polarity:** a `+` beside pin 1 of each solar, battery and VOUT connector (J1–J6).
+- **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed under its pads on the back.
+- **LED jumper:** `LED` beside JP1.
+- **Back:** the module ID, "SNAP Power Controller v1.1 / Nov. 14, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
+- **Text size:** the front labels are 0.6mm text, under the board's 0.8mm minimum, so DRC lists them as 12 warnings. The back label is 0.8 to 1.0mm.
 
-**Routing** (drawn by hand in `tools/draw-routes.py`, so it comes out the same on every run):
+**Routing** (a grid auto-router adapted from `tools/route-pcb.py`, with the tightest connections placed by hand first; the board file is the source of truth):
 
-- **Ground:** the bottom layer is a GND plane in one piece, covering about 87% of the board, and the top layer has a GND fill. Every surface-mount GND pad gets its own via down to the plane, and 43 stitching vias on a 3mm grid tie the two pours together.
-- **Track widths:** power paths are 0.8mm, 0.4mm into the small diode pads. Signals are 0.25mm, with 0.2mm on the sense lines where they squeeze past pads.
-- **Kelvin sensing:** the CN3791's current-sense pins and each INA3221 channel's two inputs connect straight to the pads of their shunt resistors (R5; R6, R7, R10). Each channel's two sense lines run side by side. Channel 3's pair runs over and under J1, channel 2's passes between J2 and J3, and channel 1's follows the bottom edge from the battery shunt to U2.
-- **Layer use:** nearly all track is on the top layer: about 454mm, against 25mm on the bottom. The bottom layer only carries short hops: the gate drive under VIN, VIN to R3, the two channel 2 sense lines under the PV bus, and three links under U2.
-- **Size:** 213 track segments and 65 vias, 54 of them on GND.
-- **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
+- **Switching loop:** C5/C1 → Q1 → D2 and the switch node to L1 are short 0.6mm tracks on the top layer. Only ground runs on the bottom layer under the loop, under L1's switch pad and under U2.
+- **Ground:** both layers have a GND pour, and the bottom one is in one piece, cut only by short hops. Most surface-mount GND pads have their own via to it, including those of C1, C5 and D2 in the switching loop.
+- **Track widths:** power paths are 0.6mm, 0.4mm where 0.6mm doesn't fit. Signals are 0.25mm, with 0.2mm on the INA3221's escape tracks.
+- **Kelvin sensing:** the CN3791's current-sense pins and the INA3221's channel inputs connect straight to the pads of their shunt resistors (R5; R6, R7). The CN3791's pair runs side by side on the bottom layer, below L1.
+- **Layer use:** about 310mm of track on the top layer and 79mm on the bottom. The gate drive (U1 to Q1) hops under the power stage on the bottom layer, because Q1's gate and source are on the same side.
+- **Size:** 212 track segments and 39 vias, 11 of them on GND.
+- **Checks:** DRC reports 0 errors and 0 unconnected items, and schematic parity is clean. The only warnings are the front labels' text height.
 
 Review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which returns through the ground plane).
 
@@ -175,14 +178,14 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 - **Current:** PicoBlade contacts are rated 1.0A. The charge current is set to 0.8A to stay under that on the battery connector (J5). Keep the module's load current under 1A too, since it flows through J5 when the panels are dark.
 - **No keying between functions:** J1–J6 are the same 2-pin type, so a battery lead fits a solar socket. Check the silkscreen before plugging in. The switch headers take a different plug, so they can't be mixed up with these.
 - **Battery polarity:** "JST 1.25" LiPo pigtails have no standard polarity. Check that red goes to the pin marked `+` (pin 1 on J5) before connecting. Q2 blocks a reversed cell, but fit the cell with SW_BATT off anyway: with SW_BATT on in sunlight, the charger's output can partly turn Q2 on and push a limited current into a reversed cell, which heats Q2.
-- **Reading the marks:** pin 1 is `+` on J1–J6. J1–J4 are rotated 180° from J5 and J6, so the marks read `- J1 +` on the solar inputs and `+ J5 -` on the right-hand connectors.
+- **Reading the marks:** pin 1 is `+` on J1–J6, and the `+` mark sits beside it. All six face the same way, so pin 1 is the left pin with the board read as printed.
 
 **Operating note:** if SW_BATT is off while the panels are in sun, the charger sees no battery and VBAT pulses around 4.2V. Keep SW_LOAD off in that state.
 
 ## Power monitor (INA3221)
 
 - **Address:** 0x42 (A0 = SDA). That's the INA3221 default in both Meshtastic and MeshCore.
-- **Shunts:** all three are 0.1Ω, which both firmwares assume. Full scale is ±163.8mV, so about ±1.64A, in 0.4mA steps.
+- **Shunts:** both are 0.1Ω, which both firmwares assume. Full scale is ±163.8mV, so about ±1.64A, in 0.4mA steps.
 - **What it can't measure:** sleep current. A sleeping node draws 50–100µA, which is 5–10µV across 0.1Ω, below the chip's 40µV step and its offset (up to 80µV). The monitor is for charge and load telemetry, in the tens to hundreds of milliamps; profile sleep current on the bench with a tool made for it. A larger battery shunt isn't an option here: 0.5–1Ω would drop 0.4–0.8V at the 0.8A charge current and exceed the chip's input range.
 - **Pull-ups:** R8/R9 are 10k I2C pull-ups to the MCU's VCC. Leave them off if the MCU board already has pull-ups.
 
@@ -190,12 +193,12 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 |---|---|---|---|
 | 1 | R6, between BATT+ and the cell | Positive while charging, negative while discharging | Cell voltage, readable even with SW_BATT off. It's measured after Q2, so it reads up to about 50mV off while current flows |
 | 2 | R7, between the PV bus and VIN | Total solar current, always ≥ 0 | VIN (panel voltage minus the diode drop) |
-| 3 | R10, between J1 and its diode D5 | Panel 1's current, always ≥ 0 | Panel 1's own voltage, before its diode |
+| 3 | None: the inputs are tied together | Unused, reads about zero | Unused |
 
-Channel 3 shows where panel 1 actually operates, which is the number to compare against the panel's maximum-power voltage when tuning the MPPT set point.
+The released 52 × 29mm v1.1 board also had a shunt, R10, for panel 1 on channel 3. It was dropped to make the board smaller.
 
 **Firmware support** (checked in the source code on 2026-11-09, not yet on hardware):
-- **Meshtastic:** looks for an INA3221 at 0x42. It reports all three channels' voltage and current as power metrics, and uses channel 1 as the battery by default.
+- **Meshtastic:** looks for an INA3221 at 0x42. It reports all three channels' voltage and current as power metrics (channel 3 reads about zero on this board), and uses channel 1 as the battery by default.
 - **MeshCore:** the XIAO nRF52 build includes INA3221 support (`ENV_INCLUDE_INA3221`). It reports voltage, current and power for each channel.
 
 ## Testing
@@ -235,12 +238,12 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 
 ## Fabrication
 
-Download the package from the [latest release](https://github.com/jaisor/SNAP_Power_Controller/releases/latest). That release is v1.1, the design in this repo; the [change log](CHANGELOG.md) lists what changed since v1.0. The package is generated into `output/fab/`, which isn't tracked in git:
+The [latest release](https://github.com/jaisor/SNAP_Power_Controller/releases/latest) is v1.1 as first laid out: the 52 × 29mm board with panel 1's channel. Its files don't match the board in this repo. The 36.4 × 23.6mm board has no release yet; generate its package with the commands below. The [change log](CHANGELOG.md) lists what changed. The package is generated into `output/fab/`, which isn't tracked in git:
 
 | File | Contents |
 |---|---|
 | `SolarChargeModule_v1.1_gerbers.zip` | Upload this to the board house. 9 Gerber X2 layers (copper, mask, paste and silkscreen on both sides, plus the outline), a Gerber job file, plated and non-plated Excellon drill files, and drill maps |
-| `FAB_NOTES.txt` | Order settings: 2 layers, FR-4 1.6mm, 1oz copper, 52 × 29mm, 0.2mm/0.2mm minimum track/space, 0.3mm minimum drill, tented vias, four 3.2mm non-plated holes. Also assembly cautions |
+| `FAB_NOTES.txt` | Order settings: 2 layers, FR-4 1.6mm, 1oz copper, 36.4 × 23.6mm, 0.2mm/0.2mm minimum track/space, 0.3mm minimum drill, tented vias, four 2.2mm non-plated holes. Also assembly cautions |
 | `SolarChargeModule_v1.1_BOM.csv` | BOM in JLCPCB format (Comment, Designator, Footprint, LCSC Part #), plus a Manufacturer Part column for the specific parts |
 | `SolarChargeModule_v1.1_CPL.csv` | Pick-and-place file for top-side assembly, in the same coordinates as the Gerbers |
 
@@ -265,9 +268,9 @@ SNAP_Power_Controller.kicad_pro / .kicad_sch / .kicad_pcb   KiCad project
 SolarNode.kicad_sym             project symbol library (CN3791)
 sym-lib-table
 tools/
-  gen-schematic.js              generates the schematic (Node)
-  place-pcb.py                  places footprints, labels, holes, outline (KiCad Python / pcbnew)
-  draw-routes.py                draws the tracks, vias and GND pours from fixed coordinates (run after place-pcb.py)
+  gen-schematic.js              generates the 52 × 29mm board's schematic, with R10 (Node)
+  place-pcb.py                  places the 52 × 29mm board: footprints, labels, holes, outline (KiCad Python / pcbnew)
+  draw-routes.py                draws the 52 × 29mm board's tracks, vias and GND pours (run after place-pcb.py)
   route-pcb.py                  the earlier auto-router, kept for reference (v1.0's copper came from it)
   make-diagram.py               draws docs/images/wiring-diagram.png from the board render
   fab-package.js                JLCPCB-style BOM/CPL, fab notes and Gerber zip from the kicad-cli exports
@@ -277,11 +280,11 @@ LICENSE                         CERN-OHL-P-2.0 (hardware design and documentatio
 tools/LICENSE                   MIT (scripts)
 ```
 
-The schematic and the board layout are generated by scripts in `tools/`, and checked with `kicad-cli` ERC/DRC (including schematic parity). See [CLAUDE.md](CLAUDE.md) for the full design rationale and workflow. Generated outputs (`output/`: BOM, reports, fab files) are not tracked.
+The current schematic and board were edited by hand in KiCad and are checked with `kicad-cli` ERC/DRC (including schematic parity). The generator scripts in `tools/` build the earlier 52 × 29mm design. See [CLAUDE.md](CLAUDE.md) for the full design rationale and workflow. Generated outputs (`output/`: BOM, reports, fab files) are not tracked.
 
 ## Regenerating the design
 
-The whole design can be rebuilt from the scripts. Run these from the repo root, with `kicad-cli` from KiCad 10:
+**Don't run steps 1–3 on the current design.** They rebuild the earlier 52 × 29mm board with R10, and they overwrite the schematic and board files. The current schematic and board were edited by hand in KiCad. The steps stay here for that design. Run them from the repo root, with `kicad-cli` from KiCad 10:
 
 ```bash
 # 1. Schematic (Node): rewrites the .kicad_sch, SolarNode.kicad_sym and sym-lib-table
@@ -302,8 +305,8 @@ Refreshing the images in `docs/images/`:
 
 ```bash
 kicad-cli sch export svg -o docs/images SNAP_Power_Controller.kicad_sch
-kicad-cli pcb render --side top --width 1600 --height 900 --quality high --zoom 1.6 -o docs/images/pcb-top.png SNAP_Power_Controller.kicad_pcb
-kicad-cli pcb render --side bottom --width 1600 --height 900 --quality high --zoom 1.6 -o docs/images/pcb-bottom.png SNAP_Power_Controller.kicad_pcb
+kicad-cli pcb render --side top --width 1600 --height 900 --quality high --zoom 1.35 -o docs/images/pcb-top.png SNAP_Power_Controller.kicad_pcb
+kicad-cli pcb render --side bottom --width 1600 --height 900 --quality high --zoom 1.35 -o docs/images/pcb-bottom.png SNAP_Power_Controller.kicad_pcb
 kicad-cli pcb render --width 1600 --height 1000 --quality high --perspective --rotate "-40,0,-25" -o docs/images/pcb-iso.png SNAP_Power_Controller.kicad_pcb
 ```
 

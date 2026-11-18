@@ -20,14 +20,14 @@ box_title = ImageFont.truetype(FONTS + "consolab.ttf", 23)
 box_sub = ImageFont.truetype(FONTS + "consola.ttf", 17)
 small = ImageFont.truetype(FONTS + "consola.ttf", 16)
 
-BOARD_W_MM, BOARD_H_MM = 52.0, 29.0
-# Mechanical data for the dimension drawing (W, H, CHAMFER, HOLE_INSET in tools/place-pcb.py)
-CHAMFER_MM, HOLE_INSET_MM, HOLE_DIA_MM = 2.0, 4.0, 3.2
-# Connector body centres in board mm (from tools/place-pcb.py PLACEMENT)
+BOARD_W_MM, BOARD_H_MM = 36.4, 23.6
+# Mechanical data for the dimension drawing (Edge.Cuts and H1-H4 on the board)
+CHAMFER_MM, HOLE_INSET_MM, HOLE_DIA_MM = 1.0, 2.5, 2.2
+# Connector pad-row centres in board mm, from the board's top-left corner (abs 101.85, 100)
 CONN = {
-    "J1": (13.25, 2.85), "J2": (13.25, 9.35), "J3": (13.4, 15.45), "J4": (13.25, 21.75),
-    "J7": (48.27, 10.8), "J8": (48.27, 17.7), "J6": (41.8, 17.3), "J5": (41.8, 23.5),
-    "J9": (3.3, 15.5),
+    "J1": (7.65, 2.95), "J2": (13.15, 2.95), "J3": (14.03, 21.5), "J4": (8.28, 21.5),
+    "J5": (33.15, 10.5), "J6": (33.15, 15.95), "J7": (26.66, 16.86), "J8": (26.64, 21.0),
+    "J9": (20.08, 2.95),
 }
 
 img = Image.new("RGB", (W, H), BG)
@@ -125,40 +125,40 @@ def node(x, y):
     d.text((x + 24, y + 156), "BAT pads · I2C SDA/SCL", font=box_sub, fill=DIM)
 
 
-# Left side: solar panels -> J1..J4
-panel(50, 250, 190, 104, "5V 200mA · 110×60mm")
-panel(50, 430, 190, 104, "5V 200mA · 110×60mm")
-solar_box = callout("J2", (520, 600), YELLOW, "SOLAR IN  J1–J4", "up to 4 × 5V panels", "left")
-callout("J1", (520, 250 + 20), YELLOW, "Solar_5V", "own 1N5819W · 0.5A max", "left")
-for py in (302, 482):
-    wire([(240, py), (270, py), (270, 650), (solar_box[0], 650)], RED, 4)
+# Left side: solar panels -> J1..J4 (J1/J2 on the top edge, J3/J4 on the bottom edge)
+panel(50, 330, 190, 104, "5V 200mA · 110×60mm")
+panel(50, 560, 190, 104, "5V 200mA · 110×60mm")
+callout("J1", (520, 300), YELLOW, "Solar_5V  J1, J2", "top edge · own 1N5819W each", "left")
+solar_box = callout("J4", (520, 820), YELLOW, "SOLAR IN  J1–J4", "up to 4 × 5V panels", "left")
+for py in (382, 612):
+    wire([(240, py), (270, py), (270, 853), (solar_box[0], 853)], RED, 4)
 
-# Right side: switches, battery, node
-sw_batt = callout("J7", (1480, 200), ORANGE, "SW_BATT  J7", "2.54mm header · battery cut-off", "right")
-sw_load = callout("J8", (1480, 300), ORANGE, "SW_LOAD  J8", "2.54mm header · node power", "right")
-vout = callout("J6", (1480, 420), RED, "VOUT  J6", "battery power to the node", "right")
-batt = callout("J5", (1480, 600), GREEN, "BATT  J5", "18650 cell, 0.8 A charge", "right")
-i2c = callout("J9", (520, 820), CYAN, "I2C  J9", "INA3221 @ 0x42 → node", "left")
+# Top: I2C to the node; right side, top to bottom in connector order: BATT, VOUT, SW_BATT, SW_LOAD
+i2c = callout("J9", (1080, 230), CYAN, "I2C  J9", "INA3221 @ 0x42 → node", "right")
+node(1560, 110)
+wire([(i2c[2], 263), (1560, 263)], CYAN, 5)
+batt = callout("J5", (1480, 350), GREEN, "BATT  J5", "18650 cell, 0.8 A charge", "right")
+cell18650(1500, 440)
+wire([(1615, batt[3]), (1615, 440)], GREEN, 4)
+vout = callout("J6", (1480, 560), RED, "VOUT  J6", "battery power to the node", "right")
+wire([(vout[2], 593), (1950, 593), (1950, 205), (1860, 205)], RED, 5)
+sw_batt = callout("J7", (1480, 800), ORANGE, "SW_BATT  J7", "2.54mm header · battery cut-off", "right")
+sw_load = callout("J8", (1480, 910), ORANGE, "SW_LOAD  J8", "2.54mm header · node power", "right")
 SWX = 1850  # switch column, right of the widest callout box
-switch(SWX, 201, "")
-switch(SWX, 301, "")
-for text, ty in (("panel-mount SPST ≥1A", 172), ("or a jumper cap", 404)):
-    d.text((SWX + 32 - d.textlength(text, font=small) / 2, ty), text, font=small, fill=DIM)
-jumper_cap(SWX + 9, 374)
-wire([(sw_batt[2], 233), (SWX, 233)], ORANGE, 4)
-wire([(sw_load[2], 333), (SWX, 333)], ORANGE, 4)
-cell18650(1500, 705)
-wire([(1615, batt[3]), (1615, 705)], GREEN, 4)
-node(1480, 900)
-wire([(i2c[0] + 60, i2c[3]), (i2c[0] + 60, 1010), (1480, 1010)], CYAN, 5)
-wire([(vout[2], 453), (1800, 453), (1800, 960), (1780, 960)], RED, 5)
+switch(SWX, 801, "")
+switch(SWX, 911, "")
+d.text((SWX + 32 - d.textlength("panel-mount SPST ≥1A", font=small) / 2, 772), "panel-mount SPST ≥1A", font=small, fill=DIM)
+jumper_cap(SWX + 9, 990)
+d.text((SWX + 32 - d.textlength("or a jumper cap", font=small) / 2, 1020), "or a jumper cap", font=small, fill=DIM)
+wire([(sw_batt[2], 833), (SWX, 833)], ORANGE, 4)
+wire([(sw_load[2], 943), (SWX, 943)], ORANGE, 4)
 
 # ---------- Board dimensions: outline drawing, to scale ----------
 DY = 1120  # top of the dimension strip
 d.line((70, DY, W - 70, DY), fill=(48, 54, 61), width=2)
 d.text((70, DY + 28), "BOARD DIMENSIONS", font=box_title, fill=INK)
 d.text((70, DY + 60), "all in mm · top view", font=box_sub, fill=CYAN)
-S = 8.0  # px per mm
+S = 11.0  # px per mm
 OX, OY = 600, DY + 95
 bw, bh, c = BOARD_W_MM * S, BOARD_H_MM * S, CHAMFER_MM * S
 d.polygon([(OX + c, OY), (OX + bw - c, OY), (OX + bw, OY + c), (OX + bw, OY + bh - c),
@@ -195,19 +195,19 @@ def dim_v(y0, y1, x, from_x, text, colour):
     d.text((tx, (y0 + y1) / 2 - 9), text, font=box_sub, fill=colour)
 
 
-dim_h(OX, OX + bw, OY - 34, OY, "52", INK)                                    # board width
-dim_h(holes[2][0], holes[3][0], OY + bh + 34, holes[2][1], "44", YELLOW)      # hole centres, across
-dim_v(OY, OY + bh, OX - 34, OX, "29", INK)                                    # board height
-dim_v(holes[1][1], holes[3][1], OX + bw + 34, holes[1][0], "21", YELLOW)      # hole centres, down
+dim_h(OX, OX + bw, OY - 34, OY, "36.4", INK)                                    # board width
+dim_h(holes[2][0], holes[3][0], OY + bh + 34, holes[2][1], "31.4", YELLOW)      # hole centres, across
+dim_v(OY, OY + bh, OX - 34, OX, "23.6", INK)                                    # board height
+dim_v(holes[1][1], holes[3][1], OX + bw + 34, holes[1][0], "18.6", YELLOW)      # hole centres, down
 # Hole callout, from the top-right hole
 lx, ly = OX + bw + 150, OY + 6
 d.line((holes[1][0] + hr * 0.7, holes[1][1] - hr * 0.7, lx - 12, ly + 12), fill=YELLOW, width=2)
 NX = lx
 for i, (text, colour) in enumerate((
-        ("4 × Ø3.2 mounting holes for M3 screws, not plated", YELLOW),
-        ("hole centres 4 from each edge · 44 × 21 apart", YELLOW),
+        ("4 × Ø2.2 mounting holes for M2 screws, not plated", YELLOW),
+        ("hole centres 2.5 from each edge · 31.4 × 18.6 apart", YELLOW),
         ("", INK),
-        ("Outline 52 × 29, four 2 × 45° corner chamfers", INK),
+        ("Outline 36.4 × 23.6, four 1 × 45° corner chamfers", INK),
         ("PCB 1.6 thick, 2 layers · parts on the top side only", INK),
         ("Solder pins of the through-hole connectors stick out the back", DIM))):
     d.text((NX, ly + i * 30), text, font=box_sub, fill=colour)
