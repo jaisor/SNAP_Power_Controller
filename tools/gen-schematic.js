@@ -215,21 +215,9 @@ const taps = [];
 for (let i = 0; i < 4; i++) {
   const y = 60.96 + i * 12.7;
   const J = place(`J${i + 1}`, "Connector_Generic:Conn_01x02", 25.4, y, { mirror: "y", value: "Solar_5V", fp: FP.pico2 });
-  if (i === 0) {
-    // Panel 1 alone, for INA3221 channel 3: J1 -> R10 -> D5. D5 moves right to make room.
-    const R10 = placeByPin("R10", "Device:R", "1", P(33.02, y), { rot: 90, value: "0.1R 1%", fp: FP.r0603, textAt: { ref: [0, -3.81], val: [-0.51, 3.81] } });
-    // Value nudged left, off the PV bus line at x = BUS_X
-    const D = placeByPin("D5", "Diode:1N5819WS", "2", P(43.18, y), { rot: 180, value: "1N5819W", fp: FP.sod123, textAt: { ref: [0, -3.81], val: [-1.52, 3.81] } });
-    wire(J.pin("1"), R10.pin("1"));
-    wire(R10.pin("2"), D.pin("2"));
-    stub(R10.pin("1"), "up", "PANEL1", 2.54);
-    stub(R10.pin("2"), "up", "PANEL1_D", 2.54);
-    if (D.pin("1").x !== BUS_X) throw new Error("D5 cathode is not on the PV bus");
-  } else {
-    const D = placeByPin(`D${i + 5}`, "Diode:1N5819WS", "2", P(35.56, y), { rot: 180, value: "1N5819W", fp: FP.sod123 });
-    wire(J.pin("1"), D.pin("2"));
-    wire(D.pin("1"), P(BUS_X, y));
-  }
+  const D = placeByPin(`D${i + 5}`, "Diode:1N5819WS", "2", P(35.56, y), { rot: 180, value: "1N5819W", fp: FP.sod123 });
+  wire(J.pin("1"), D.pin("2"));
+  wire(D.pin("1"), P(BUS_X, y));
   gnd(J.pin("2"));
   taps.push(P(BUS_X, y));
 }
@@ -325,17 +313,25 @@ stub(J6.pin("1"), "left", "VOUT", 5.08);
 gnd(wire(J6.pin("2"), P(243.84, J6.pin("2").y), P(243.84, 93.98)));
 
 // ---------- INA3221 power monitor ----------
-// Three channels, all 0.1R shunts. Bus voltage is measured at each IN- pin.
+// Two channels used, both 0.1R shunts. Bus voltage is measured at each IN- pin.
 //   CH1: IN+ = BATT+,  IN- = BAT_CELL -> battery current (+ charging / - discharging), bus = cell voltage
 //   CH2: IN+ = PV,     IN- = VIN      -> total solar current, bus = VIN
-//   CH3: IN+ = PANEL1, IN- = PANEL1_D -> panel 1 current, bus = panel 1 voltage (before its diode)
+//   CH3: unused; IN+3 and IN-3 tied together and to GND (panel 1's shunt R10 was dropped to fit
+//        the 36.4 x 23.6 mm board, as on main)
 const U2 = place("U2", "Power_Management:INA3221", 322.58, 104.14, { value: "INA3221" });
 stub(U2.pin("12"), "left", "BATT+", 5.08);
 stub(U2.pin("11"), "left", "BAT_CELL", 5.08);
 stub(U2.pin("15"), "left", "PV", 5.08);
 stub(U2.pin("14"), "left", "VIN", 5.08);
-stub(U2.pin("2"), "left", "PANEL1", 5.08);
-stub(U2.pin("1"), "left", "PANEL1_D", 5.08);
+{
+  const a = U2.pin("1"), b = U2.pin("2"), x = a.x - 5.08;
+  const lo = Math.max(a.y, b.y), hi = Math.min(a.y, b.y);
+  wire(a, P(x, a.y));
+  wire(b, P(x, b.y));
+  wire(P(x, hi), P(x, lo));
+  junction(P(x, lo));
+  gnd(wire(P(x, lo), P(x, lo + 2.54)));
+}
 // VS and VPU (power-valid pull-up supply; power-valid is unused) both from the MCU's supply
 stub(U2.pin("4"), "up", "VCC_MCU", 5.08);
 stub(U2.pin("16"), "up", "VCC_MCU", 5.08);
@@ -367,9 +363,9 @@ stub(J9.pin("1"), "left", "VCC_MCU", 5.08);
 gnd(wire(J9.pin("2"), P(J9.pin("2").x - 2.54, J9.pin("2").y)), 270);
 stub(J9.pin("3"), "left", "SCL", 5.08);
 stub(J9.pin("4"), "left", "SDA", 5.08);
-// M3 mounting holes (non-plated), one per board corner
+// M2 mounting holes (non-plated), one per board corner
 for (let i = 0; i < 4; i++)
-  place(`H${i + 1}`, "Mechanical:MountingHole", 302.26 + i * 12.7, 142.24, { value: "M3", fp: "MountingHole:MountingHole_3.2mm_M3" });
+  place(`H${i + 1}`, "Mechanical:MountingHole", 302.26 + i * 12.7, 142.24, { value: "M2", fp: "MountingHole:MountingHole_2.2mm_M2" });
 
 // VCC_MCU only comes from the header; flag it for ERC.
 wire(P(375.92, 83.82), P(375.92, 86.36));
@@ -416,7 +412,7 @@ TEXTS.push({
     "  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).",
     "  With SW_BATT off in sun the CN3163 sees no battery and holds VBAT near 4.2V: keep SW_LOAD off then.",
     "- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;",
-    "  CH2 = R7 solar total (PV -> VIN); CH3 = R10 panel 1 alone (J1 -> D5). Bus voltage is read at each IN- pin: cell, VIN, panel 1.",
+    "  CH2 = R7 solar total (PV -> VIN); CH3 unused (IN+3/IN-3 tied to GND). Bus voltage is read at each IN- pin: cell, VIN.",
     "  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.",
     "  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them.",
   ].join("\\n"),
@@ -525,7 +521,7 @@ const out = [
 		(date "2026-10-28")
 		(rev "1.1")
 		(comment 1 "CN3163 linear solar Li-ion charger behind a 5V input limiter: up to 4 solar panels (diode OR) -> 1S LiPo (4.2V)")
-		(comment 2 "INA3221 I2C power monitor (0x42): battery, total solar and panel 1")
+		(comment 2 "INA3221 I2C power monitor (0x42): battery and total solar")
 	)
 	(lib_symbols
 ${Object.values(SYMS).map((s) => "\t\t" + indent(s.text.replace(/^\t/, ""))).join("\n")}

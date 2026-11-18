@@ -9,7 +9,7 @@
 		(date "2026-10-28")
 		(rev "1.1")
 		(comment 1 "CN3163 linear solar Li-ion charger behind a 5V input limiter: up to 4 solar panels (diode OR) -> 1S LiPo (4.2V)")
-		(comment 2 "INA3221 I2C power monitor (0x42): battery, total solar and panel 1")
+		(comment 2 "INA3221 I2C power monitor (0x42): battery and total solar")
 	)
 	(lib_symbols
 		(symbol "Connector_Generic:Conn_01x02"
@@ -153,146 +153,6 @@
 					(at -5.08 -2.54 0)
 					(length 3.81)
 					(name "Pin_2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Device:R"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "R"
-				(at 2.032 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "R"
-				(at 0 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at -1.778 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "R_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name ""
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -701,6 +561,146 @@
 					)
 					(fill
 						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:R"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "R"
+				(at 2.032 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R"
+				(at 0 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -1.778 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "R_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
 					)
 				)
 			)
@@ -2761,6 +2761,12 @@
 		(uuid "aea154e6-a9e3-48bd-9af2-4d4fce0d4996")
 	)
 	(junction
+		(at 304.8 111.76)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3839d400-e0a9-4c1f-a011-43c158168f43")
+	)
+	(junction
 		(at 170.18 92.71)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2768,43 +2774,23 @@
 	)
 	(wire
 		(pts
-			(xy 30.48 60.96) (xy 33.02 60.96)
+			(xy 30.48 60.96) (xy 35.56 60.96)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "41b7a30b-c674-4bf2-a3ee-6e248d0d581b")
+		(uuid "c85f223a-490f-4a17-93cd-34555a218be3")
 	)
 	(wire
 		(pts
-			(xy 40.64 60.96) (xy 43.18 60.96)
+			(xy 43.18 60.96) (xy 50.8 60.96)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "0b7a1302-d72e-431d-88ef-5a2bb907cfc8")
-	)
-	(wire
-		(pts
-			(xy 33.02 60.96) (xy 33.02 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b54f9f25-94a8-4366-94a0-5102700fa816")
-	)
-	(wire
-		(pts
-			(xy 40.64 60.96) (xy 40.64 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8cc01395-dd23-49d8-948a-f826586f961b")
+		(uuid "1f4fcc36-b673-4a9d-9a92-e260c87fe077")
 	)
 	(wire
 		(pts
@@ -3248,6 +3234,16 @@
 	)
 	(wire
 		(pts
+			(xy 309.88 111.76) (xy 304.8 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6843a5f3-4d21-414e-8afe-1f1c5ccfb4bc")
+	)
+	(wire
+		(pts
 			(xy 309.88 109.22) (xy 304.8 109.22)
 		)
 		(stroke
@@ -3258,13 +3254,23 @@
 	)
 	(wire
 		(pts
-			(xy 309.88 111.76) (xy 304.8 111.76)
+			(xy 304.8 109.22) (xy 304.8 111.76)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "6843a5f3-4d21-414e-8afe-1f1c5ccfb4bc")
+		(uuid "f73b354c-f99c-49fb-b43c-5bb86fafab54")
+	)
+	(wire
+		(pts
+			(xy 304.8 111.76) (xy 304.8 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d4502b8b-0c97-4065-850a-346d17d95452")
 	)
 	(wire
 		(pts
@@ -3466,7 +3472,7 @@
 		)
 		(uuid "0929fd09-2ca6-4985-b13e-15e6e65448f0")
 	)
-	(text "Design notes (CN3163 datasheet, Figure 1):\n- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A). Up to 0.5A per input.\n- U3 LDL1117S50R (5.0V LDO, 2.6-18V in, 20V abs max) limits the charger's supply VCHG to 5.0V: every CN3163 pin has a 6.5V absolute maximum,\n  and panels float to their open-circuit voltage once the battery is full. While charging U3 is in dropout (about 0.3R: ~70mV at 0.25A,\n  ~0.25V at 0.8A). Panels up to 18V open-circuit are safe; above 5-6V nominal the extra voltage is only burnt off as heat in U3 and U1.\n  C1 10uF/25V on U3's input, C2 10uF on its output at U1 (datasheet: 1uF in, 4.7uF out, ceramic). The LEDs run from VCHG as well.\n- U1 CN3163: linear CC/CV charger, 4.2V 1%. No inductor, pass FET, sense resistor or MPPT divider. When the panels can't supply the\n  set current it cuts the charge current to hold VCHG at 4.4V or above, so each panel sits ~0.4-0.6V higher (diode + U3), near its Vmp.\n- Charge current: ICH = 1188V / R2 = 1188 / 1.5k = 0.79A, leaving margin on the 1.0A connector contacts (R2 = 2.4k for 0.5A).\n  Precharge at 10% below 2.94V (70% of 4.2V); terminates at 10% of ICH; recharges automatically. Die limited to ~130C by thermal regulation:\n  dissipation is (VCHG - VBAT) x ICH, about 0.55W at VCHG 4.4V / 3.7V cell / 0.79A, up to ~1W at 5.0V, so the current may fold back.\n- FB tied to BAT at the VBAT node (no Rx). TEMP grounded: battery temperature sensing disabled. Exposed pad (pin 9) soldered to GND.\n- C3 10uF on BAT (datasheet: 1uF typical, 1-22uF ceramic stable). No blocking diode needed: under 3uA from the\n  battery when the input is dark. D5-D8 are there to keep a shaded panel from loading the others.\n- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.\n- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.\n  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.\n  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.\n  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.\n  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).\n  With SW_BATT off in sun the CN3163 sees no battery and holds VBAT near 4.2V: keep SW_LOAD off then.\n- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;\n  CH2 = R7 solar total (PV -> VIN); CH3 = R10 panel 1 alone (J1 -> D5). Bus voltage is read at each IN- pin: cell, VIN, panel 1.\n  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.\n  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them."
+	(text "Design notes (CN3163 datasheet, Figure 1):\n- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A). Up to 0.5A per input.\n- U3 LDL1117S50R (5.0V LDO, 2.6-18V in, 20V abs max) limits the charger's supply VCHG to 5.0V: every CN3163 pin has a 6.5V absolute maximum,\n  and panels float to their open-circuit voltage once the battery is full. While charging U3 is in dropout (about 0.3R: ~70mV at 0.25A,\n  ~0.25V at 0.8A). Panels up to 18V open-circuit are safe; above 5-6V nominal the extra voltage is only burnt off as heat in U3 and U1.\n  C1 10uF/25V on U3's input, C2 10uF on its output at U1 (datasheet: 1uF in, 4.7uF out, ceramic). The LEDs run from VCHG as well.\n- U1 CN3163: linear CC/CV charger, 4.2V 1%. No inductor, pass FET, sense resistor or MPPT divider. When the panels can't supply the\n  set current it cuts the charge current to hold VCHG at 4.4V or above, so each panel sits ~0.4-0.6V higher (diode + U3), near its Vmp.\n- Charge current: ICH = 1188V / R2 = 1188 / 1.5k = 0.79A, leaving margin on the 1.0A connector contacts (R2 = 2.4k for 0.5A).\n  Precharge at 10% below 2.94V (70% of 4.2V); terminates at 10% of ICH; recharges automatically. Die limited to ~130C by thermal regulation:\n  dissipation is (VCHG - VBAT) x ICH, about 0.55W at VCHG 4.4V / 3.7V cell / 0.79A, up to ~1W at 5.0V, so the current may fold back.\n- FB tied to BAT at the VBAT node (no Rx). TEMP grounded: battery temperature sensing disabled. Exposed pad (pin 9) soldered to GND.\n- C3 10uF on BAT (datasheet: 1uF typical, 1-22uF ceramic stable). No blocking diode needed: under 3uA from the\n  battery when the input is dark. D5-D8 are there to keep a shaded panel from loading the others.\n- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.\n- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.\n  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.\n  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.\n  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.\n  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).\n  With SW_BATT off in sun the CN3163 sees no battery and holds VBAT near 4.2V: keep SW_LOAD off then.\n- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;\n  CH2 = R7 solar total (PV -> VIN); CH3 unused (IN+3/IN-3 tied to GND). Bus voltage is read at each IN- pin: cell, VIN.\n  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.\n  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them."
 		(exclude_from_sim no)
 		(at 33.782 167.894 0)
 		(effects
@@ -3476,26 +3482,6 @@
 			(justify left bottom)
 		)
 		(uuid "f6168142-1d43-46e1-8577-c38844bcd185")
-	)
-	(label "PANEL1"
-		(at 33.02 58.42 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "2badaac6-d5d3-4a48-a44e-9bd63058df81")
-	)
-	(label "PANEL1_D"
-		(at 40.64 58.42 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "dd90ed7f-842c-4902-b3c1-6d1022893124")
 	)
 	(label "PV"
 		(at 50.8 60.96 0)
@@ -3656,26 +3642,6 @@
 			(justify right bottom)
 		)
 		(uuid "f19ac8a0-94ea-4a98-a04a-06ac02c0e9a2")
-	)
-	(label "PANEL1"
-		(at 304.8 109.22 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "b356accb-6986-4ae0-bb9f-3e1fa1e99ff3")
-	)
-	(label "PANEL1_D"
-		(at 304.8 111.76 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "ca08ba69-c6a9-4e83-8fa2-887611ce64b6")
 	)
 	(label "VCC_MCU"
 		(at 320.04 81.28 90)
@@ -3916,75 +3882,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 36.83 60.96 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "a259dca0-8c84-4842-97b6-2502b0e4bd05")
-		(property "Reference" "R10"
-			(at 36.83 57.15 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "0.1R 1%"
-			(at 36.32 64.77 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 36.83 60.96 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 36.83 60.96 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 36.83 60.96 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "5022f749-a206-4a90-9446-95e75de7ee2f")
-		)
-		(pin "2"
-			(uuid "8b8b7c61-aa9b-4ce6-aa57-f15d957a0cb5")
-		)
-		(instances
-			(project "SNAP_Power_Controller"
-				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "R10")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Diode:1N5819WS")
-		(at 46.99 60.96 180)
+		(at 39.37 60.96 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3992,7 +3891,7 @@
 		(dnp no)
 		(uuid "1825bd7b-f3d6-4032-a847-26b91b4e28e4")
 		(property "Reference" "D5"
-			(at 46.99 57.15 0)
+			(at 39.37 57.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4000,7 +3899,7 @@
 			)
 		)
 		(property "Value" "1N5819W"
-			(at 45.47 64.77 0)
+			(at 39.37 64.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4008,7 +3907,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SOD-123"
-			(at 46.99 60.96 0)
+			(at 39.37 60.96 0)
 			(hide yes)
 			(effects
 				(font
@@ -4017,7 +3916,7 @@
 			)
 		)
 		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
-			(at 46.99 60.96 0)
+			(at 39.37 60.96 0)
 			(hide yes)
 			(effects
 				(font
@@ -4026,7 +3925,7 @@
 			)
 		)
 		(property "Description" "40V 600mV@1A 1A SOD-123 Schottky Barrier Diodes, SOD-123"
-			(at 46.99 60.96 0)
+			(at 39.37 60.96 0)
 			(hide yes)
 			(effects
 				(font
@@ -6576,7 +6475,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 320.04 119.38 0)
+		(at 304.8 114.3 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -6584,6 +6483,71 @@
 		(dnp no)
 		(uuid "cc4c8d05-143e-4f40-8d7d-68f6ad89f09e")
 		(property "Reference" "#PWR016"
+			(at 304.8 114.3 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 304.8 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 304.8 114.3 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 304.8 114.3 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 304.8 114.3 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "70237a78-173b-4885-8146-16f9368b1af4")
+		)
+		(instances
+			(project "SNAP_Power_Controller"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "#PWR016")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 320.04 119.38 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "09a99fba-c513-4585-a361-b0c1b5fd114a")
+		(property "Reference" "#PWR017"
 			(at 320.04 119.38 0)
 			(hide yes)
 			(effects
@@ -6628,12 +6592,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "70237a78-173b-4885-8146-16f9368b1af4")
+			(uuid "44b19214-87a0-4e66-84ff-6d6b83944d5e")
 		)
 		(instances
 			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR016")
+					(reference "#PWR017")
 					(unit 1)
 				)
 			)
@@ -6647,8 +6611,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "09a99fba-c513-4585-a361-b0c1b5fd114a")
-		(property "Reference" "#PWR017"
+		(uuid "3b1769bf-3e85-4484-8b2e-41fbf7bd1725")
+		(property "Reference" "#PWR018"
 			(at 325.12 119.38 0)
 			(hide yes)
 			(effects
@@ -6693,12 +6657,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "44b19214-87a0-4e66-84ff-6d6b83944d5e")
+			(uuid "1a98d6f7-3cfc-4aa7-97ae-39f736752d52")
 		)
 		(instances
 			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR017")
+					(reference "#PWR018")
 					(unit 1)
 				)
 			)
@@ -6779,8 +6743,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "3b1769bf-3e85-4484-8b2e-41fbf7bd1725")
-		(property "Reference" "#PWR018"
+		(uuid "5204be78-65ba-41be-80be-06438026827d")
+		(property "Reference" "#PWR019"
 			(at 345.44 99.06 0)
 			(hide yes)
 			(effects
@@ -6825,12 +6789,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "1a98d6f7-3cfc-4aa7-97ae-39f736752d52")
+			(uuid "0b101b29-09d3-4355-a10f-66836651bb10")
 		)
 		(instances
 			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR018")
+					(reference "#PWR019")
 					(unit 1)
 				)
 			)
@@ -7051,8 +7015,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "5204be78-65ba-41be-80be-06438026827d")
-		(property "Reference" "#PWR019"
+		(uuid "030ef500-0f52-4bd3-983e-f86f881a71dd")
+		(property "Reference" "#PWR020"
 			(at 386.08 101.6 90)
 			(hide yes)
 			(effects
@@ -7097,12 +7061,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "0b101b29-09d3-4355-a10f-66836651bb10")
+			(uuid "7a3641d9-9b14-42d4-a452-3c392aecdebc")
 		)
 		(instances
 			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
-					(reference "#PWR019")
+					(reference "#PWR020")
 					(unit 1)
 				)
 			)
@@ -7125,7 +7089,7 @@
 				)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "M2"
 			(at 302.26 146.05 0)
 			(effects
 				(font
@@ -7133,7 +7097,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2"
 			(at 302.26 142.24 0)
 			(hide yes)
 			(effects
@@ -7187,7 +7151,7 @@
 				)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "M2"
 			(at 314.96 146.05 0)
 			(effects
 				(font
@@ -7195,7 +7159,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2"
 			(at 314.96 142.24 0)
 			(hide yes)
 			(effects
@@ -7249,7 +7213,7 @@
 				)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "M2"
 			(at 327.66 146.05 0)
 			(effects
 				(font
@@ -7257,7 +7221,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2"
 			(at 327.66 142.24 0)
 			(hide yes)
 			(effects
@@ -7311,7 +7275,7 @@
 				)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "M2"
 			(at 340.36 146.05 0)
 			(effects
 				(font
@@ -7319,7 +7283,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2"
 			(at 340.36 142.24 0)
 			(hide yes)
 			(effects
