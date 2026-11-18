@@ -2,15 +2,24 @@
 
 Changes to the Solar Charge Module that matter to someone building or using the board. Versions match the release tags and the label on the back of the board.
 
-## Unreleased
+## Unreleased: branch `cn3163`
 
-Changes on `main` since the v1.1 release files. The solar input column and the back silkscreen differ; don't mix these files with the released Gerbers, BOM or placement file.
+The CN3163 variant of the board on `main`. Not built or tested. ERC reports 0 violations; DRC reports 0 violations, 0 unconnected items and 0 schematic parity issues. It has no release, and its files don't match the v1.1 release files.
 
-- The input diodes D5–D8 are 1N5819W in SOD-123 (was 1N5819WS in SOD-323), so each solar input is good for 0.5 A instead of about 0.3 A. To fit them, J1, J2 and J4 move 0.45 mm left and J3 0.3 mm; J2 is also 0.2 mm lower. The mounting holes and the other connectors don't move.
+### Charger
 
-- The back label reads "SNAP Power Controller v1.1 / by JaisorGadgets - Nov. 14, 2026", the project's new name.
-- Printed under it: check polarity; battery 1S Li-ion 4.2 V only; solar 5–6 V panels, 20 V max, 0.5 A max per input; load 1 A max; and a notice that the board is provided as is, with no warranty, and liability limited to the purchase price.
-- The README lists the same limits under Safety, and gives the board's dimensions.
+- A CN3163 linear charger replaces the CN3791 MPPT buck charger. Q1, D2, L1, R5, the MPPT divider R3/R4, C4, C5 and the old R2 and C2 are removed. The new R2 = 1.5k sets the charge current to 0.79 A (was 0.8 A).
+- The CN3163 reduces its charge current to keep its input at 4.4 V or above. That threshold is fixed, so there is no set point to tune (the CN3791 board's was 4.42 V).
+- U3, an LDL1117S50R 5.0 V regulator, sits between the solar shunt and the charger, with a new C2 = 10 µF on its output. Every CN3163 pin is rated 6.5 V at most; U3 makes panels up to 18 V open-circuit safe. The status LEDs take their supply after U3.
+- C3, on the battery side, is 10 µF (was 22 µF).
+- The charger runs warmer: as a linear charger it turns the input-to-battery difference into heat, about 0.55 W at full current from panels.
+
+### Board
+
+- The same 36.4 × 23.6 mm board as `main`, with four M2 mounting holes. The connectors, the INA3221, the input diodes, the shunts, Q2, the LEDs and JP1 are in `main`'s exact positions; the charger parts take the space of the old buck stage. Re-routed, with six thermal vias in the CN3163's exposed pad.
+- As on `main`: R10 and INA3221 channel 3 are removed, and channel 3's inputs are tied to GND. The front silkscreen has function labels only (`+S1-` to `+S4-`, `+1S BATT-`, `+LOAD-`, `SW BATT`, `SW LOAD`, `I2C`, `LED`), at 0.6 mm minimum.
+- As on `main`: the input diodes D5–D8 are 1N5819W in SOD-123 (was 1N5819WS in SOD-323), so each solar input is good for 0.5 A instead of about 0.3 A.
+- The back label reads "SNAP Power Controller CN3163 / Nov. 15, 2026". Printed under it: check polarity; battery 1S Li-ion 4.2 V only; solar 5–6 V panels, 18 V max (20 V on the CN3791 board, now set by U3), 0.5 A max per input; load 1 A max; and a notice that the board is provided as is, with no warranty, and liability limited to the purchase price. The README lists the same limits under Safety.
 
 ## v1.1 (2026-11-09)
 
