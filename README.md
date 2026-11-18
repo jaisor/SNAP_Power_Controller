@@ -118,11 +118,11 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 | Area | Parts |
 |---|---|
 | Corners | M2 mounting holes H1–H4 |
-| Top edge | Solar inputs J1 (`S1`) and J2 (`S2`), the 4-pin I2C connector J9, then the INA3221 (U2) with its bypass capacitor C6 |
+| Top edge | Solar inputs J1 (`+S1-`) and J2 (`+S2-`), the 4-pin I2C connector J9, then the INA3221 (U2) with its bypass capacitor C6 |
 | Upper middle | Input diodes D5/D6 and the solar shunt R7, then the buck power stage: C1/C5, Q1, D2, with the I2C pull-ups R8/R9 above Q1. Right of D2: the charge-current shunt R5 and C3, the reverse-battery MOSFET Q2 and the battery shunt R6 |
 | Middle | CN3791 (U1), with C2, the status LEDs D3/D4, R2 and C4 in a column on its left and the MPPT divider R3/R4 below it. L1 is to its right. JP1, the LED solder jumper, and R1 sit at the left edge |
-| Right edge | Battery (J5, `1S BATT`) and VOUT (J6, `LOAD`) |
-| Bottom edge | Solar inputs J4 (`S4`) and J3 (`S3`) with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
+| Right edge | Battery (J5, `+1S BATT-`) and VOUT (J6, `+LOAD-`) |
+| Bottom edge | Solar inputs J4 (`+S4-`) and J3 (`+S3-`) with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
 
 Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge.
 
@@ -140,9 +140,8 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 
 **Silkscreen labels:**
 
-- **Connector functions:** `1S BATT` (J5) and `LOAD` (J6) under the two right-hand connectors. `SW BATT` (J7) and `SW LOAD` (J8) are vertical labels left of the switch headers.
-- **Solar inputs:** `S1` to `S4` beside J1–J4.
-- **Polarity:** a `+` beside pin 1 of each solar, battery and VOUT connector (J1–J6).
+- **Connector labels with polarity:** each solar, battery and VOUT connector has one label centred under or over it, with `+` on the pin-1 side and `-` on the GND side: `+S1-` to `+S4-` on J1–J4, `+1S BATT-` on J5 and `+LOAD-` on J6.
+- **Switch headers:** `SW BATT` (J7) and `SW LOAD` (J8) are vertical labels left of the headers.
 - **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed under its pads on the back.
 - **LED jumper:** `LED` beside JP1.
 - **Back:** the module ID, "SNAP Power Controller v1.1 / Nov. 14, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
@@ -178,7 +177,7 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 - **Current:** PicoBlade contacts are rated 1.0A. The charge current is set to 0.8A to stay under that on the battery connector (J5). Keep the module's load current under 1A too, since it flows through J5 when the panels are dark.
 - **No keying between functions:** J1–J6 are the same 2-pin type, so a battery lead fits a solar socket. Check the silkscreen before plugging in. The switch headers take a different plug, so they can't be mixed up with these.
 - **Battery polarity:** "JST 1.25" LiPo pigtails have no standard polarity. Check that red goes to the pin marked `+` (pin 1 on J5) before connecting. Q2 blocks a reversed cell, but fit the cell with SW_BATT off anyway: with SW_BATT on in sunlight, the charger's output can partly turn Q2 on and push a limited current into a reversed cell, which heats Q2.
-- **Reading the marks:** pin 1 is `+` on J1–J6, and the `+` mark sits beside it. All six face the same way, so pin 1 is the left pin with the board read as printed.
+- **Reading the marks:** each of J1–J6 has a `+name-` label: pin 1 (`+`) is on the `+` side and GND on the `-` side. All six face the same way, so pin 1 is the left pin with the board read as printed.
 
 **Operating note:** if SW_BATT is off while the panels are in sun, the charger sees no battery and VBAT pulses around 4.2V. Keep SW_LOAD off in that state.
 

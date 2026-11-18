@@ -9918,52 +9918,48 @@
 		(layer "Edge.Cuts")
 		(uuid "6f310aba-9a32-45bb-b91a-aa66880a1143")
 	)
-	(gr_text "+   S1"
-		(at 107.5 105 0)
+	(gr_text "+S1-"
+		(at 109.5 105 0)
 		(layer "F.SilkS")
-		(uuid "cc2c81f4-a915-4855-9535-9fc3221f9715")
+		(uuid "13fa08c0-e54c-43ab-b6fb-c498a9e9d4d6")
 		(effects
 			(font
 				(size 0.6 0.6)
 				(thickness 0.15)
 			)
-			(justify left)
 		)
 	)
-	(gr_text "+   S4"
-		(at 108 118.5 0)
+	(gr_text "+S4-"
+		(at 110.125 118.5 0)
 		(layer "F.SilkS")
-		(uuid "c08ebe11-0c71-4999-b139-f5937e2e521d")
+		(uuid "7f6e72bd-73d5-4a53-9da5-b5521c5794e7")
 		(effects
 			(font
 				(size 0.6 0.6)
 				(thickness 0.15)
 			)
-			(justify left)
 		)
 	)
-	(gr_text "+   S2"
-		(at 113 105 0)
+	(gr_text "+S2-"
+		(at 115 105 0)
 		(layer "F.SilkS")
-		(uuid "0ae0fd85-cec3-401c-91a3-b7f855cf46ee")
+		(uuid "a1547d85-653e-4bf2-886b-7bc8fe86b962")
 		(effects
 			(font
 				(size 0.6 0.6)
 				(thickness 0.15)
 			)
-			(justify left)
 		)
 	)
-	(gr_text "+    S3"
-		(at 114 118.5 0)
+	(gr_text "+S3-"
+		(at 115.875 118.5 0)
 		(layer "F.SilkS")
-		(uuid "986f2e67-f5ce-4dbb-9d3f-55eef79cf231")
+		(uuid "556290a5-fadb-49d0-aecc-f31e04a39b88")
 		(effects
 			(font
 				(size 0.6 0.6)
 				(thickness 0.15)
 			)
-			(justify left)
 		)
 	)
 	(gr_text "I2C"
@@ -9977,10 +9973,10 @@
 			)
 		)
 	)
-	(gr_text "+"
-		(at 133.5 112.545 0)
+	(gr_text "+1S BATT-"
+		(at 135 112.545 0)
 		(layer "F.SilkS")
-		(uuid "bd3597a2-763e-4b93-b0da-4e3599e1c8c1")
+		(uuid "1acaa11c-9c4d-44e9-a5a0-558d4e37e2fc")
 		(effects
 			(font
 				(size 0.6 0.6)
@@ -9988,21 +9984,10 @@
 			)
 		)
 	)
-	(gr_text "1S BATT"
-		(at 136 112.545 0)
+	(gr_text "+LOAD-"
+		(at 135 118 0)
 		(layer "F.SilkS")
-		(uuid "48f38849-c70c-40f8-9e8f-6d378ba739f4")
-		(effects
-			(font
-				(size 0.6 0.6)
-				(thickness 0.15)
-			)
-		)
-	)
-	(gr_text "LOAD"
-		(at 136 118 0)
-		(layer "F.SilkS")
-		(uuid "5e802f3b-ccf4-48aa-b5d1-e178d18a995e")
+		(uuid "a4aeab1c-2a57-43d7-b7ee-4b0bc6a242f3")
 		(effects
 			(font
 				(size 0.6 0.6)
@@ -10036,17 +10021,6 @@
 		(at 125 121 90)
 		(layer "F.SilkS")
 		(uuid "d2d750e1-a2a9-4cad-bf10-bc3054f34074")
-		(effects
-			(font
-				(size 0.6 0.6)
-				(thickness 0.15)
-			)
-		)
-	)
-	(gr_text "+"
-		(at 134 118 270)
-		(layer "F.SilkS")
-		(uuid "061afd3a-1f16-465a-b718-64da4b648d69")
 		(effects
 			(font
 				(size 0.6 0.6)
