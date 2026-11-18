@@ -4,7 +4,7 @@ A small solar charger board for a single-cell (1S) Li-ion/LiPo battery, built fo
 
 Designed in KiCad 10.
 
-> **Status:** the schematic is complete. ERC reports one error: INA3221 channel 3's two inputs are tied together and unused, and nothing drives them. The PCB is a new, smaller layout (36.4 × 23.6 mm, 1mm corner chamfers, four M2 mounting holes, two layers), **placed by hand and routed**, with no DRC errors. It hasn't been built. A first v1.0 board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
+> **Status:** the schematic is complete and passes ERC. The PCB is a new, smaller layout (36.4 × 23.6 mm, 1mm corner chamfers, four M2 mounting holes, two layers), **placed by hand and routed**, with no DRC errors. It hasn't been built. A first v1.0 board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
 >
 > **v1.1:** an INA3221 replaces v1.0's INA219 and its SOLAR/BATT switch, and reads the battery and the total solar input at the same time. The released v1.1 files are a 52 × 29mm board that also read panel 1 on its own. The board in this repo drops that channel and its shunt to fit in 36.4 × 23.6mm, and has no release yet. Neither has been built or tested; the test results below are from v1.0 boards with the INA219. See the [change log](CHANGELOG.md).
 
@@ -155,7 +155,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **Track widths:** power paths are 0.6mm, 0.4mm where 0.6mm doesn't fit. Signals are 0.25mm, with 0.2mm on the INA3221's escape tracks.
 - **Kelvin sensing:** the CN3791's current-sense pins and the INA3221's channel inputs connect straight to the pads of their shunt resistors (R5; R6, R7). The CN3791's pair runs side by side on the bottom layer, below L1.
 - **Layer use:** about 310mm of track on the top layer and 79mm on the bottom. The gate drive (U1 to Q1) hops under the power stage on the bottom layer, because Q1's gate and source are on the same side.
-- **Size:** 212 track segments and 39 vias, 11 of them on GND.
+- **Size:** 213 track segments and 39 vias, 11 of them on GND.
 - **Checks:** DRC reports 0 errors and 0 unconnected items, and schematic parity is clean. The only warnings are the front labels' text height.
 
 Review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which returns through the ground plane).
@@ -193,7 +193,7 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 |---|---|---|---|
 | 1 | R6, between BATT+ and the cell | Positive while charging, negative while discharging | Cell voltage, readable even with SW_BATT off. It's measured after Q2, so it reads up to about 50mV off while current flows |
 | 2 | R7, between the PV bus and VIN | Total solar current, always ≥ 0 | VIN (panel voltage minus the diode drop) |
-| 3 | None: the inputs are tied together | Unused, reads about zero | Unused |
+| 3 | None: both inputs are tied to GND | Unused, reads zero | Unused, reads zero |
 
 The released 52 × 29mm v1.1 board also had a shunt, R10, for panel 1 on channel 3. It was dropped to make the board smaller.
 

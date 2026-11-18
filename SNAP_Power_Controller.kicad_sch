@@ -2915,6 +2915,12 @@
 		(uuid "72a4e0cf-cb41-488c-91f5-043a6aaeb08d")
 	)
 	(junction
+		(at 304.8 111.76)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "24a1a043-1bf1-44b8-963c-6ab60b352b13")
+	)
+	(junction
 		(at 210.82 68.58)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3019,6 +3025,16 @@
 	(no_connect
 		(at 335.28 96.52)
 		(uuid "fd116fcf-a867-43b8-a9e8-9692b02c0195")
+	)
+	(wire
+		(pts
+			(xy 304.8 111.76) (xy 304.8 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ddb0aabb-0395-4248-9ba8-323c6a1cd923")
 	)
 	(wire
 		(pts
@@ -4371,6 +4387,83 @@
 			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "#PWR002")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 304.8 114.3 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "f3ca4a81-14b9-4ee4-b494-1e3ccead7b67")
+		(property "Reference" "#PWR019"
+			(at 304.8 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 304.8 118.11 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 304.8 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 304.8 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 304.8 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6cc03690-3009-45f7-a8d0-acfbd46ad3ea")
+		)
+		(instances
+			(project "SNAP_Power_Controller"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "#PWR019")
 					(unit 1)
 				)
 			)
