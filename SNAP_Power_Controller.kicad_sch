@@ -1392,6 +1392,184 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Jumper:SolderJumper_2_Open"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "JP"
+				(at 0 2.032 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SolderJumper_2_Open"
+				(at 0 -2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 -7.62 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Solder Jumper, 2-pole, open"
+				(at 0 -5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "solder jumper SPST"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "SolderJumper*Open*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "SolderJumper_2_Open_0_1"
+				(polyline
+					(pts
+						(xy -0.254 1.016) (xy -0.254 -1.016)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -0.254 -1.016)
+					(mid -1.2656 0)
+					(end -0.254 1.016)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(arc
+					(start 0.254 1.016)
+					(mid 1.2656 0)
+					(end 0.254 -1.016)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 1.016) (xy 0.254 -1.016)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SolderJumper_2_Open_1_1"
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 3.81)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Jumper:SolderJumper_2_Bridged"
 			(pin_numbers
 				(hide yes)
@@ -2914,7 +3092,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "Design notes (CN3791 datasheet, Figure 1):\n- Solar inputs J1-J4: up to four 6V panels (12 cells, ~7.2V open-circuit) in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A).\n  MPPT senses VIN after these diodes, so each panel sits ~0.3-0.45V above the 4.93V setpoint (~5.2-5.4V: under a cool panel's ~6V Vmp,\n  near a hot one's ~5V). Up to 0.5A per input. For 5V panels (10 cells, ~6V open-circuit) fit R3 = 267k (4.42V) instead.\n- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).\n- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 309k/100k) = 4.93V. Charging starts once MPPT > 1.23V (VIN > 5.03V).\n- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 20uH at 6.9V (7.2V Voc less a diode) / 2.8V batt. 22uH: ~0.15A ripple at 4.93V in, 3.7V batt.\n- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels. In the dark the battery back-feeds VIN\n  through L1 and Q1's body diode: ~21uA into the CN3791 (datasheet p.9) plus ~10uA through R3 + R4, which are 309k/100k for that reason. D1 is unused.\n- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 cut.\n- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.\n  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.\n  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + at each of these connectors. Q2 blocks a reversed cell on J5.\n  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.\n  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).\n  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.\n- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;\n  CH2 = R7 solar total (PV -> VIN); CH3 unused (IN+3/IN-3 tied together). Bus voltage is read at each IN- pin: cell, VIN.\n  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.\n  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them."
+	(text "Design notes (CN3791 datasheet, Figure 1):\n- Solar inputs J1-J4: up to four 6V panels (12 cells, ~7.2V open-circuit) in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A).\n  MPPT senses VIN after these diodes, so each panel sits ~0.3-0.45V above the 4.93V setpoint (~5.2-5.4V: under a cool panel's ~6V Vmp,\n  near a hot one's ~5V). Up to 0.5A per input. For 5V panels (10 cells, ~6V open-circuit) solder JP2 closed: R11 1.96M then sits across\n  R3 (309k || 1.96M = 266.9k), for a 4.42V setpoint. JP2 is open as supplied; it sits on R11's VIN side so the MPPT node stays small.\n- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).\n- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 309k/100k) = 4.93V. Charging starts once MPPT > 1.23V (VIN > 5.03V).\n- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 20uH at 6.9V (7.2V Voc less a diode) / 2.8V batt. 22uH: ~0.15A ripple at 4.93V in, 3.7V batt.\n- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels. In the dark the battery back-feeds VIN\n  through L1 and Q1's body diode: ~21uA into the CN3791 (datasheet p.9) plus ~10uA through R3 + R4, which are 309k/100k for that reason. D1 is unused.\n- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 cut.\n- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.\n  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.\n  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + at each of these connectors. Q2 blocks a reversed cell on J5.\n  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.\n  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).\n  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.\n- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;\n  CH2 = R7 solar total (PV -> VIN); CH3 unused (IN+3/IN-3 tied together). Bus voltage is read at each IN- pin: cell, VIN.\n  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.\n  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them."
 		(exclude_from_sim no)
 		(at 33.782 167.894 0)
 		(effects
@@ -3036,6 +3214,56 @@
 	(no_connect
 		(at 335.28 96.52)
 		(uuid "fd116fcf-a867-43b8-a9e8-9692b02c0195")
+	)
+	(wire
+		(pts
+			(xy 134.62 55.88) (xy 134.62 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "689cd574-720c-4def-b959-2b0e24178a91")
+	)
+	(wire
+		(pts
+			(xy 134.62 68.58) (xy 134.62 72.39)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e2fe7465-e563-4e1b-93c2-034ec67b137f")
+	)
+	(wire
+		(pts
+			(xy 134.62 80.01) (xy 134.62 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cc7d447d-2962-4cee-970e-922fef8f042d")
+	)
+	(label "VIN"
+		(at 134.62 55.88 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "863fc024-392c-4251-97d0-6577dc59ad25")
+	)
+	(label "MPPT"
+		(at 134.62 82.55 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "4186b4ee-77f1-4cd6-ba9f-1c3b285f160c")
 	)
 	(wire
 		(pts
@@ -9242,6 +9470,164 @@
 			(project "SNAP_Power_Controller"
 				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
 					(reference "C1")
+					(unit 1)
+				)
+			)
+		)
+	)
+(symbol
+		(lib_id "Jumper:SolderJumper_2_Open")
+		(at 134.62 63.5 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "ebcd0a77-fffd-4653-be92-16e9a3f5dc01")
+		(property "Reference" "JP2"
+			(at 139.06 62.23 270)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "5V_PANELS"
+			(at 140.71 64.77 270)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm"
+			(at 134.62 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 134.62 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Solder Jumper, 2-pole, open"
+			(at 134.62 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ee9e97f5-e4cf-4556-9375-212fb07501b4")
+		)
+		(pin "2"
+			(uuid "f291522c-351e-48f9-8880-53e3691ca3d6")
+		)
+		(instances
+			(project "SNAP_Power_Controller"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "JP2")
+					(unit 1)
+				)
+			)
+		)
+	)
+(symbol
+		(lib_id "Device:R")
+		(at 134.62 76.2 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "8eda8262-a79f-46a1-a80f-153a6f58d36c")
+		(property "Reference" "R11"
+			(at 138.51 74.93 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1.96M 1%"
+			(at 141.81 77.47 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 134.62 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 134.62 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 134.62 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c48aa1bb-8632-4867-83fd-f1f0d733d373")
+		)
+		(pin "2"
+			(uuid "ae8f69f4-66d9-4482-9580-779bf63945da")
+		)
+		(instances
+			(project "SNAP_Power_Controller"
+				(path "/94501acb-e983-4695-a18c-1a4d3ecd2660"
+					(reference "R11")
 					(unit 1)
 				)
 			)

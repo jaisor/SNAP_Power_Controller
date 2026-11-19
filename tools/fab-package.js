@@ -78,6 +78,8 @@ Assembly (optional): top side only
   - H1-H4 are mounting holes, not parts (left out of the BOM and placement files).
   - JP1 (top, left edge, marked LED) is two bare pads joined by a copper trace, no part: leave it as made. It
     enables the status LEDs; the user cuts the trace to turn them off.
+  - JP2 (top left, marked BRIDGE FOR 5V SOLAR) is an open solder jumper: bare pads, no part. Leave it open. The user bridges it
+    with solder to switch the charger from 6V to 5V panels.
 `);
 
 // Gerber + drill zip: the file the board house uploads.

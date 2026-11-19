@@ -191,6 +191,7 @@ function flag(at, rot) {
 
 const FP = {
   r0603: "Resistor_SMD:R_0603_1608Metric",
+  r0402: "Resistor_SMD:R_0402_1005Metric",
   r1206: "Resistor_SMD:R_1206_3216Metric",
   c0603: "Capacitor_SMD:C_0603_1608Metric",
   c1206: "Capacitor_SMD:C_1206_3216Metric",
@@ -205,6 +206,7 @@ const FP = {
   hdr2: "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
   // Project library SolarNode.pretty: two 1.5 x 1.8 mm pads on 2.54 mm joined by a cuttable net-tie trace.
   bridgedPads: "SolarNode:NTC_SolderPads_Bridged_P2.54mm",
+  jumper: "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
 };
 
 // ---------- circuit ----------
@@ -257,6 +259,12 @@ const R4 = placeByPin("R4", "Device:R", "1", R3.pin("2"), { value: "100k 1%", fp
 gnd(R4.pin("2"));
 stub(R3.pin("2"), "right", "MPPT", 12.7);
 junction(R3.pin("2"));
+// 5V option: VIN -> JP2 (open) -> R11 1.96M -> MPPT, across R3. Solder JP2 closed for 5V panels:
+// 309k || 1.96M = 266.9k -> 4.42V. The jumper is on R11's VIN side, so the MPPT node stays small.
+const JP2 = placeByPin("JP2", "Jumper:SolderJumper_2_Open", "2", P(134.62, 58.42), { rot: 90, value: "5V_PANELS", fp: FP.jumper });
+stub(JP2.pin("2"), "up", "VIN");
+const R11 = placeByPin("R11", "Device:R", "1", wire(JP2.pin("1"), P(134.62, 72.39)), { value: "1.96M 1%", fp: FP.r0402 });
+stub(R11.pin("2"), "down", "MPPT");
 
 // Power path: Q1 -> SW -> L1 -> CSP -> R5 (RCS) -> VBAT
 const Q1 = placeByPin("Q1", "Transistor_FET:AO3401A", "2", P(116.84, RAIL), { rot: 270, value: "AO3401A" });
@@ -417,7 +425,8 @@ TEXTS.push({
     "Design notes (CN3791 datasheet, Figure 1):",
     "- Solar inputs J1-J4: up to four 6V panels (12 cells, ~7.2V open-circuit) in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A).",
     "  MPPT senses VIN after these diodes, so each panel sits ~0.3-0.45V above the 4.93V setpoint (~5.2-5.4V: under a cool panel's ~6V Vmp,",
-    "  near a hot one's ~5V). Up to 0.5A per input. For 5V panels (10 cells, ~6V open-circuit) fit R3 = 267k (4.42V) instead.",
+    "  near a hot one's ~5V). Up to 0.5A per input. For 5V panels (10 cells, ~6V open-circuit) solder JP2 closed: R11 1.96M then sits across",
+    "  R3 (309k || 1.96M = 266.9k), for a 4.42V setpoint. JP2 is open as supplied; it sits on R11's VIN side so the MPPT node stays small.",
     "- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).",
     "- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 309k/100k) = 4.93V. Charging starts once MPPT > 1.23V (VIN > 5.03V).",
     "- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 20uH at 6.9V (7.2V Voc less a diode) / 2.8V batt. 22uH: ~0.15A ripple at 4.93V in, 3.7V batt.",
