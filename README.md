@@ -122,7 +122,7 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 | Upper middle | Input diodes D5/D6 and the solar shunt R7, then the buck power stage: C1/C5, Q1, D2, with the I2C pull-ups R8/R9 above Q1. Right of D2: the charge-current shunt R5 and C3, the reverse-battery MOSFET Q2 and the battery shunt R6 |
 | Middle | CN3791 (U1), with C2, the status LEDs D3/D4, R2 and C4 in a column on its left and the MPPT divider R3/R4 below it. L1 is to its right. JP1, the LED solder jumper, and R1 sit at the left edge |
 | Right edge | Battery (J5, `+1S BATT-`) and VOUT (J6, `+LOAD-`) |
-| Bottom edge | Solar inputs J4 (`+S4-`) and J3 (`+S3-`) with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
+| Bottom edge | Solar inputs J4 (`+S4-`) and J3 (`+S3-`), directly under J1 and J2, with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
 
 Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge.
 
@@ -153,7 +153,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **Ground:** both layers have a GND pour, and the bottom one is in one piece, cut only by short hops. Most surface-mount GND pads have their own via to it, including those of C1, C5 and D2 in the switching loop.
 - **Track widths:** power paths are 0.6mm, 0.4mm where 0.6mm doesn't fit. Signals are 0.25mm, with 0.2mm on the INA3221's escape tracks.
 - **Kelvin sensing:** the CN3791's current-sense pins and the INA3221's channel inputs connect straight to the pads of their shunt resistors (R5; R6, R7). The CN3791's pair runs side by side on the bottom layer, below L1.
-- **Layer use:** about 310mm of track on the top layer and 79mm on the bottom. The gate drive (U1 to Q1) hops under the power stage on the bottom layer, because Q1's gate and source are on the same side.
+- **Layer use:** about 312mm of track on the top layer and 79mm on the bottom. The gate drive (U1 to Q1) hops under the power stage on the bottom layer, because Q1's gate and source are on the same side.
 - **Size:** 213 track segments and 39 vias, 11 of them on GND.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 

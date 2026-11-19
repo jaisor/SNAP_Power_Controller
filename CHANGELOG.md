@@ -9,6 +9,7 @@ Changes on `main` since the v1.1 release files. The whole board differs, so don'
 - A new, smaller board, placed by hand: 36.4 × 23.6 mm (was 52 × 29 mm), with 1 mm corner chamfers. It has four M2 mounting holes, 2.2 mm in diameter and 2.5 mm from each edge, 31.4 × 18.6 mm apart (were M3, 44 × 21 mm apart). Every part and connector moves, so mounts made for the 52 × 29 mm board don't fit. The board was re-routed: both layers have a GND pour, and only ground runs on the bottom layer under the buck converter's switching loop.
 - R10 and INA3221 channel 3, which read panel 1 on its own, are removed. Channel 3's inputs are tied to GND. The monitor reads the battery (channel 1) and the total solar input (channel 2).
 - The front silkscreen has function labels only. J1–J6 have one label each with both polarity marks, `+` on the pin-1 side and `-` on the GND side: `+S1-` to `+S4-`, `+1S BATT-` and `+LOAD-`. The other labels are `SW BATT`, `SW LOAD`, `I2C` and `LED`. Reference designators aren't printed.
+- J4 and J3 on the bottom edge sit directly under J1 and J2, with their `+S4-` and `+S3-` labels (0.625 mm and 0.875 mm further left than in the first version of this board).
 
 - The input diodes D5–D8 are 1N5819W in SOD-123 (was 1N5819WS in SOD-323), so each solar input is good for 0.5 A instead of about 0.3 A. To fit them, J1, J2 and J4 move 0.45 mm left and J3 0.3 mm; J2 is also 0.2 mm lower. The mounting holes and the other connectors don't move.
 
