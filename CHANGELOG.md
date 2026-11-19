@@ -18,7 +18,7 @@ Changes on `main` since the v1.1 release files. The whole board differs, so don'
 - R3 and R4, the MPPT divider, are 267k and 100k (were 26.7k and 10k). The set point is still 4.42 V. At night the battery back-feeds the charger's input through the inductor and Q1, and the old divider drew about 95 µA from it; the new one draws about 10 µA. Total night drain on this path is about 30 µA, not the 21 µA the README used to give (that figure was the chip alone). Only two resistor values change; the board's copper is the same.
 - The README has a new "Choosing panels" section: 6 V panels are preferred, and panels that only reach about 5.5 V open-circuit lose most of their output in heat.
 - The README now says the power monitor can't resolve a node's sleep current.
-- The back label reads "SNAP Power Controller v1.1 / Nov. 14, 2026", the project's new name. J9's pin names are printed under its pads on the back.
+- The back label reads "SNAP Power Controller v1.1 / Nov. 18, 2026", the project's new name. J9's pin names are printed under its pads on the back.
 - Printed under it: check polarity; battery 1S Li-ion 4.2 V only; solar 5–6 V panels, 20 V max, 0.5 A max per input; load 1 A max; and a notice that the board is provided as is, with no warranty, and liability limited to the purchase price.
 - The README lists the same limits under Safety, and gives the board's dimensions.
 
