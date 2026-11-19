@@ -1,0 +1,124 @@
+(footprint "NTC_SolderPads_Bridged_P2.54mm"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "Two SMD solder pads, 1.5 x 1.8 mm on a 2.54 mm pitch, joined by a 0.25 mm trace (net tie). Cut the trace, then solder the leads or wires of an off-board NTC thermistor to the pads")
+	(tags "NTC thermistor solder pad wire jumper bridged")
+	(property "Reference" "REF**"
+		(at 0 -3.2 0)
+		(layer "F.SilkS")
+		(uuid "00226a21-867b-4b20-ae9f-38e01d46f63a")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Value" "NTC_SolderPads_Bridged"
+		(at 0 3.2 0)
+		(layer "F.Fab")
+		(uuid "aebed552-0b10-4826-b24f-b896bf8176fd")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "a137eb85-8e23-41ab-9cd2-c929ec3e0f98")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "095e8429-e5de-455e-ae8e-1a9fad8e8627")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd exclude_from_pos_files exclude_from_bom)
+	(net_tie_pad_groups "1, 2")
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start 0 -0.6)
+		(end 0 0.6)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.Cu")
+		(uuid "d327ec5f-834c-4d47-a8eb-1c46708e9576")
+	)
+	(fp_rect
+		(start -0.4 -0.5)
+		(end 0.4 0.5)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill yes)
+		(layer "F.Mask")
+		(uuid "6fe7db14-f74e-4864-af05-1603bc7358b1")
+	)
+	(fp_rect
+		(start -1 -2.42)
+		(end 1 2.42)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "3d87d579-40b4-407c-8dfa-85a178899e00")
+	)
+	(fp_rect
+		(start -0.9 -2.3)
+		(end 0.9 2.3)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "b4cad91e-9b8c-4b26-a46f-5a59852f3803")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 90)
+		(layer "F.Fab")
+		(uuid "484fe9b9-50b6-4782-81ab-74d4e2670def")
+		(effects
+			(font
+				(size 0.5 0.5)
+				(thickness 0.08)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at 0 -1.27)
+		(size 1.5 1.8)
+		(layers "F.Cu" "F.Mask")
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "4dc09e38-2d7e-401b-8d67-ee03942d51bf")
+	)
+	(pad "2" smd roundrect
+		(at 0 1.27)
+		(size 1.5 1.8)
+		(layers "F.Cu" "F.Mask")
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "82330f0c-afc8-4cdc-9924-cd78fa2a6226")
+	)
+	(embedded_fonts no)
+)

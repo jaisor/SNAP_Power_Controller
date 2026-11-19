@@ -126,10 +126,10 @@ def node(x, y):
 
 
 # Left side: solar panels -> J1..J4 (J1/J2 on the top edge, J3/J4 on the bottom edge)
-panel(50, 330, 190, 104, "5V 200mA · 110×60mm")
-panel(50, 560, 190, 104, "5V 200mA · 110×60mm")
-callout("J1", (520, 300), YELLOW, "Solar_5V  J1, J2", "top edge · own 1N5819W each", "left")
-solar_box = callout("J4", (520, 820), YELLOW, "SOLAR IN  J1–J4", "up to 4 × 5V panels", "left")
+panel(50, 330, 190, 104, "6V panel · 12 cells")
+panel(50, 560, 190, 104, "6V panel · 12 cells")
+callout("J1", (520, 300), YELLOW, "Solar_6V  J1, J2", "top edge · own 1N5819W each", "left")
+solar_box = callout("J4", (520, 820), YELLOW, "SOLAR IN  J1–J4", "up to 4 × 6V panels", "left")
 for py in (382, 612):
     wire([(240, py), (270, py), (270, 853), (solar_box[0], 853)], RED, 4)
 

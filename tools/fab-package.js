@@ -76,8 +76,8 @@ Assembly (optional): top side only
   - Through-hole parts: J1-J6 and J9 (Molex 53047 PicoBlade headers), J7 and J8 (2.54 mm pin headers).
     Hand-solder them, or order through-hole assembly.
   - H1-H4 are mounting holes, not parts (left out of the BOM and placement files).
-  - JP1 (top, left edge, marked LED) is an open solder jumper for the status LEDs: bare pads, no part. Leave it
-    open; bridge it with solder by hand to enable the LEDs.
+  - JP1 (top, left edge, marked LED) is two bare pads joined by a copper trace, no part: leave it as made. It
+    enables the status LEDs; the user cuts the trace to turn them off.
 `);
 
 // Gerber + drill zip: the file the board house uploads.

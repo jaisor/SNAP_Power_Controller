@@ -8,7 +8,7 @@
 		(title "SNAP Power Controller")
 		(date "2026-10-28")
 		(rev "1.1")
-		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")
+		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 6V solar panels (diode OR) -> 1S LiPo (4.2V)")
 		(comment 2 "INA3221 I2C power monitor (0x42): battery and total solar")
 	)
 	(lib_symbols
@@ -1392,7 +1392,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Jumper:SolderJumper_2_Open"
+		(symbol "Jumper:SolderJumper_2_Bridged"
 			(pin_numbers
 				(hide yes)
 			)
@@ -1415,7 +1415,7 @@
 					)
 				)
 			)
-			(property "Value" "SolderJumper_2_Open"
+			(property "Value" "SolderJumper_2_Bridged"
 				(at 0 -2.54 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1437,7 +1437,7 @@
 				)
 			)
 			(property "Datasheet" ""
-				(at 0 -7.62 0)
+				(at 0 -6.35 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -1447,7 +1447,7 @@
 					)
 				)
 			)
-			(property "Description" "Solder Jumper, 2-pole, open"
+			(property "Description" "Solder Jumper, 2-pole, closed/bridged"
 				(at 0 -5.08 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1469,7 +1469,7 @@
 					)
 				)
 			)
-			(property "ki_fp_filters" "SolderJumper*Open*"
+			(property "ki_fp_filters" "SolderJumper*Bridged*"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1480,7 +1480,18 @@
 					)
 				)
 			)
-			(symbol "SolderJumper_2_Open_0_1"
+			(symbol "SolderJumper_2_Bridged_0_1"
+				(rectangle
+					(start -0.508 0.508)
+					(end 0.508 -0.508)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
 				(polyline
 					(pts
 						(xy -0.254 1.016) (xy -0.254 -1.016)
@@ -1530,7 +1541,7 @@
 					)
 				)
 			)
-			(symbol "SolderJumper_2_Open_1_1"
+			(symbol "SolderJumper_2_Bridged_1_1"
 				(pin passive line
 					(at -5.08 0 0)
 					(length 3.81)
@@ -2903,7 +2914,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "Design notes (CN3791 datasheet, Figure 1):\n- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A). MPPT senses VIN after these diodes,\n  so each panel sits ~0.3-0.45V above the 4.42V setpoint (~4.7-4.9V: under a cool panel's ~5V Vmp, nearer a hot one's). Up to 0.5A per input.\n- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).\n- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 267k/100k) = 4.42V. Charging starts once MPPT > 1.23V (VIN > 4.51V).\n- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 16uH at 6V Voc / 2.8V batt. 22uH gives ~0.2A ripple at 6V in, 3.7V batt.\n- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels. In the dark the battery back-feeds VIN\n  through L1 and Q1's body diode: ~21uA into the CN3791 (datasheet p.9) plus ~10uA through R3 + R4, which are 267k/100k for that reason. D1 is unused.\n- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.\n- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.\n  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.\n  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + at each of these connectors. Q2 blocks a reversed cell on J5.\n  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.\n  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).\n  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.\n- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;\n  CH2 = R7 solar total (PV -> VIN); CH3 unused (IN+3/IN-3 tied together). Bus voltage is read at each IN- pin: cell, VIN.\n  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.\n  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them."
+	(text "Design notes (CN3791 datasheet, Figure 1):\n- Solar inputs J1-J4: up to four 6V panels (12 cells, ~7.2V open-circuit) in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A).\n  MPPT senses VIN after these diodes, so each panel sits ~0.3-0.45V above the 4.93V setpoint (~5.2-5.4V: under a cool panel's ~6V Vmp,\n  near a hot one's ~5V). Up to 0.5A per input. For 5V panels (10 cells, ~6V open-circuit) fit R3 = 267k (4.42V) instead.\n- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).\n- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 309k/100k) = 4.93V. Charging starts once MPPT > 1.23V (VIN > 5.03V).\n- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 20uH at 6.9V (7.2V Voc less a diode) / 2.8V batt. 22uH: ~0.15A ripple at 4.93V in, 3.7V batt.\n- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels. In the dark the battery back-feeds VIN\n  through L1 and Q1's body diode: ~21uA into the CN3791 (datasheet p.9) plus ~10uA through R3 + R4, which are 309k/100k for that reason. D1 is unused.\n- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 cut.\n- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.\n  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.\n  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + at each of these connectors. Q2 blocks a reversed cell on J5.\n  J7 SW_BATT isolates the cell from charger and load. J8 SW_LOAD switches only VOUT (J6), so the cell keeps charging with it off.\n  Rate both switches >= 1A or the module's peak current, whichever is higher (battery current is charge OR load, not the sum).\n  With SW_BATT off in sun the CN3791 sees no battery and VBAT pulses near 4.2V: keep SW_LOAD off then.\n- INA3221 (U2, I2C 0x42: A0 = SDA, the Meshtastic and MeshCore default). CH1 = R6 battery (BATT+ -> cell), + charging / - discharging;\n  CH2 = R7 solar total (PV -> VIN); CH3 unused (IN+3/IN-3 tied together). Bus voltage is read at each IN- pin: cell, VIN.\n  All shunts 0.1R, as both firmwares assume: +/-163.8mV full scale = +/-1.64A, 0.4mA steps. Alert outputs unused; VPU tied to VS.\n  J9 to MCU: 1 VCC_MCU (3.3-5V, powers U2 and pull-ups), 2 GND, 3 SCL, 4 SDA. R8/R9 10k pull-ups: omit if the MCU board has them."
 		(exclude_from_sim no)
 		(at 33.782 167.894 0)
 		(effects
@@ -4237,7 +4248,7 @@
 		(uuid "e64ab6cf-4625-46f4-8f4b-03aa7386aa81")
 	)
 	(symbol
-		(lib_id "Jumper:SolderJumper_2_Open")
+		(lib_id "Jumper:SolderJumper_2_Bridged")
 		(at 160.02 87.63 90)
 		(unit 1)
 		(body_style 1)
@@ -4267,7 +4278,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm"
+		(property "Footprint" "SolarNode:NTC_SolderPads_Bridged_P2.54mm"
 			(at 160.02 87.63 0)
 			(hide yes)
 			(show_name no)
@@ -4289,7 +4300,7 @@
 				)
 			)
 		)
-		(property "Description" "Solder Jumper, 2-pole, open"
+		(property "Description" "Solder Jumper, 2-pole, closed/bridged"
 			(at 160.02 87.63 0)
 			(hide yes)
 			(show_name no)
@@ -5720,7 +5731,7 @@
 				)
 			)
 		)
-		(property "Value" "Solar_5V"
+		(property "Value" "Solar_6V"
 			(at 18.46 102.87 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6495,7 +6506,7 @@
 				)
 			)
 		)
-		(property "Value" "Solar_5V"
+		(property "Value" "Solar_6V"
 			(at 18.46 64.77 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8319,7 +8330,7 @@
 				)
 			)
 		)
-		(property "Value" "Solar_5V"
+		(property "Value" "Solar_6V"
 			(at 18.46 77.47 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8790,7 +8801,7 @@
 				)
 			)
 		)
-		(property "Value" "Solar_5V"
+		(property "Value" "Solar_6V"
 			(at 18.46 90.17 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9099,7 +9110,7 @@
 				)
 			)
 		)
-		(property "Value" "267k 1%"
+		(property "Value" "309k 1%"
 			(at 106.25 55.88 0)
 			(show_name no)
 			(do_not_autoplace no)

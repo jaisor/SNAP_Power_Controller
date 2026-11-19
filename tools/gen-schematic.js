@@ -203,7 +203,8 @@ const FP = {
   pico4: "Connector_Molex:Molex_PicoBlade_53047-0410_1x04_P1.25mm_Vertical",
   // 2.54 mm pin header for the switch leads.
   hdr2: "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
-  jumper: "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
+  // Project library SolarNode.pretty: two 1.5 x 1.8 mm pads on 2.54 mm joined by a cuttable net-tie trace.
+  bridgedPads: "SolarNode:NTC_SolderPads_Bridged_P2.54mm",
 };
 
 // ---------- circuit ----------
@@ -215,7 +216,7 @@ const BUS_X = 50.8;
 const taps = [];
 for (let i = 0; i < 4; i++) {
   const y = 60.96 + i * 12.7;
-  const J = place(`J${i + 1}`, "Connector_Generic:Conn_01x02", 25.4, y, { mirror: "y", value: "Solar_5V", fp: FP.pico2 });
+  const J = place(`J${i + 1}`, "Connector_Generic:Conn_01x02", 25.4, y, { mirror: "y", value: "Solar_6V", fp: FP.pico2 });
   if (i === 0) {
     // Panel 1 alone, for INA3221 channel 3: J1 -> R10 -> D5. D5 moves right to make room.
     const R10 = placeByPin("R10", "Device:R", "1", P(33.02, y), { rot: 90, value: "0.1R 1%", fp: FP.r0603, textAt: { ref: [0, -3.81], val: [-0.51, 3.81] } });
@@ -251,7 +252,7 @@ const C1 = placeByPin("C1", "Device:C", "1", P(68.58, RAIL), { value: "10uF/25V"
 gnd(C1.pin("2"));
 const C5 = placeByPin("C5", "Device:C", "1", P(83.82, RAIL), { value: "100nF/25V", fp: FP.c0603 });
 gnd(C5.pin("2"));
-const R3 = placeByPin("R3", "Device:R", "1", P(99.06, RAIL), { value: "267k 1%", fp: FP.r0603 });
+const R3 = placeByPin("R3", "Device:R", "1", P(99.06, RAIL), { value: "309k 1%", fp: FP.r0603 });
 const R4 = placeByPin("R4", "Device:R", "1", R3.pin("2"), { value: "100k 1%", fp: FP.r0603 });
 gnd(R4.pin("2"));
 stub(R3.pin("2"), "right", "MPPT", 12.7);
@@ -396,10 +397,10 @@ const C4 = placeByPin("C4", "Device:C", "1", R2.pin("2"), { value: "220nF", fp: 
 gnd(C4.pin("2"));
 
 // Status LEDs: red = charging (~CHRG), green = done (~DONE)
-// VIN -> R1 -> JP1 -> both LED anodes. JP1 is an open solder jumper on the top of the board, right
-// of R1: bridge it with solder to light the LEDs; left open, they draw nothing.
+// VIN -> R1 -> JP1 -> both LED anodes. JP1 is a pair of pads joined by a cuttable trace: the LEDs
+// work as supplied; cut the trace to turn them off (they then draw nothing).
 const LEDS = P(160.02, 92.71);
-const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Open", "1", LEDS, { rot: 90, value: "LED_EN", fp: FP.jumper });
+const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Bridged", "1", LEDS, { rot: 90, value: "LED_EN", fp: FP.bridgedPads });
 const R1 = placeByPin("R1", "Device:R", "2", P(LEDS.x, JP1.pin("2").y - 2.54), { value: "1k", fp: FP.r0603 });
 wire(JP1.pin("2"), R1.pin("2"));
 stub(R1.pin("1"), "up", "VIN");
@@ -414,14 +415,15 @@ TEXTS.push({
   at: P(33.782, 167.894),
   text: [
     "Design notes (CN3791 datasheet, Figure 1):",
-    "- Solar inputs J1-J4: up to four 5V panels in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A). MPPT senses VIN after these diodes,",
-    "  so each panel sits ~0.3-0.45V above the 4.42V setpoint (~4.7-4.9V: under a cool panel's ~5V Vmp, nearer a hot one's). Up to 0.5A per input.",
+    "- Solar inputs J1-J4: up to four 6V panels (12 cells, ~7.2V open-circuit) in parallel, each isolated by a 1N5819W (SOD-123, 40V/1A).",
+    "  MPPT senses VIN after these diodes, so each panel sits ~0.3-0.45V above the 4.93V setpoint (~5.2-5.4V: under a cool panel's ~6V Vmp,",
+    "  near a hot one's ~5V). Up to 0.5A per input. For 5V panels (10 cells, ~6V open-circuit) fit R3 = 267k (4.42V) instead.",
     "- Charge current: ICH = 120mV / R5 = 120mV / 0.15R = 0.8A, leaving margin on the 1.0A connector contacts (R5 = 0.24R for 0.5A).",
-    "- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 267k/100k) = 4.42V. Charging starts once MPPT > 1.23V (VIN > 4.51V).",
-    "- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 16uH at 6V Voc / 2.8V batt. 22uH gives ~0.2A ripple at 6V in, 3.7V batt.",
+    "- MPPT setpoint: VMPPT = 1.205V x (1 + R3/R4) = 1.205 x (1 + 309k/100k) = 4.93V. Charging starts once MPPT > 1.23V (VIN > 5.03V).",
+    "- L1: datasheet requires L > 5 x (VCC - VBAT) uH = 20uH at 6.9V (7.2V Voc less a diode) / 2.8V batt. 22uH: ~0.15A ripple at 4.93V in, 3.7V batt.",
     "- Datasheet blocking diode D1 omitted to save ~0.4V headroom: D5-D8 keep the battery out of the panels. In the dark the battery back-feeds VIN",
-    "  through L1 and Q1's body diode: ~21uA into the CN3791 (datasheet p.9) plus ~10uA through R3 + R4, which are 267k/100k for that reason. D1 is unused.",
-    "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.",
+    "  through L1 and Q1's body diode: ~21uA into the CN3791 (datasheet p.9) plus ~10uA through R3 + R4, which are 309k/100k for that reason. D1 is unused.",
+    "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 cut.",
     "- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
     "  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.",
     "  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.",
@@ -535,7 +537,7 @@ const out = [
 		(title "SNAP Power Controller")
 		(date "2026-10-28")
 		(rev "1.1")
-		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 5V solar panels (diode OR) -> 1S LiPo (4.2V)")
+		(comment 1 "CN3791 MPPT Li-ion charger: up to 4x 6V solar panels (diode OR) -> 1S LiPo (4.2V)")
 		(comment 2 "INA3221 I2C power monitor (0x42): battery, total solar and panel 1")
 	)
 	(lib_symbols
