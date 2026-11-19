@@ -17,6 +17,7 @@ The CN3163 variant of the board on `main`. Not built or tested. ERC reports 0 vi
 ### Board
 
 - The same 36.4 × 23.6 mm board as `main`, with four M2 mounting holes. The connectors, the INA3221, the input diodes, the shunts, Q2, the LEDs and JP1 are in `main`'s exact positions; the charger parts take the space of the old buck stage. Re-routed, with six thermal vias in the CN3163's exposed pad.
+- As on `main`: J4 and J3 on the bottom edge sit directly under J1 and J2 (0.625 mm and 0.875 mm further left than before), with their `+S4-` and `+S3-` labels.
 - As on `main`: R10 and INA3221 channel 3 are removed, and channel 3's inputs are tied to GND. The front silkscreen has function labels only (`+S1-` to `+S4-`, `+1S BATT-`, `+LOAD-`, `SW BATT`, `SW LOAD`, `I2C`, `LED`), at 0.6 mm minimum.
 - As on `main`: the input diodes D5–D8 are 1N5819W in SOD-123 (was 1N5819WS in SOD-323), so each solar input is good for 0.5 A instead of about 0.3 A.
 - The back label reads "SNAP Power Controller CN3163 / Nov. 15, 2026". Printed under it: check polarity; battery 1S Li-ion 4.2 V only; solar 5–6 V panels, 18 V max (20 V on the CN3791 board, now set by U3), 0.5 A max per input; load 1 A max; and a notice that the board is provided as is, with no warranty, and liability limited to the purchase price. The README lists the same limits under Safety.

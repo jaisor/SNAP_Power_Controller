@@ -132,7 +132,7 @@ The schematic follows the CN3163 datasheet's typical application circuit (Figure
 | Upper middle | Input diodes D5/D6, the solar shunt R7 and the input capacitor C1, with the I2C pull-ups R8/R9 above the charger and its current-setting resistor R2 beside them. On the right: the reverse-battery MOSFET Q2 and the battery shunt R6 |
 | Middle | CN3163 (U1), with the 5V limiter U3 below and to its left. The limiter's output capacitor C2 is under U1, and the battery capacitor C3 to its right. The status LEDs D3/D4, the LED solder jumper JP1 and R1 sit at the left edge |
 | Right edge | Battery (J5, `+1S BATT-`) and VOUT (J6, `+LOAD-`) |
-| Bottom edge | Solar inputs J4 (`+S4-`) and J3 (`+S3-`) with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
+| Bottom edge | Solar inputs J4 (`+S4-`) and J3 (`+S3-`), directly under J1 and J2, with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
 
 The connectors, the INA3221, the input diodes, the shunts, Q2, the LEDs and JP1 are in exactly the same places as on `main`'s board; only the charger parts in the middle differ. Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge.
 
@@ -165,7 +165,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **Power path:** R7 → C1 → U3 → U1 → C3 → J7 runs on short tracks on the top layer.
 - **Track widths:** power paths are 0.6mm, 0.4mm where 0.6mm doesn't fit. Signals are 0.25mm, with 0.2mm on the INA3221's escape tracks.
 - **Kelvin sensing:** the INA3221's channel inputs connect straight to the pads of their shunt resistors (R6, R7).
-- **Layer use:** about 267mm of track on the top layer and 59mm on the bottom.
+- **Layer use:** about 268mm of track on the top layer and 59mm on the bottom.
 - **Size:** 175 track segments and 40 vias, 17 of them on GND.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
