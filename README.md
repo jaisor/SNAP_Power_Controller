@@ -64,7 +64,8 @@ In the SNAP v1.2 example build, shown below, the board replaces several separate
 | J7 / J8 left unswitched | Both switch connectors are in series with the power path, so an unused one needs a 2.54mm jumper cap, or a wire bridging its pads on the back of the board. Otherwise the battery or the node stays disconnected |
 | J6 (VOUT) | The XIAO nRF52840's BAT+ / BAT− pads, which is where SNAP powers it from the 18650 today |
 | J9 (I2C) | XIAO 3V3 → VCC, D6 → SDA, D7 → SCL, GND → GND, on a 4-wire cable coloured red VCC, black GND, yellow SCL, white SDA. These pins need a Meshtastic build with I2C on D6/D7 (see the table below) |
-| JP1 (LED) | Nothing. Bridge it with solder if you want the status LEDs. It's open as supplied, so the LEDs stay dark |
+| JP1 (LED) | Nothing. JP1 is bridged by a trace as supplied, so the status LEDs work. To turn them off for good, cut the trace between its pads |
+| JP2 (NTC) | Nothing, or a 10k B3950 NTC taped to the cell. JP2 is bridged as supplied, which turns temperature sensing off. To use the NTC, cut the trace between JP2's pads and solder the NTC's wires to them |
 
 The INA3221 reads the battery's charge and discharge current and what the panels deliver in total, both at the same time. There's no switch to set.
 
@@ -90,7 +91,8 @@ In Meshtastic, enable power metrics in the telemetry settings so the readings ar
 - **Output:** VOUT connector (Micro JST 1.25) that powers the module from the battery.
 - **Reverse-battery protection:** Q2, a P-channel MOSFET between the battery connector and the rest of the board. A cell plugged in backwards is blocked instead of shorting through the charger. With the cell the right way round, Q2 is fully on in both directions, adding about 60mV of drop at 0.8A.
 - **Power monitoring:** [INA3221](https://www.ti.com/lit/ds/symlink/ina3221.pdf) at I2C address 0x42, on two channels: the battery (bidirectional current plus voltage) and the total solar input. The third channel is unused.
-- **Status LEDs:** red while charging, green when charging is done. They're powered through JP1, an open solder jumper marked `LED` on the top of the board: bridge its two pads with solder to turn them on. Left open, the LEDs are disconnected and draw nothing.
+- **Battery temperature (optional):** with a 10k B3950 NTC against the cell, wired to JP2's pads, the CN3163 pauses charging below about 1°C and above about 46°C. JP2 is bridged by a thin trace as supplied, which turns sensing off; cut the trace to use the NTC.
+- **Status LEDs:** red while charging, green when charging is done. They're powered through JP1, marked `LED` on the top of the board: two pads joined by a trace, the same as JP2. As supplied the LEDs work, and a lit LED draws about 3mA from the panels (never from the cell). Cut the trace to disconnect them; a solder blob across the pads turns them back on.
 
 ## Choosing panels
 
@@ -114,7 +116,8 @@ The schematic follows the CN3163 datasheet's typical application circuit (Figure
 | Input limiter U3 | LDL1117S50R, 5.0V, SOT-223 | Every CN3163 pin is rated 6.5V at most, and an unloaded panel sits at its open-circuit voltage. A shunt clamp would have to sink about half of each panel's short-circuit current to hold it down, and an overvoltage cut-off would switch off in bright sun, so a series regulator was used. U3 is rated for 18V in (20V absolute maximum). Its output capacitor C2 is 10µF. |
 | Status LED supply | From U3's output | The LEDs' resistor R1 and JP1 take their supply after U3, because CHRG and DONE are 6.5V pins too. |
 | Battery capacitor C3 | 10µF | The datasheet asks for 1µF to 22µF on BAT. |
-| Temperature input | TEMP to GND | Disables the CN3163's battery temperature sensing, as the datasheet allows. |
+| Temperature divider | R3 = 4.7k (VCHG to TEMP), R4 = 47k (TEMP to GND), NTC across R4 | The datasheet's Figure 7. Charging runs while TEMP is between 45% and 80% of the CN3163's supply, so the window doesn't depend on the panel voltage. Sized for a 10k B3950 NTC and 0–45°C, the exact values are 4.86k and 46.1k; 4.7k and 47k give about 1–46°C. |
+| Temperature jumper JP2 | Bridged by a trace; its pads are the NTC's pads | Without an NTC, TEMP would sit at 91% and charging would never start. Bridged, JP2 holds TEMP at GND, which turns sensing off, as the datasheet allows. R3 then draws about 1mA from the 5V supply while the panels are lit. Cut the trace before fitting the NTC. |
 | Blocking diode | none | The input diodes stop the battery feeding back into the panels. In the dark the CN3163 sleeps and draws under 3µA from the battery (datasheet figure, not measured on a board). |
 | Input diodes | 1N5819W, SOD-123 (40V/1A) | Rated 0.5A per input here: about 0.2W in the diode, which the SOD-123 package handles with margin in a warm enclosure. |
 
@@ -130,11 +133,12 @@ The schematic follows the CN3163 datasheet's typical application circuit (Figure
 | Corners | M2 mounting holes H1–H4 |
 | Top edge | Solar inputs J1 (`+S1-`) and J2 (`+S2-`), the 4-pin I2C connector J9, then the INA3221 (U2) with its bypass capacitor C6 |
 | Upper middle | Input diodes D5/D6, the solar shunt R7 and the input capacitor C1, with the I2C pull-ups R8/R9 above the charger and its current-setting resistor R2 beside them. On the right: the reverse-battery MOSFET Q2 and the battery shunt R6 |
-| Middle | CN3163 (U1), with the 5V limiter U3 below and to its left. The limiter's output capacitor C2 is under U1, and the battery capacitor C3 to its right. The status LEDs D3/D4, the LED solder jumper JP1 and R1 sit at the left edge |
+| Middle | CN3163 (U1), with the 5V limiter U3 below and to its left. The limiter's output capacitor C2 is under U1, and the battery capacitor C3 to its right. The status LEDs D3/D4 and R1 sit beside the LED solder jumper JP1 at the left edge |
+| Left edge, top | The NTC pads JP2 (`NTC`) left of D5, with the temperature divider R3/R4 below them |
 | Right edge | Battery (J5, `+1S BATT-`) and VOUT (J6, `+LOAD-`) |
 | Bottom edge | Solar inputs J4 (`+S4-`) and J3 (`+S3-`), directly under J1 and J2, with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
 
-The connectors, the INA3221, the input diodes, the shunts, Q2, the LEDs and JP1 are in exactly the same places as on `main`'s board; only the charger parts in the middle differ. Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge.
+The connectors, the INA3221, the input diodes, the shunts, Q2 and the LEDs are in exactly the same places as on `main`'s board (JP1 sits 3.2mm lower and R1 lies flat under D3, to make room for R3/R4); only the charger parts in the middle differ. Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge.
 
 The CN3163's 3D model doesn't show in the renders (the footprint's model file seems to be missing from KiCad's library); only its pads appear.
 
@@ -156,6 +160,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **Switch headers:** `SW BATT` (J7) and `SW LOAD` (J8) are vertical labels left of the headers.
 - **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed under its pads on the back.
 - **LED jumper:** `LED` beside JP1.
+- **NTC pads:** `NTC` above JP2.
 - **Back:** the module ID, "SNAP Power Controller CN3163 / Nov. 15, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
 - **Text size:** the front labels are 0.6mm text, the board's minimum. Board houses often recommend 0.8–1mm or more, so check that yours prints 0.6mm cleanly. The back label is 0.8 to 1.0mm.
 
@@ -165,8 +170,9 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **Power path:** R7 → C1 → U3 → U1 → C3 → J7 runs on short tracks on the top layer.
 - **Track widths:** power paths are 0.6mm, 0.4mm where 0.6mm doesn't fit. Signals are 0.25mm, with 0.2mm on the INA3221's escape tracks.
 - **Kelvin sensing:** the INA3221's channel inputs connect straight to the pads of their shunt resistors (R6, R7).
-- **Layer use:** about 268mm of track on the top layer and 59mm on the bottom.
-- **Size:** 175 track segments and 40 vias, 17 of them on GND.
+- **Temperature line:** TEMP runs on the bottom layer from U1 pin 1 to the NTC pads, under the input diodes, so it is the one long track that cuts the bottom ground plane.
+- **Layer use:** about 290mm of track on the top layer and 76mm on the bottom.
+- **Size:** 199 track segments and 42 vias, 17 of them on GND.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 Review it before ordering, especially the charger's heat path (the exposed pad, its vias and the ground plane).
@@ -189,6 +195,7 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 - **Current:** PicoBlade contacts are rated 1.0A. The charge current is set to 0.79A to stay under that on the battery connector (J5). Keep the module's load current under 1A too, since it flows through J5 when the panels are dark.
 - **No keying between functions:** J1–J6 are the same 2-pin type, so a battery lead fits a solar socket. Check the silkscreen before plugging in. The switch headers take a different plug, so they can't be mixed up with these.
 - **Battery polarity:** "JST 1.25" LiPo pigtails have no standard polarity. Check that red goes to the pin marked `+` (pin 1 on J5) before connecting. Q2 blocks a reversed cell, but fit the cell with SW_BATT off anyway: with SW_BATT on in sunlight, the charger's output can partly turn Q2 on and push a limited current into a reversed cell, which heats Q2.
+- **NTC:** JP2 is not a connector: its two pads take the NTC's wires directly. Either way round works. Keep the NTC on the cell, away from the board: the CN3163 itself runs hot.
 - **Reading the marks:** each of J1–J6 has a `+name-` label: pin 1 (`+`) is on the `+` side and GND on the `-` side. All six face the same way, so pin 1 is the left pin with the board read as printed.
 
 **Operating note:** if SW_BATT is off while the panels are in sun, the charger has no battery to charge, and its output isn't meant to power the node in that state. Keep SW_LOAD off then.
@@ -233,6 +240,7 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 
 - Assembling it correctly and checking connector polarity before connecting a cell. J1–J6 share one connector type, so a lead plugs into the wrong socket easily. Q2 protects against a reversed cell on J5, but not against every fault, such as a battery plugged into a solar input.
 - Using a protected cell or a separate protection circuit. The CN3163 charges the cell but doesn't protect it from over-discharge or short circuits.
+- Deciding on temperature sensing. As supplied, JP2 turns it off, and the board will charge a frozen or hot cell. Li-ion cells shouldn't be charged below 0°C; fit the NTC if the node sees frost or strong sun.
 - Allowing for heat. The CN3163 is a linear charger and turns up to about 1W into heat at full current; it limits itself near 130°C, but the board and the enclosure around it get warm.
 - Fusing, wiring and an enclosure suited to where the node is installed, including outdoor heat and moisture.
 - Not using it where a failure could hurt someone or damage property.
@@ -278,7 +286,8 @@ node tools/fab-package.js $OUT
 ```
 SNAP_Power_Controller.kicad_pro / .kicad_sch / .kicad_pcb   KiCad project
 SolarNode.kicad_sym             project symbol library (CN3163)
-sym-lib-table
+SolarNode.pretty/               project footprint library (JP2's bridged NTC pads)
+sym-lib-table / fp-lib-table
 tools/
   gen-schematic.js              generates the schematic (Node)
   place-pcb.py                  places the earlier 52 × 29mm CN3163 board: footprints, labels, holes, outline (KiCad Python / pcbnew)

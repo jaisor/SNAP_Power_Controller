@@ -28,6 +28,7 @@ CONN = {
     "J1": (7.65, 2.95), "J2": (13.15, 2.95), "J3": (13.15, 21.5), "J4": (7.65, 21.5),
     "J5": (33.15, 10.5), "J6": (33.15, 15.95), "J7": (26.66, 16.86), "J8": (26.64, 21.0),
     "J9": (20.08, 2.95),
+    "JP2": (2.65, 8.0),  # NTC pads (bridged as supplied)
 }
 
 img = Image.new("RGB", (W, H), BG)
@@ -130,6 +131,7 @@ panel(50, 330, 190, 104, "5V 200mA · 110×60mm")
 panel(50, 560, 190, 104, "5V 200mA · 110×60mm")
 callout("J1", (520, 300), YELLOW, "Solar_5V  J1, J2", "top edge · own 1N5819W each", "left")
 solar_box = callout("J4", (520, 820), YELLOW, "SOLAR IN  J1–J4", "up to 4 × 5V panels", "left")
+callout("JP2", (520, 470), MAGENTA, "NTC  JP2", "optional · cut trace", "left")
 for py in (382, 612):
     wire([(240, py), (270, py), (270, 853), (solar_box[0], 853)], RED, 4)
 

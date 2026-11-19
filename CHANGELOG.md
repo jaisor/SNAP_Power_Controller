@@ -12,11 +12,15 @@ The CN3163 variant of the board on `main`. Not built or tested. ERC reports 0 vi
 - The CN3163 reduces its charge current to keep its input at 4.4 V or above. That threshold is fixed, so there is no set point to tune (the CN3791 board's was 4.42 V).
 - U3, an LDL1117S50R 5.0 V regulator, sits between the solar shunt and the charger, with a new C2 = 10 µF on its output. Every CN3163 pin is rated 6.5 V at most; U3 makes panels up to 18 V open-circuit safe. The status LEDs take their supply after U3.
 - C3, on the battery side, is 10 µF (was 22 µF).
+- Battery temperature sensing: R3 = 4.7k from VCHG to TEMP and R4 = 47k from TEMP to GND, as in the datasheet's Figure 7, for a 10k B3950 NTC across R4 (TH1, off the board). Charging pauses below about 1 °C and above about 46 °C. TEMP was tied to GND before.
+- JP2, a solder jumper bridged by a trace, holds TEMP at GND as supplied, so sensing is off and the board charges without an NTC, as before. Its pads are the NTC's solder pads: cut the trace, then solder the NTC to them. With JP2 closed, R3 draws about 1 mA from VCHG while the panels are lit.
+- JP1 uses JP2's footprint: two pads joined by a trace. The status LEDs now work as supplied (they were off until JP1 was bridged); cut the trace to turn them off. A lit LED draws about 3 mA from the panels.
 - The charger runs warmer: as a linear charger it turns the input-to-battery difference into heat, about 0.55 W at full current from panels.
 
 ### Board
 
-- The same 36.4 × 23.6 mm board as `main`, with four M2 mounting holes. The connectors, the INA3221, the input diodes, the shunts, Q2, the LEDs and JP1 are in `main`'s exact positions; the charger parts take the space of the old buck stage. Re-routed, with six thermal vias in the CN3163's exposed pad.
+- The same 36.4 × 23.6 mm board as `main`, with four M2 mounting holes. The connectors, the INA3221, the input diodes, the shunts, Q2 and the LEDs are in `main`'s exact positions; the charger parts take the space of the old buck stage. Re-routed, with six thermal vias in the CN3163's exposed pad.
+- JP2 (marked `NTC`) sits left of D5, with R3 and R4 below it. TEMP runs on the bottom layer from U1 pin 1. To make room, JP1 is 3.2 mm lower and R1 lies flat under D3. U1 pin 1 lost its ground via. The footprint for JP2 is in a new project library, `SolarNode.pretty`.
 - As on `main`: J4 and J3 on the bottom edge sit directly under J1 and J2 (0.625 mm and 0.875 mm further left than before), with their `+S4-` and `+S3-` labels.
 - As on `main`: R10 and INA3221 channel 3 are removed, and channel 3's inputs are tied to GND. The front silkscreen has function labels only (`+S1-` to `+S4-`, `+1S BATT-`, `+LOAD-`, `SW BATT`, `SW LOAD`, `I2C`, `LED`), at 0.6 mm minimum.
 - As on `main`: the input diodes D5–D8 are 1N5819W in SOD-123 (was 1N5819WS in SOD-323), so each solar input is good for 0.5 A instead of about 0.3 A.

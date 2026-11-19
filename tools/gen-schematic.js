@@ -202,7 +202,9 @@ const FP = {
   pico4: "Connector_Molex:Molex_PicoBlade_53047-0410_1x04_P1.25mm_Vertical",
   // 2.54 mm pin header for the switch leads.
   hdr2: "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
-  jumper: "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
+  // Project footprint (SolarNode.pretty): two SMD pads for an off-board NTC's leads, joined by a
+  // cuttable 0.25 mm trace (net tie), so the pads are JP2 as well.
+  ntcPads: "SolarNode:NTC_SolderPads_Bridged_P2.54mm",
 };
 
 // ---------- circuit ----------
@@ -259,8 +261,8 @@ LABELS.push({ name: "VIN", at: P(71.12, RAIL), ang: 0 });
 LABELS.push({ name: "VCHG", at: P(106.68, RAIL), ang: 0 });
 stub(U1.pin("7"), "left", "~{CHRG}", 5.08);
 stub(U1.pin("6"), "left", "~{DONE}", 5.08);
-// TEMP to GND: battery temperature sensing off (no NTC in the cell holder)
-gnd(wire(U1.pin("1"), P(U1.pin("1").x - 2.54, U1.pin("1").y), P(U1.pin("1").x - 2.54, U1.pin("1").y + 5.08)));
+// TEMP: battery temperature sensing (divider below, by the status LEDs)
+stub(U1.pin("1"), "left", "TEMP", 5.08);
 gnd(U1.pin("3"));
 gnd(U1.pin("9")); // exposed pad: must be soldered to ground, it is the heat path
 // FB senses the battery voltage straight at the BAT node (no Rx: 4.2 V regulation)
@@ -373,10 +375,10 @@ flag(P(375.92, 83.82));
 LABELS.push({ name: "VCC_MCU", at: P(375.92, 86.36), ang: 0 });
 
 // Status LEDs: red = charging (~CHRG), green = done (~DONE)
-// VIN -> R1 -> JP1 -> both LED anodes. JP1 is an open solder jumper on the top of the board, right
-// of R1: bridge it with solder to light the LEDs; left open, they draw nothing.
+// VCHG -> R1 -> JP1 -> both LED anodes. JP1 uses the same bridged pads as JP2: the LEDs work as
+// supplied; cut the trace between its pads to turn them off (they then draw nothing).
 const LEDS = P(170.18, 92.71);
-const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Open", "1", LEDS, { rot: 90, value: "LED_EN", fp: FP.jumper });
+const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Bridged", "1", LEDS, { rot: 90, value: "LED_EN", fp: FP.ntcPads });
 const R1 = placeByPin("R1", "Device:R", "2", P(LEDS.x, JP1.pin("2").y - 2.54), { value: "1k", fp: FP.r0603 });
 wire(JP1.pin("2"), R1.pin("2"));
 stub(R1.pin("1"), "up", "VCHG"); // the limited rail: CHRG and DONE are 6.5 V pins too
@@ -386,6 +388,26 @@ const D3 = placeByPin("D3", "Device:LED", "2", P(182.88, LEDS.y), { rot: 90, val
 wire(LEDS, D3.pin("2"));
 junction(LEDS);
 stub(D3.pin("1"), "down", "~{DONE}");
+
+// Battery temperature (datasheet Figure 7): R3 from VCHG to TEMP, R4 from TEMP to GND, and the NTC
+// across R4. Charging runs while TEMP is between 45 % and 80 % of VIN (the CN3163's VIN, which is
+// VCHG). Sized for a 10k B3950 NTC: 0 to 45 C gives R3 = 4.86k, R4 = 46.1k; with 4.7k / 47k
+// charging stops below about 1 C and above about 46 C. Without an NTC TEMP would sit at 91 % and
+// charging would never start, so JP2 (bridged by a trace) holds TEMP at GND, which turns sensing
+// off. JP2's pads are also the NTC's solder pads: cut the trace between them, then solder the NTC
+// (TH1, off-board, against the cell) to them. With JP2 closed R3 draws about 1 mA from VCHG.
+const TEMP = P(203.2, 104.14);
+const R3 = placeByPin("R3", "Device:R", "2", TEMP, { value: "4.7k 1%", fp: FP.r0603 });
+stub(R3.pin("1"), "up", "VCHG");
+const R4 = placeByPin("R4", "Device:R", "1", TEMP, { value: "47k 1%", fp: FP.r0603 });
+gnd(R4.pin("2"));
+const jpTap = wire(TEMP, P(220.98, TEMP.y));
+const JP2 = placeByPin("JP2", "Jumper:SolderJumper_2_Bridged", "1", jpTap, { rot: 270, value: "NTC_PADS", fp: FP.ntcPads });
+gnd(JP2.pin("2"));
+const TH1 = placeByPin("TH1", "Device:Thermistor_NTC", "1", wire(jpTap, P(236.22, TEMP.y)), { value: "10k B3950", dnp: true, noBom: true, offBoard: true });
+gnd(TH1.pin("2"));
+LABELS.push({ name: "TEMP", at: P(210.82, TEMP.y), ang: 0 });
+[TEMP, jpTap].forEach(junction);
 
 TEXTS.push({
   at: P(33.782, 167.894),
@@ -401,10 +423,13 @@ TEXTS.push({
     "- Charge current: ICH = 1188V / R2 = 1188 / 1.5k = 0.79A, leaving margin on the 1.0A connector contacts (R2 = 2.4k for 0.5A).",
     "  Precharge at 10% below 2.94V (70% of 4.2V); terminates at 10% of ICH; recharges automatically. Die limited to ~130C by thermal regulation:",
     "  dissipation is (VCHG - VBAT) x ICH, about 0.55W at VCHG 4.4V / 3.7V cell / 0.79A, up to ~1W at 5.0V, so the current may fold back.",
-    "- FB tied to BAT at the VBAT node (no Rx). TEMP grounded: battery temperature sensing disabled. Exposed pad (pin 9) soldered to GND.",
+    "- FB tied to BAT at the VBAT node (no Rx). Exposed pad (pin 9) soldered to GND.",
+    "- TEMP (datasheet Figure 7): R3 4.7k VCHG -> TEMP, R4 47k TEMP -> GND, TH1 10k B3950 NTC across R4. Charging runs while TEMP is",
+    "  45-80% of VCHG: about 1 to 46C. JP2 is bridged by a trace and holds TEMP at GND (sensing off, R3 draws ~1mA from VCHG). Its pads are",
+    "  TH1's solder pads: cut the trace, then wire the NTC (off-board, against the cell) to them. With JP2 cut and no NTC the charger won't start.",
     "- C3 10uF on BAT (datasheet: 1uF typical, 1-22uF ceramic stable). No blocking diode needed: under 3uA from the",
     "  battery when the input is dark. D5-D8 are there to keep a shaded panel from loading the others.",
-    "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 open.",
+    "- Status: D4 red ON = charging, D3 green ON = charge done. Both off = no input, VIN < VBAT, or JP1 cut.",
     "- Power connectors J1-J6 are 2-pin Micro JST 1.25 / PicoBlade-compatible (1.0A per contact); J9 I2C is the 4-pin version.",
     "  J7/J8 are 2.54mm pin headers for panel-mount SPST switches, or a jumper cap if unused. J1-J6 share one type, so check the silkscreen before plugging in.",
     "  Polarity: J1-J6 pin 1 = +, pin 2 = GND. The board marks + and - at each of these connectors. Q2 blocks a reversed cell on J5.",
@@ -492,9 +517,9 @@ function emitPart(p) {
 		(at ${x} ${y} ${p.rot})
 ${p.mirror ? `\t\t(mirror ${p.mirror})\n` : ""}		(unit 1)
 		(exclude_from_sim no)
-		(in_bom ${o.power || /\n\t\t\(in_bom no\)/.test(p.sym.text) ? "no" : "yes"})
-		(on_board ${o.power ? "no" : "yes"})
-		(dnp no)
+		(in_bom ${o.power || o.noBom || /\n\t\t\(in_bom no\)/.test(p.sym.text) ? "no" : "yes"})
+		(on_board ${o.power || o.offBoard ? "no" : "yes"})
+		(dnp ${o.dnp ? "yes" : "no"})
 		(uuid "${uuid(`sym/${p.ref}`)}")
 ${props.join("\n")}
 ${pins.join("\n")}
