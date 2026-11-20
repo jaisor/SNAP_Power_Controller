@@ -2,9 +2,15 @@
 
 Changes to the Solar Charge Module that matter to someone building or using the board. Versions match the release tags and the label on the back of the board.
 
-## Unreleased
+## v1.1 (2026-11-20)
 
-Changes on `main` since the v1.1 release files. The whole board differs, so don't mix these files with the released Gerbers, BOM or placement file.
+Not built or tested yet. ERC reports 0 violations; DRC reports 0 violations, 0 unconnected items and 0 schematic parity issues. The test results in the README are from v1.0 boards.
+
+This release replaces the first v1.1 files, published on Nov. 9, 2026 for a 52 × 29 mm board and now withdrawn (see **v1.1, first layout** below). The whole board differs, so don't mix these files with the earlier Gerbers, BOM or placement file.
+
+Compared with v1.0, as in the first layout: an INA3221 at 0x42 replaces the INA219 and the SOLAR/BATT switch, Q2 blocks a reversed cell, J7 and J8 are 2.54 mm pin headers, and J9 is wired 1 VCC, 2 GND, 3 SCL, 4 SDA. The first layout's section below gives the details.
+
+### Changes since the first v1.1 layout
 
 - A new, smaller board, placed by hand: 36.4 × 23.6 mm (was 52 × 29 mm), with 1 mm corner chamfers. It has four M2 mounting holes, 2.2 mm in diameter and 2.5 mm from each edge, 31.4 × 18.6 mm apart (were M3, 44 × 21 mm apart). Every part and connector moves, so mounts made for the 52 × 29 mm board don't fit. The board was re-routed: both layers have a GND pour, and the bottom layer under the buck converter's switching loop carries only ground and the gate-drive hop from U1 to Q1.
 - R10 and INA3221 channel 3, which read panel 1 on its own, are removed. Channel 3's inputs are tied to GND. The monitor reads the battery (channel 1) and the total solar input (channel 2).
@@ -17,9 +23,7 @@ Changes on `main` since the v1.1 release files. The whole board differs, so don'
 - JP1 uses a new project footprint, `SolarNode:NTC_SolderPads_Bridged_P2.54mm`: two pads joined by a trace. The status LEDs now work as supplied (they were off until JP1 was bridged); cut the trace to turn them off. A lit LED draws about 3 mA from the panels. JP1 moved to the left edge, R1 took its place and the LED supply no longer hops to the bottom layer.
 - The front silkscreen has function labels only. J1–J6 have one label each with both polarity marks, `+` on the pin-1 side and `-` on the GND side: `+S1-` to `+S4-`, `+1S BATT-` and `+LOAD-`. The other labels are `SW BATT`, `SW LOAD`, `I2C` and `LED`. Reference designators aren't printed.
 - J4 and J3 on the bottom edge sit directly under J1 and J2, with their `+S4-` and `+S3-` labels (0.625 mm and 0.875 mm further left than in the first version of this board).
-
 - The input diodes D5–D8 are 1N5819W in SOD-123 (was 1N5819WS in SOD-323), so each solar input is good for 0.5 A instead of about 0.3 A. To fit them, J1, J2 and J4 move 0.45 mm left and J3 0.3 mm; J2 is also 0.2 mm lower. The mounting holes and the other connectors don't move.
-
 - R3 and R4, the MPPT divider, are 267k and 100k (were 26.7k and 10k). The set point is still 4.42 V. At night the battery back-feeds the charger's input through the inductor and Q1, and the old divider drew about 95 µA from it; the new one draws about 10 µA. Total night drain on this path is about 30 µA, not the 21 µA the README used to give (that figure was the chip alone). Only two resistor values change; the board's copper is the same.
 - The README has a new "Choosing panels" section: 6 V panels are preferred, and panels that only reach about 5.5 V open-circuit lose most of their output in heat.
 - The README now says the power monitor can't resolve a node's sleep current.
@@ -27,9 +31,17 @@ Changes on `main` since the v1.1 release files. The whole board differs, so don'
 - Printed under it: check polarity; battery 1S Li-ion 4.2 V only; solar 5–6 V panels, 20 V max, 0.5 A max per input; load 1 A max; and a notice that the board is provided as is, with no warranty, and liability limited to the purchase price.
 - The README lists the same limits under Safety, and gives the board's dimensions.
 
-## v1.1 (2026-11-09)
+### Upgrading from v1.0
 
-Not built or tested yet. ERC reports 0 violations; DRC reports 0 violations, 0 unconnected items and 0 schematic parity issues. The test results in the README are from v1.0 boards.
+- **Enclosure:** the board is 36.4 × 23.6 mm with four M2 holes 31.4 × 18.6 mm apart (v1.0: 56.5 × 29 mm, M3 holes 48.5 × 21 mm apart). Mounts made for v1.0 won't fit. Use nylon washers and standoffs.
+- **I2C cable:** a cable wired for v1.0's J9 puts SDA and GND on the wrong pins. Don't move cables between v1.0 and v1.1 boards without checking.
+- **Firmware:** set it up for an INA3221 at 0x42 instead of an INA219 at 0x40. Anything else at 0x42 on the bus will clash.
+- **Switch plugs:** J7 and J8 need 2.54 mm plugs or jumper caps.
+- **Panels:** the board is set for 6 V panels. With 5 V panels, bridge JP2.
+
+## v1.1, first layout (2026-11-09, withdrawn 2026-11-20)
+
+The 52 × 29 mm board, which also read panel 1 on its own. Its release was withdrawn on Nov. 20, 2026 and replaced by the board above: discard its Gerbers, BOM and placement file. The design stays in the repository's history at commit 652d64c. It was never built.
 
 v1.1 is not a drop-in replacement for v1.0. The board outline, the mounting holes, the I2C connector pinout and the power monitor's type and address all change; see **Upgrading from v1.0**.
 

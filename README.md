@@ -6,7 +6,7 @@ Designed in KiCad 10.
 
 > **Status:** the schematic is complete and passes ERC. The PCB is a new, smaller layout (36.4 × 23.6 mm, 1mm corner chamfers, four M2 mounting holes, two layers), **placed by hand and routed**, with no DRC errors. It hasn't been built. A first v1.0 board has been wired up and tested with a XIAO + Wio-SX1262 on a custom Meshtastic build, and everything seems to work as expected so far, including the I2C sensor. A sunlight test in a real solar node is under way, with the expected voltage and charge current so far. See [Testing](#testing).
 >
-> **v1.1:** an INA3221 replaces v1.0's INA219 and its SOLAR/BATT switch, and reads the battery and the total solar input at the same time. The released v1.1 files are a 52 × 29mm board that also read panel 1 on its own. The board in this repo drops that channel and its shunt to fit in 36.4 × 23.6mm, and has no release yet. Neither has been built or tested; the test results below are from v1.0 boards with the INA219. See the [change log](CHANGELOG.md).
+> **v1.1:** an INA3221 replaces v1.0's INA219 and its SOLAR/BATT switch, and reads the battery and the total solar input at the same time. The v1.1 release (Nov. 20, 2026) is the 36.4 × 23.6mm board in this repo. It replaces the first v1.1 files, a 52 × 29mm board that also read panel 1 on its own, which were withdrawn. v1.1 hasn't been built or tested yet; the test results below are from v1.0 boards with the INA219. See the [change log](CHANGELOG.md).
 
 <p align="center">
   <img src="docs/images/pcb-iso.png" alt="3D render of the routed board" width="720">
@@ -203,7 +203,7 @@ J1–J6 and J9 are Micro JST 1.25 (Molex PicoBlade-compatible) vertical headers,
 | 2 | R7, between the PV bus and VIN | Total solar current, always ≥ 0 | VIN (panel voltage minus the diode drop) |
 | 3 | None: both inputs are tied to GND | Unused, reads zero | Unused, reads zero |
 
-The released 52 × 29mm v1.1 board also had a shunt, R10, for panel 1 on channel 3. It was dropped to make the board smaller.
+The first, withdrawn 52 × 29mm v1.1 board also had a shunt, R10, for panel 1 on channel 3. It was dropped to make the board smaller.
 
 **Firmware support** (checked in the source code on 2026-11-09, not yet on hardware):
 - **Meshtastic:** looks for an INA3221 at 0x42. It reports all three channels' voltage and current as power metrics (channel 3 reads about zero on this board), and uses channel 1 as the battery by default.
@@ -247,7 +247,7 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 
 ## Fabrication
 
-The [latest release](https://github.com/jaisor/SNAP_Power_Controller/releases/latest) is v1.1 as first laid out: the 52 × 29mm board with panel 1's channel. Its files don't match the board in this repo. The 36.4 × 23.6mm board has no release yet; generate its package with the commands below. The [change log](CHANGELOG.md) lists what changed. The package is generated into `output/fab/`, which isn't tracked in git:
+The [latest release](https://github.com/jaisor/SNAP_Power_Controller/releases/latest) is v1.1 (Nov. 20, 2026), the 36.4 × 23.6mm board in this repo, with the files below attached. The first v1.1 files, for a 52 × 29mm board, were withdrawn; don't use them. The [change log](CHANGELOG.md) lists what changed. The commands below regenerate the package into `output/fab/`, which isn't tracked in git:
 
 | File | Contents |
 |---|---|
