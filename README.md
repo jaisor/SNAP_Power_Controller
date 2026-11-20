@@ -138,7 +138,7 @@ The schematic follows the CN3163 datasheet's typical application circuit (Figure
 | Right edge | Battery (J5, `+1S BATT-`) and VOUT (J6, `+LOAD-`) |
 | Bottom edge | Solar inputs J4 (`+S4-`) and J3 (`+S3-`), directly under J1 and J2, with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
 
-The connectors, the INA3221, the input diodes, the shunts, Q2 and the LEDs are in exactly the same places as on `main`'s board (JP1 sits 3.2mm lower and R1 lies flat under D3, to make room for R3/R4); only the charger parts in the middle differ. Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge.
+The connectors, the INA3221, the input diodes, the shunts, Q2 and the LEDs are in exactly the same places as on `main`'s board (JP1 sits 3.2mm lower and R1 lies flat under D3, to make room for R3/R4); only the charger parts in the middle differ. Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge. Mount the board with nylon washers and standoffs; see [Dimensions](#dimensions).
 
 The CN3163's 3D model doesn't show in the renders (the footprint's model file seems to be missing from KiCad's library); only its pads appear.
 
@@ -151,6 +151,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 | Outline | 36.4 × 23.6mm, with a 1mm × 45° chamfer on each corner |
 | Thickness | 1.6mm PCB, two layers. All parts are on the top side; the through-hole connector pins stick out the back |
 | Mounting holes | Four, 2.2mm diameter, not plated, for M2 screws |
+| Mounting hardware | M2 screws with heads no wider than 4mm, and nylon washers and standoffs. **Don't use metal washers or metal standoffs:** a 5mm M2 washer reaches within 0.3mm of C6's bare pad at H2, and tracks pass about 3mm from the hole centres |
 | Hole positions | One in each corner, centre 2.5mm from both edges |
 | Hole spacing | 31.4mm across, 18.6mm down, centre to centre |
 
@@ -161,7 +162,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed under its pads on the back.
 - **LED jumper:** `LED` beside JP1.
 - **NTC pads:** `NTC` above JP2.
-- **Back:** the module ID, "SNAP Power Controller CN3163 / Nov. 18, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
+- **Back:** the module ID, "SNAP Power Controller CN3163 / Nov. 19, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
 - **Text size:** the front labels are 0.6mm text, the board's minimum. Board houses often recommend 0.8–1mm or more, so check that yours prints 0.6mm cleanly. The back label is 0.8 to 1.0mm.
 
 **Routing** (a grid auto-router adapted from `tools/route-pcb.py`, with the tightest connections placed by hand first; the board file is the source of truth):
@@ -171,8 +172,9 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **Track widths:** power paths are 0.6mm, 0.4mm where 0.6mm doesn't fit. Signals are 0.25mm, with 0.2mm on the INA3221's escape tracks.
 - **Kelvin sensing:** the INA3221's channel inputs connect straight to the pads of their shunt resistors (R6, R7).
 - **Temperature line:** TEMP runs on the bottom layer from U1 pin 1 to the NTC pads, under the input diodes, so it is the one long track that cuts the bottom ground plane.
-- **Layer use:** about 290mm of track on the top layer and 76mm on the bottom.
-- **Size:** 199 track segments and 42 vias, 17 of them on GND.
+- **Layer use:** about 277mm of track on the top layer and 84mm on the bottom.
+- **Size:** 199 track segments and 44 vias, 17 of them on GND. VCHG reaches the NTC divider (R3) on the bottom layer, under JP1.
+- **Mounting holes:** no copper except ground comes within 3mm of a hole centre, apart from two bare pads: C6's at H2 (2.8mm) and JP1's at H3 (2.7mm, fed through R1, 1k). That's why the hardware must be nylon.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 Review it before ordering, especially the charger's heat path (the exposed pad, its vias and the ground plane).
@@ -243,6 +245,7 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 - Deciding on temperature sensing. As supplied, JP2 turns it off, and the board will charge a frozen or hot cell. Li-ion cells shouldn't be charged below 0°C; fit the NTC if the node sees frost or strong sun.
 - Allowing for heat. The CN3163 is a linear charger and turns up to about 1W into heat at full current; it limits itself near 130°C, but the board and the enclosure around it get warm.
 - Fusing, wiring and an enclosure suited to where the node is installed, including outdoor heat and moisture.
+- Mounting it with nylon washers and standoffs. Metal hardware can reach copper near the holes, including the unfused battery rail.
 - Not using it where a failure could hurt someone or damage property.
 
 **Limits**, also printed on the back of the board:
