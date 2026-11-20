@@ -10307,7 +10307,7 @@
 			)
 		)
 	)
-	(gr_text "Nov. 19, 2026"
+	(gr_text "Nov. 20, 2026"
 		(at 116 108.9 0)
 		(layer "B.SilkS")
 		(uuid "427fdd0a-9f01-4c21-8edd-3ee47f60d440")
