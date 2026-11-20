@@ -125,12 +125,12 @@ The schematic follows the CN3791 datasheet's typical application circuit (Figure
 | Corners | M2 mounting holes H1–H4 |
 | Top edge | Solar inputs J1 (`+S1-`) and J2 (`+S2-`), the 4-pin I2C connector J9, then the INA3221 (U2) with its bypass capacitor C6 |
 | Upper middle | Input diodes D5/D6 and the solar shunt R7, then the buck power stage: C1/C5, Q1, D2, with the I2C pull-ups R8/R9 above Q1. Right of D2: the charge-current shunt R5 and C3, the reverse-battery MOSFET Q2 and the battery shunt R6 |
-| Middle | CN3791 (U1), with C2, the status LEDs D3/D4, R2 and C4 in a column on its left and the MPPT divider R3/R4 below it. L1 is to its right. JP1, the LED jumper, sits at the left edge with R1 beside it. R11 is tucked under R3 |
+| Middle | CN3791 (U1), with C2, the status LEDs D3/D4, R2 and C4 in a column on its left and the MPPT divider R3/R4 below it. L1 is to its right, turned so its switch pad faces Q1 and its quiet output pad faces U1's MPPT pin. JP1, the LED jumper, sits at the left edge with R1 beside it. R11 is tucked under R3 |
 | Top-left corner | The 5V jumper JP2, left of D5, with its label above it |
 | Right edge | Battery (J5, `+1S BATT-`) and VOUT (J6, `+LOAD-`) |
 | Bottom edge | Solar inputs J4 (`+S4-`) and J3 (`+S3-`), directly under J1 and J2, with their diodes D8/D7, then the switch headers J7 (`SW BATT`) and J8 (`SW LOAD`) |
 
-Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge.
+Reference designators aren't printed; the silkscreen carries only function labels. The holes are plain non-plated 2.2mm M2 holes, 2.5mm in from each edge. Mount the board with nylon washers and standoffs; see [Dimensions](#dimensions).
 
 ### Dimensions
 
@@ -141,6 +141,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 | Outline | 36.4 × 23.6mm, with a 1mm × 45° chamfer on each corner |
 | Thickness | 1.6mm PCB, two layers. All parts are on the top side; the through-hole connector pins stick out the back |
 | Mounting holes | Four, 2.2mm diameter, not plated, for M2 screws |
+| Mounting hardware | M2 screws with heads no wider than 4mm, and nylon washers and standoffs. **Don't use metal washers or metal standoffs:** a 5mm M2 washer reaches within 0.3mm of C6's bare pad at H2, and tracks pass about 3mm from the hole centres |
 | Hole positions | One in each corner, centre 2.5mm from both edges |
 | Hole spacing | 31.4mm across, 18.6mm down, centre to centre |
 
@@ -151,17 +152,18 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed under its pads on the back.
 - **LED jumper:** `LED` under JP1.
 - **5V jumper:** `BRIDGE FOR` / `5V SOLAR` on two lines, turned 90°, above JP2.
-- **Back:** the module ID, "SNAP Power Controller v1.1 / Nov. 18, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
+- **Back:** the module ID, "SNAP Power Controller v1.1 / Nov. 19, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
 - **Text size:** the front labels are 0.6mm text, the board's minimum. Board houses often recommend 0.8–1mm or more, so check that yours prints 0.6mm cleanly. The back label is 0.8 to 1.0mm.
 
 **Routing** (a grid auto-router adapted from `tools/route-pcb.py`, with the tightest connections placed by hand first; the board file is the source of truth):
 
-- **Switching loop:** C5/C1 → Q1 → D2 and the switch node to L1 are short 0.6mm tracks on the top layer. Only ground runs on the bottom layer under the loop, under L1's switch pad and under U2.
+- **Switching loop:** C5/C1 → Q1 → D2 are short 0.6mm tracks on the top layer, and Q1's drain drops 2mm straight into L1's switch pad. L1's switch pad is 1.35mm from U1 and faces its DRV, VIN and CSP pins; the high-impedance MPPT pin (about 75kΩ) faces L1's quiet pad and is 2.3mm from the switch pad. Under the loop, under L1's switch pad and under U2, the bottom layer carries only ground and the gate-drive hop (U1 to Q1).
 - **Ground:** both layers have a GND pour, and the bottom one is in one piece, cut only by short hops. Most surface-mount GND pads have their own via to it, including those of C1, C5 and D2 in the switching loop.
 - **Track widths:** power paths are 0.6mm, 0.4mm where 0.6mm doesn't fit. Signals are 0.25mm, with 0.2mm on the INA3221's escape tracks.
-- **Kelvin sensing:** the CN3791's current-sense pins and the INA3221's channel inputs connect straight to the pads of their shunt resistors (R5; R6, R7). The CN3791's pair runs side by side on the bottom layer, below L1.
-- **Layer use:** about 315mm of track on the top layer and 96mm on the bottom. The gate drive (U1 to Q1) hops under the power stage on the bottom layer, because Q1's gate and source are on the same side.
-- **Size:** 221 track segments and 39 vias, 11 of them on GND. JP2's line to R11 is the longest bottom-layer track: it runs down the left edge and along under J4.
+- **Kelvin sensing:** the CN3791's current-sense pins and the INA3221's channel inputs connect straight to the pads of their shunt resistors (R5; R6, R7). The CN3791's pair (CSP, VBAT) runs side by side, 0.65mm apart, on the bottom layer under L1's quiet pad, well clear of its switch pad; the loop between the two lines is about 29mm², against 85mm² before.
+- **Layer use:** about 294mm of track on the top layer and 101mm on the bottom. The gate drive (U1 to Q1) hops under the power stage on the bottom layer, because Q1's gate and source are on the same side.
+- **Size:** 218 track segments and 39 vias, 11 of them on GND. JP2's line to R11 is the longest bottom-layer track: it runs down the left edge and along under J4.
+- **Mounting holes:** no copper except ground comes within 3mm of a hole centre, apart from C6's pad at H2 (2.8mm), which is why the hardware must be nylon.
 - **Checks:** DRC reports 0 violations and 0 unconnected items, and schematic parity is clean.
 
 Review it before ordering, especially the buck converter's switching loop (C1 → Q1 → D2, which returns through the ground plane).
@@ -229,6 +231,7 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 - Assembling it correctly and checking connector polarity before connecting a cell. J1–J6 share one connector type, so a lead plugs into the wrong socket easily. Q2 protects against a reversed cell on J5, but not against every fault, such as a battery plugged into a solar input.
 - Using a protected cell or a separate protection circuit. The CN3791 charges the cell but doesn't protect it from over-discharge or short circuits.
 - Fusing, wiring and an enclosure suited to where the node is installed, including outdoor heat and moisture.
+- Mounting it with nylon washers and standoffs. Metal hardware can reach copper near the holes, including the unfused battery rail.
 - Not using it where a failure could hurt someone or damage property.
 
 **Limits**, also printed on the back of the board:
