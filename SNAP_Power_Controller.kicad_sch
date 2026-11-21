@@ -7,7 +7,7 @@
 	(title_block
 		(title "SNAP Power Controller")
 		(date "2026-10-28")
-		(rev "1.1")
+		(rev "1.0")
 		(comment 1 "CN3163 linear solar Li-ion charger behind a 5V input limiter: up to 4 solar panels (diode OR) -> 1S LiPo (4.2V)")
 		(comment 2 "INA3221 I2C power monitor (0x42): battery and total solar")
 	)

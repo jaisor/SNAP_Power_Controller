@@ -162,7 +162,7 @@ The [wiring diagram](#built-for-solar-mesh-nodes) includes a dimension drawing t
 - **I2C connector:** `I2C` under J9 on the front. The pin names (`VCC`, `GND`, `SCL`, `SDA`) are printed under its pads on the back.
 - **LED jumper:** `LED` beside JP1.
 - **NTC pads:** `NTC` above JP2.
-- **Back:** the module ID, "SNAP Power Controller CN3163 / Nov. 19, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
+- **Back:** the module ID, "SNAP Power Controller CN3163 v1.0 / Nov. 20, 2026". Under it, a reminder to check polarity, the limits listed under [Safety](#safety), and a short no-warranty notice.
 - **Text size:** the front labels are 0.6mm text, the board's minimum. Board houses often recommend 0.8–1mm or more, so check that yours prints 0.6mm cleanly. The back label is 0.8 to 1.0mm.
 
 **Routing** (a grid auto-router adapted from `tools/route-pcb.py`, with the tightest connections placed by hand first; the board file is the source of truth):
@@ -261,16 +261,16 @@ This is an experimental design for charging a lithium-ion cell. It's provided as
 
 ## Fabrication
 
-The [latest release](https://github.com/jaisor/SNAP_Power_Controller/releases/latest) is v1.1 of `main`'s CN3791 board, as first laid out at 52 × 29mm. Its files don't match this board. The CN3163 board has no release; generate its package with the commands below. The package is generated into `output/fab/`, which isn't tracked in git:
+This board's release is [v1.0_cn3163](https://github.com/jaisor/SNAP_Power_Controller/releases/tag/v1.0_cn3163) (Nov. 20, 2026), with the files below attached. The repository's latest release, v1.1, is `main`'s CN3791 board, and its files don't match this one. The commands below regenerate the package into `output/fab/`, which isn't tracked in git:
 
 | File | Contents |
 |---|---|
-| `SolarChargeModule_v1.1_gerbers.zip` | Upload this to the board house. 9 Gerber X2 layers (copper, mask, paste and silkscreen on both sides, plus the outline), a Gerber job file, plated and non-plated Excellon drill files, and drill maps |
+| `SNAP_Power_Controller_CN3163_v1.0_gerbers.zip` | Upload this to the board house. 9 Gerber X2 layers (copper, mask, paste and silkscreen on both sides, plus the outline), a Gerber job file, plated and non-plated Excellon drill files, and drill maps |
 | `FAB_NOTES.txt` | Order settings: 2 layers, FR-4 1.6mm, 1oz copper, 36.4 × 23.6mm, 0.2mm/0.2mm minimum track/space, 0.3mm minimum drill, tented vias, four 2.2mm non-plated holes. Also assembly cautions |
-| `SolarChargeModule_v1.1_BOM.csv` | BOM in JLCPCB format (Comment, Designator, Footprint, LCSC Part #), plus a Manufacturer Part column for the specific parts |
-| `SolarChargeModule_v1.1_CPL.csv` | Pick-and-place file for top-side assembly, in the same coordinates as the Gerbers |
+| `SNAP_Power_Controller_CN3163_v1.0_BOM.csv` | BOM in JLCPCB format (Comment, Designator, Footprint, LCSC Part #), plus a Manufacturer Part column for the specific parts |
+| `SNAP_Power_Controller_CN3163_v1.0_CPL.csv` | Pick-and-place file for top-side assembly, in the same coordinates as the Gerbers |
 
-The file names still say v1.1: this variant has no version number of its own yet. No LCSC part numbers are filled in yet. Pick them in the assembler's part search, and check rotation and polarity in their preview. The PicoBlade headers and the J7 and J8 pin headers are through-hole parts. JP1 is a solder jumper made of bare pads, so it has no part to place.
+Every BOM line has a JLCPCB/LCSC part number, checked on jlcpcb.com on Nov. 20, 2026. They are Basic parts except D3, the connectors, U1, U2 and U3. Re-check stock before ordering, and check rotation and polarity in the assembler's preview. D5–D8 are Changjiang B5819W (C8598), rated 1A with 0.6V at most at 1A. The PicoBlade headers and the J7 and J8 pin headers are through-hole parts. JP1 is a solder jumper made of bare pads, so it has no part to place.
 
 Regenerating the package (after the board is final and DRC is clean):
 

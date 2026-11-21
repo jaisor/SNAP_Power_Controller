@@ -9,7 +9,7 @@
 	(paper "A4")
 	(title_block
 		(title "SNAP Power Controller")
-		(rev "1.1")
+		(rev "1.0")
 	)
 	(layers
 		(0 "F.Cu" signal)
@@ -8649,7 +8649,7 @@
 			)
 		)
 	)
-	(gr_text "Nov. 19, 2026"
+	(gr_text "Nov. 20, 2026"
 		(at 116 108.9 0)
 		(layer "B.SilkS")
 		(uuid "d13a1b2c-f761-4822-9be2-0579a6f41fdc")
@@ -8805,13 +8805,13 @@
 			(justify mirror)
 		)
 	)
-	(gr_text "SNAP Power Controller CN3163"
+	(gr_text "SNAP Power Controller CN3163 v1.0"
 		(at 116 107.5 0)
 		(layer "B.SilkS")
 		(uuid "a7d26663-3cde-4b6f-81f8-bfdeb5b46d8c")
 		(effects
 			(font
-				(size 1 1)
+				(size 1 0.85)
 				(thickness 0.15)
 			)
 			(justify mirror)

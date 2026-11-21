@@ -2,9 +2,14 @@
 
 Changes to the Solar Charge Module that matter to someone building or using the board. Versions match the release tags and the label on the back of the board.
 
-## Unreleased: branch `cn3163`
+## v1.0_cn3163 (2026-11-20), branch `cn3163`
 
-The CN3163 variant of the board on `main`. Not built or tested. ERC reports 0 violations; DRC reports 0 violations, 0 unconnected items and 0 schematic parity issues. It has no release, and its files don't match the v1.1 release files.
+The CN3163 variant of the board on `main`, and its first release. Not built or tested. ERC reports 0 violations; DRC reports 0 violations, 0 unconnected items and 0 schematic parity issues. Its files don't match the v1.1 release files, which are `main`'s CN3791 board.
+
+### Release files
+
+- The fab files are named `SNAP_Power_Controller_CN3163_v1.0_*` (were `SolarChargeModule_v1.1_*`), and the title-block revision is 1.0.
+- Every BOM line has a JLCPCB/LCSC part number, Basic parts wherever one fits. D5–D8 are Changjiang B5819W (C8598): 1 A, 0.6 V at most at 1 A. The first match JLCPCB's tool offered for "1N5819W" was a 350 mA part.
 
 ### Charger
 
@@ -25,7 +30,7 @@ The CN3163 variant of the board on `main`. Not built or tested. ERC reports 0 vi
 - As on `main`: J4 and J3 on the bottom edge sit directly under J1 and J2 (0.625 mm and 0.875 mm further left than before), with their `+S4-` and `+S3-` labels.
 - As on `main`: R10 and INA3221 channel 3 are removed, and channel 3's inputs are tied to GND. The front silkscreen has function labels only (`+S1-` to `+S4-`, `+1S BATT-`, `+LOAD-`, `SW BATT`, `SW LOAD`, `I2C`, `LED`), at 0.6 mm minimum.
 - As on `main`: the input diodes D5–D8 are 1N5819W in SOD-123 (was 1N5819WS in SOD-323), so each solar input is good for 0.5 A instead of about 0.3 A.
-- The back label reads "SNAP Power Controller CN3163 / Nov. 19, 2026". Printed under it: check polarity; battery 1S Li-ion 4.2 V only; solar 5–6 V panels, 18 V max (20 V on the CN3791 board, now set by U3), 0.5 A max per input; load 1 A max; and a notice that the board is provided as is, with no warranty, and liability limited to the purchase price. The README lists the same limits under Safety.
+- The back label reads "SNAP Power Controller CN3163 v1.0 / Nov. 20, 2026". Printed under it: check polarity; battery 1S Li-ion 4.2 V only; solar 5–6 V panels, 18 V max (20 V on the CN3791 board, now set by U3), 0.5 A max per input; load 1 A max; and a notice that the board is provided as is, with no warranty, and liability limited to the purchase price. The README lists the same limits under Safety.
 
 ## v1.1 (2026-11-09)
 
